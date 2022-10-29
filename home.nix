@@ -66,40 +66,42 @@
 
     programs.neovim = {
       enable = true;
-      package = unstable.neovim-unwrapped;
+      package = pkgs.neovim-unwrapped;
       viAlias = true;
       vimAlias = true;
       extraConfig = "
-      	luafile ~/.config/nvim/user.lua
+      luafile neovim/init.lua
       ";
       plugins = with pkgs.vimPlugins;
         let
-          fetchPluginFromGit = name: ref: pkgs.vimUtils.buildVimPluginFrom2Nix {
+          fetchPluginFromGit = name: rev: pkgs.vimUtils.buildVimPluginFrom2Nix {
             name = name;
             src = builtins.fetchGit {
               url = "https://github.com/${name}";
               submodules = true;
-              inherit ref;
+              inherit rev;
             };
           };
         in [
-          (fetchPluginFromGit  "LnL7/vim-nix" "HEAD")
-          (fetchPluginFromGit  "tpope/vim-fugitive" "HEAD")
-          (fetchPluginFromGit  "sainnhe/gruvbox-material" "HEAD")
-          (fetchPluginFromGit  "nvim-treesitter/nvim-treesitter" "HEAD")
-          (fetchPluginFromGit  "mvinkio/tnychain" "HEAD")
-          (fetchPluginFromGit  "L3MON4D3/LuaSnip" "HEAD")
-          (fetchPluginFromGit  "Furkanzmc/firvish.nvim" "HEAD")
-          (fetchPluginFromGit  "folke/trouble.nvim" "HEAD")
-          (fetchPluginFromGit  "klen/nvim-test" "HEAD")
-          (fetchPluginFromGit  "neovim/nvim-lspconfig" "HEAD")
-          (fetchPluginFromGit  "mfussenegger/nvim-dap" "HEAD")
-          (fetchPluginFromGit  "rcarriga/nvim-dap-ui" "HEAD")
-          (fetchPluginFromGit  "tjdevries/nlua.nvim" "HEAD")
-          (fetchPluginFromGit  "jose-elias-alvarez/null-ls.nvim" "HEAD")
-          (fetchPluginFromGit  "nvim-lua/plenary.nvim" "HEAD")
-          (fetchPluginFromGit  "ray-x/lsp_signature.nvim" "HEAD")
-          (fetchPluginFromGit  "justinmk/vim-dirvish" "HEAD")
+          vim-nix
+          vim-dirvish
+          nvim-dap
+          nvim-dap-ui
+          vim-fugitive
+          gruvbox-material
+          luasnip
+          nvim-lspconfig
+          trouble-nvim
+          nlua-nvim
+          null-ls-nvim
+          plenary-nvim
+
+          (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+
+          (fetchPluginFromGit  "klen/nvim-test" "32f162c27045fc712664b9ddbd33d3c550cb2bfc")
+          (fetchPluginFromGit  "mvinkio/tnychain" "cef72f688e67f40616db8ecf9d7c63e505c2dd23")
+          (fetchPluginFromGit  "Furkanzmc/firvish.nvim" "127f9146175d6bbaff6a8b761081cfd2279f8351")
+          (fetchPluginFromGit  "ray-x/lsp_signature.nvim" "137bfaa7c112cb058f8e999a8fb49363fae3a697")
         ];
     };
 }
