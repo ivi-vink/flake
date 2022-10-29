@@ -1,10 +1,5 @@
 { config, pkgs, ... }:
 
-let
-  unstable = import <unstable> {};
-
-in
-
 {
     # Found this here: nix-community.github.io  configuration example
 
@@ -17,6 +12,7 @@ in
         htop
         fortune
         vim
+        docker
         stow
         (nerdfonts.override { fonts = [ "FiraCode" ]; })
 
@@ -103,6 +99,7 @@ in
           (fetchPluginFromGit  "jose-elias-alvarez/null-ls.nvim" "HEAD")
           (fetchPluginFromGit  "nvim-lua/plenary.nvim" "HEAD")
           (fetchPluginFromGit  "ray-x/lsp_signature.nvim" "HEAD")
+          (fetchPluginFromGit  "justinmk/vim-dirvish" "HEAD")
         ];
     };
 }
