@@ -27,7 +27,14 @@ function M.setup_treesitter()
             -- Using this option may slow down your editor, and you may see some duplicate highlights.
             -- Instead of true it can also be a list of languages
         },
+        incremental_selection = {
+            enable = true,
+        },
+        indent = {
+            enable = true,
+        },
     }
+    vim.cmd [[hi link TSParameter Todo]]
 end
 
 function M.setup_rest_nvim()

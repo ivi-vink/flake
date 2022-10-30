@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ flake, config, pkgs, ... }:
 
 {
     # Found this here: nix-community.github.io  configuration example
@@ -70,7 +70,10 @@
       viAlias = true;
       vimAlias = true;
       extraConfig = "
-      luafile neovim/init.lua
+lua <<LUA
+vim.opt.runtimepath:append({ [[${flake}/neovim]], [[${flake}/neovim/lua]] })
+vim.cmd [[luafile ${flake}/neovim/init.lua]]
+LUA
       ";
       plugins = with pkgs.vimPlugins;
         let
@@ -95,8 +98,10 @@
           nlua-nvim
           null-ls-nvim
           plenary-nvim
+          
 
-          (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+          (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
+          playground
 
           (fetchPluginFromGit  "klen/nvim-test" "32f162c27045fc712664b9ddbd33d3c550cb2bfc")
           (fetchPluginFromGit  "mvinkio/tnychain" "cef72f688e67f40616db8ecf9d7c63e505c2dd23")

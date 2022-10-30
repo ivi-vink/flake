@@ -93,7 +93,6 @@ vim.opt.wmw = 10
 vim.opt.isfname:append("@-@")
 vim.opt.diffopt:append("vertical")
 vim.opt.shortmess:append("c")
-vim.opt.shell = "/bin/zsh"
 -- }}}
 
 -- load global and utility functions
