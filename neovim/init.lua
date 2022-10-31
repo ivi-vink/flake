@@ -151,7 +151,7 @@ vim.api.nvim_set_keymap(
     ":call buffers#visual_selection('replace', '')<CR>",
     { silent = true, noremap = true }
 )
-vim.cmd([[command -nargs=1 -complete=file E execute('silent! !mkdir -p "$(dirname "<args>")"') <Bar> e <args>]])
+vim.cmd([[command! -nargs=1 -complete=file E execute('silent! !mkdir -p "$(dirname "<args>")"') <Bar> e <args>]])
 -- wiping buffers and wiping nofile-buffers
 vim.cmd([[command! -nargs=1 -bang Bdeletes :call buffers#wipe_matching('<args>', <q-bang>)]])
 vim.cmd([[command! Bdnonexisting :call buffers#wipe_nonexisting_files()]])

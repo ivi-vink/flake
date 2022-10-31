@@ -16,7 +16,7 @@
         stow
         (nerdfonts.override { fonts = [ "FiraCode" ]; })
 
-        firefox
+        firefox-wayland
 
         swaylock
         swayidle

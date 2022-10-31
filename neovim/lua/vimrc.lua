@@ -16,7 +16,9 @@ function M.setup_treesitter()
         return
     end
 
-    assert(vim.fn.exists(":TSInstall") == 0, "TreeSitter is already configured.")
+    if vim.fn.exists(":TSInstall") == 1 then
+        return vim.notify "TreeSitter is already configured."
+    end
 
     -- vim.cmd([[packadd nvim-treesitter]])
     require 'nvim-treesitter.configs'.setup {
@@ -172,6 +174,20 @@ M.reload_package_complete = function(_, _, _)
     return 'hi'
 end
 
+M.reload_packages_and_init = function()
+    for name,_ in pairs(package.loaded) do
+        if name:match('^vimrc') then
+            package.loaded[name] = nil
+        end
+    end
+
+    vim.opt.runtimepath:prepend({ os.getenv("NVIM_RELOAD_PATH"), os.getenv("NVIM_RELOAD_PATH") .. [[/lua]] })
+    dofile(os.getenv("NVIM_RELOAD_PATH") .. [[/init.lua]])
+    vim.opt.runtimepath:remove({ os.getenv("NVIM_RELOAD_PATH"), os.getenv("NVIM_RELOAD_PATH") .. [[/lua]] })
+
+    vim.notify("Reloaded vim", vim.log.levels.INFO)
+end
+
 M.reload_package = function(name)
     P([[name=]] .. name)
     if package.loaded[name] == nil then
@@ -183,7 +199,7 @@ M.reload_package = function(name)
 end
 
 vim.cmd(
-    [[command! -complete=custom,reloadpackage#complete -nargs=1 LuaReload :lua require('vimrc').reload_package(<q-args>)]]
+    [[command! LuaReload :lua require('vimrc').reload_packages_and_init()]]
 )
 
 M.activate_reload_on_write = function(name)
