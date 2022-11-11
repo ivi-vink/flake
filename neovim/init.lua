@@ -115,14 +115,9 @@ vim.cmd([[command! -bang Gap :G commit -am 'fixmeuplater' | G push]])
 vim.api.nvim_set_keymap('n', ']p', ':tabn<cr>', { silent = true, noremap = true})
 vim.api.nvim_set_keymap('n', '[p', ':tabp<cr>', { silent = true, noremap = true})
 
-require'tnychain'.setup(
-    {
-        complete_key = '<c-n>',
-        repeat_chain = '<c-p>'
-    }
-)
+require'vimrc'.setup_cmp()
 
--- require'vimrc.snippets'.setup()
+require'vimrc.snippets'.setup()
 
 -- }}}
 
@@ -221,13 +216,13 @@ require"trouble".setup { }
 -- }}}
 
 -- {{{ tests
-require"nvim-test".setup{}
-vim.api.nvim_set_keymap(
-    "n",
-    "<leader>t",
-    "<cmd>TestFile<CR>",
-    {silent = true, noremap = true}
-)
+-- require"nvim-test".setup{}
+-- vim.api.nvim_set_keymap(
+--     "n",
+--     "<leader>t",
+--     "<cmd>TestFile<CR>",
+--     {silent = true, noremap = true}
+-- )
 -- }}}
 
 -- lsp {{{

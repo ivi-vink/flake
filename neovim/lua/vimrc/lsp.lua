@@ -123,195 +123,85 @@ function M.setup()
     end
 
     local buffer_setup_no_format = function(client)
-        client.server_capabilities.document_formatting = false
         buffer_setup(client)
     end
 
     -- lspconfig {{{
-    local lspconfig = require 'lspconfig'
-    -- check if docker is executable first?
-    local runtime_path = vim.split(package.path, ';')
-    table.insert(runtime_path, "lua/?.lua")
-    table.insert(runtime_path, "lua/?/init.lua")
+    local lspconfig = require('lspconfig')
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
     -- always load lua lsp
-    require('nlua.lsp.nvim').setup(require('lspconfig'), {
-      cmd = { "/lsp/bin/lua-language-server", "-E", "/lsp/main.lua" },
-      on_attach = buffer_setup_no_format,
+    require('nlua.lsp.nvim').setup(lspconfig, {
+        cmd = {
+            Flake.lua_language_server .. "/bin/lua-language-server",
+            "-E", Flake.lua_language_server .. "/share/lua-language-server/main.lua"
+        },
+        capabilities = capabilities,
+        on_attach = buffer_setup_no_format,
 
-      -- Include globals you want to tell the LSP are real :)
-      globals = {
-        -- Colorbuddy
-        "Color", "c", "Group", "g", "s",
-      }
+        -- Include globals you want to tell the LSP are real :)
+        globals = {
+            -- Colorbuddy
+            "Color", "c", "Group", "g", "s", "Flake",
+        }
     })
 
-    -- lspconfig.sumneko_lua.setup {
-    --     filetypes = { "lua" },
-    --     on_attach = buffer_setup_no_format,
-    --     settings = {
-    --         Lua = {
-    --             completion = {
-    --                 keywordSnippet = "Disable",
-    --                 showWord = "Disable",
-    --             },
-    --             diagnostics = {
-    --                 enable = true,
-    --                 globals = vim.list_extend({
-    --                     -- Neovim
-    --                     "vim",
-    --                     -- Busted
-    --                     "describe", "it", "before_each", "after_each", "teardown", "pending", "clear"
-    --                 }, {})
-    --             },
-    --             runtime = {
-    --                 version = "LuaJIT",
-    --             },
-    --             workspace = {
-    --                 vim.list_extend(get_lua_runtime(), {}),
-    --                 maxPreload = 10000,
-    --                 preloadFileSize = 10000,
-    --             },
-    --         }
-    --     }
-    -- }
+    lspconfig.pyright.setup {
+        root_dir = lspconfig.util.root_pattern(".git", vim.fn.getcwd()),
+        on_attach = buffer_setup_no_format,
+    }
 
-    -- out = vim.fn.system('docker images -q mvinkio/azure-pipelines-lsp')
-    -- if string.len(out) ~= 0 then
-    --     lspconfig.yamlls.setup {
-    --         before_init = function(params)
-    --             params.processId = vim.NIL
-    --         end,
-    --         on_new_config = function(new_config, new_root_dir)
-    --             new_config.cmd = {
-    --                 "node",
-    --                 new_root_dir,
-    --                 home .. "/projects/devops-pipelines/node_modules/azure-pipelines-language-server/out/server.js",
-    --                 "--stdio"
-    --             }
-    --         end,
-    --         filetypes = { "yaml" },
-    --         root_dir = lspconfig.util.root_pattern(".git", vim.fn.getcwd()),
-    --         on_attach = buffer_setup_no_format,
-    --         settings = {
-    --             yaml = {
-    --                 format = {
-    --                     enable = true
-    --                 },
-    --                 schemas = {
-    --                     [home .. "/projects/devops-pipelines/schema"] = "/*"
-    --                 },
-    --                 validate = true
-    --             }
-    --         }
-    --     }
-    -- else
-    --     utils.log_warning("No image mvinkio/azure-pipelines-lsp.", "vimrc/lsp", true)
-    -- end
-
-    local out = vim.fn.system('docker images -q mvinkio/python')
-    if string.len(out) ~= 0 then
-        lspconfig.pyright.setup {
-            cmd = {
-                "docker",
-                "run",
-                "--rm",
-                "--env-file=" .. vim.fn.getcwd() .. "/.env",
-                "--interactive",
-                "--workdir=" .. vim.fn.getcwd(),
-                "--volume=" .. vim.fn.getcwd() .. ":" .. vim.fn.getcwd(),
-                "mvinkio/python",
-                "pyright-langserver", "--stdio"
+    lspconfig.gopls.setup {
+        before_init = function(params)
+            params.processId = vim.NIL
+        end,
+        capabilities = capabilities,
+        filetypes = { "go", "gomod", "gotmpl" },
+        on_attach = buffer_setup_no_format,
+        settings = {
+            gopls = {
+                experimentalPostfixCompletions = true,
+                analyses = {
+                    unusedparams = true,
+                    shadow = true,
+                },
+                staticcheck = true,
             },
-            on_new_config = function(new_config, new_root_dir)
-                new_config.cmd = {
-                    "docker",
-                    "run",
-                    "--rm",
-                    "--env-file=" .. new_root_dir .. "/.env",
-                    "--interactive",
-                    "--workdir=" .. new_root_dir,
-                    "--volume=" .. new_root_dir .. ":" .. new_root_dir,
-                    "mvinkio/python",
-                    "pyright-langserver", "--stdio"
-                }
-            end,
-            filetypes = { "python" },
-            root_dir = lspconfig.util.root_pattern(".git", vim.fn.getcwd()),
-            on_attach = buffer_setup_no_format,
+        },
+        init_options = {
+            usePlaceholders = true,
         }
-    else
-        utils.log_warning("No image mvinkio/python.", "vimrc/lsp", true)
-    end
+    }
 
-    out = vim.fn.system('docker images -q mvinkio/go')
-    if string.len(out) ~= 0 then
-        lspconfig.gopls.setup {
-            before_init = function(params)
-                params.processId = vim.NIL
-            end,
-            on_new_config = function(new_config, new_root_dir)
-                new_config.cmd = {
-                    "docker",
-                    "run",
-                    "--rm",
-                    "--interactive",
-                    "-e=GOPROXY=https://proxy.golang.org",
-                    "-e=GOOS=linux",
-                    "-e=GOARCH=amd64",
-                    "-e=GOPATH=" .. new_root_dir .. "/go",
-                    "-e=GOCACHE=" .. new_root_dir .. "/.cache/go-build",
-                    "--workdir=" .. new_root_dir,
-                    "--volume=" .. new_root_dir .. ":" .. new_root_dir,
-                    "--network=bridge",
-                    "mvinkio/go",
-                    "gopls"
-                }
-            end,
-            -- cmd = { "docker", "run", "--rm", "-i", "-v", home .. ":" .. home, "mvinkio/gopls" },
-            filetypes = { "go", "gomod", "gotmpl" },
-            on_attach = buffer_setup_no_format,
-        }
-    else
-        utils.log_warning("No image mvinkio/go.", "vimrc/lsp", true)
-    end
-
-    -- out = vim.fn.system('docker images -q mvinkio/sveltels')
-    -- if string.len(out) ~= 0 then
-    --     lspconfig.svelte.setup {
-    --         before_init = function(params)
-    --             params.processId = vim.NIL
-    --         end,
-    --         cmd = {
-    --             "docker",
-    --             "run",
-    --             "--rm",
-    --             "--interactive",
-    --             "--volume=" .. home .. ":" .. home,
-    --             "--network=none",
-    --             "mvinkio/sveltels"
-    --         },
-    --         on_attach = buffer_setup,
-    --     }
-    -- else
-    --     utils.log_warning("No image mvinkio/sveltels.", "vimrc/lsp", true)
-    -- end
-
+    lspconfig.yamlls.setup {
+        schemas = {
+            ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json"] = "/*.k8s.yaml",
+        },
+        capabilities = capabilities,
+        on_attach = function(client)
+            buffer_setup_no_format(client)
+            local bufnr = vim.api.nvim_get_current_buf()
+            if vim.bo[bufnr].buftype ~= ""
+                or vim.bo[bufnr].filetype == "helm" then
+                vim.diagnostic.disable(bufnr)
+                vim.defer_fn(function()
+                    vim.diagnostic.reset(nil, bufnr)
+                end, 1000)
+            end
+        end,
+    }
     -- }}}
 
     local null_ls = require("null-ls")
-    local my_black = null_ls.builtins.formatting.black.with({
-        filetypes = { "python" },
-        command = "black",
-        args = { "$FILENAME" }
-    })
     null_ls.setup({
         debug = vim.fn.expand("$VIMRC_NULL_LS_DEBUG") == "1",
         update_on_insert = false,
         on_attach = buffer_setup,
         sources = {
-            my_black,
-            null_ls.builtins.completion.luasnip
+            -- nix linter: statix
+            null_ls.builtins.code_actions.statix,
+            null_ls.builtins.diagnostics.statix,
+            null_ls.builtins.formatting.alejandra,
         }
     })
 end

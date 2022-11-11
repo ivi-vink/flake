@@ -11,6 +11,37 @@ augroup end
     ]])
 end
 
+function M.setup_cmp()
+    local cmp = require 'cmp'
+    cmp.setup({
+        snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            end,
+        },
+        completion = {
+            autocomplete = false
+        },
+        window = {
+            -- completion = cmp.config.window.bordered(),
+            -- documentation = cmp.config.window.bordered(),
+        },
+        mapping = cmp.mapping.preset.insert({
+            ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+            ['<C-f>'] = cmp.mapping.scroll_docs(4),
+            ['<C-A>'] = cmp.mapping.complete(),
+            ['<C-e>'] = cmp.mapping.abort(),
+            ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }),
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' },
+            { name = 'path' },
+        })
+    })
+end
+
 function M.setup_treesitter()
     if vim.o.loadplugins == false then
         return
@@ -34,6 +65,7 @@ function M.setup_treesitter()
         },
         indent = {
             enable = true,
+            disable = { "python", "yaml" },
         },
     }
     vim.cmd [[hi link TSParameter Todo]]
@@ -120,12 +152,13 @@ function M.setup_build_function()
         local pipeline = os.getenv('AZURE_YAML_DEFINITION_ID')
         local branch = os.getenv('AZURE_YAML_BRANCH')
 
-        local url = [[https://dev.azure.com/]] .. ado_org .. [[/]] .. ado_proj .. [[/_apis/pipelines/]] .. pipeline .. [[/preview?api-version=7.1-preview.1]]
+        local url = [[https://dev.azure.com/]] ..
+            ado_org .. [[/]] .. ado_proj .. [[/_apis/pipelines/]] .. pipeline .. [[/preview?api-version=7.1-preview.1]]
         local auth_header = [[Authorization: Basic ]] .. auth
         local yaml_file = cwd .. "/" .. file
 
         local shell_script = string.format(
-[[yaml_string="
+            [[yaml_string="
 $(cat ${PWD}/${AZURE_YAML_DEBUG_SNIPPET})
 $(cat %s)
 "
@@ -143,7 +176,7 @@ curl -s -X POST '%s' -H 'Content-Type: application/json' -H '%s' --data-binary @
     },
     "yamlOverride":"$yaml_string"
 }
-THEEND]],
+THEEND]]     ,
             yaml_file, url, auth_header, branch, branch
         )
         local cmd = {
@@ -175,15 +208,15 @@ M.reload_package_complete = function(_, _, _)
 end
 
 M.reload_packages_and_init = function()
-    for name,_ in pairs(package.loaded) do
+    for name, _ in pairs(package.loaded) do
         if name:match('^vimrc') then
             package.loaded[name] = nil
         end
     end
-
-    vim.opt.runtimepath:prepend({ os.getenv("NVIM_RELOAD_PATH"), os.getenv("NVIM_RELOAD_PATH") .. [[/lua]] })
-    dofile(os.getenv("NVIM_RELOAD_PATH") .. [[/init.lua]])
-    vim.opt.runtimepath:remove({ os.getenv("NVIM_RELOAD_PATH"), os.getenv("NVIM_RELOAD_PATH") .. [[/lua]] })
+    local reload_path = os.getenv("NVIM_RELOAD_PATH") or [[/home/mike/dotnix/neovim]]
+    vim.opt.runtimepath:prepend({ reload_path, reload_path .. [[/lua]] })
+    dofile(reload_path .. [[/init.lua]])
+    vim.opt.runtimepath:remove({ reload_path, reload_path .. [[/lua]] })
 
     vim.notify("Reloaded vim", vim.log.levels.INFO)
 end
