@@ -97,8 +97,12 @@ vim.opt.shortmess:append("c")
 
 -- load global and utility functions
 
+vim.api.nvim_set_keymap("n", "g<space>", ":TestNearest<cr>", {})
+-- TODO: debug test
+-- vim.api.nvim_set_keymap("n", "g<cr>", ":TestNearest<cr>", {})
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.o.shell = Flake.bash
 local vimrc = require('vimrc')
 -- save session file in cwd
 vimrc.cwd_save_session()
@@ -233,6 +237,7 @@ vim.cmd [[augroup END]]
 -- }}}
 
 -- dap {{{
+require('vimrc.dap').setup_dap()
 vim.cmd [[augroup vimrc_nvim_dap_setup]]
 vim.cmd [[au!]]
 vim.cmd [[au VimEnter * lua require('vimrc.dap').setup_dap()]]

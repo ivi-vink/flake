@@ -43,28 +43,31 @@
           };
       })
 
-      # fetchPluginFromGit = name: rev: pkgs.vimUtils.buildVimPluginFrom2Nix {
-      #   name = name;
-      #   src = builtins.fetchGit {
-      #     url = "https://github.com/${name}";
-      #     submodules = true;
-      #     inherit rev;
-      #   };
-      # };
-
-      # (fetchPluginFromGit  "klen/nvim-test" "32f162c27045fc712664b9ddbd33d3c550cb2bfc")
-
+      # overlay some vim plugins
       (final: prev: {
-        vimPlugins =
+        vimPlugins = let
+          getVimPlugin = {
+            name,
+            git,
+            rev,
+            ref ? "master",
+          }:
+            pkgs.vimUtils.buildVimPluginFrom2Nix {
+              inherit name;
+              src = builtins.fetchGit {
+                url = "https://github.com/${git}";
+                submodules = true;
+                inherit rev;
+                inherit ref;
+              };
+            };
+        in
           prev.vimPlugins
           // {
-            firvish-nvim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+            firvish-nvim = getVimPlugin {
               name = "firvish-nvim";
-              src = builtins.fetchGit {
-                url = "https://github.com/Furkanzmc/firvish.nvim";
-                submodules = true;
-                rev = "127f9146175d6bbaff6a8b761081cfd2279f8351";
-              };
+              git = "Furkanzmc/firvish.nvim";
+              rev = "127f9146175d6bbaff6a8b761081cfd2279f8351";
             };
           };
       })

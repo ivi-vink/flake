@@ -201,7 +201,10 @@ function M.setup()
             -- nix linter: statix
             null_ls.builtins.code_actions.statix,
             null_ls.builtins.diagnostics.statix,
+            -- nix formatter: alejandra
             null_ls.builtins.formatting.alejandra,
+            -- python formatter: black
+            null_ls.builtins.formatting.black,
         }
     })
 end

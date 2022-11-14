@@ -35,7 +35,7 @@
     userName = "Mike Vink";
     userEmail = "mike1994vink@gmail.com";
   };
-  
+
   programs.alacritty = {
     enable = true;
     settings = {
@@ -49,22 +49,27 @@
     };
   };
 
-  wayland.windowManager.sway = {
+  xsession = {
     enable = true;
-    wrapperFeatures.gtk = true;
-    config = rec {
-      terminal = "alacritty";
-      menu = "wofi --show run";
-      modifier = "Mod4";
-      bars = [
-        {
-          fonts.size = 15.0;
-          position = "bottom";
-        }
-      ];
-      startup = [
-        {command = "firefox";}
-      ];
+    windowManager.spectrwm = {
+      enable = true;
+      programs = {
+        term = "alacritty";
+        search = "dmenu -ip -p 'Window name/id:'";
+        browser = "firefox";
+      };
+      bindings = {
+        browser = "Mod+w";
+        term = "Mod+Return";
+        restart = "Mod+Shift+r";
+        quit = "Mod+Shift+q";
+      };
+      settings = {
+        modkey = "Mod4";
+        workspace_limit = 5;
+        focus_mode = "manual";
+        focus_close = "next";
+      };
     };
   };
 
@@ -85,6 +90,7 @@
 lua <<LUA
 Flake = {
     lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
+    bash = [[${pkgs.bashInteractive}/bin/bash]]
 }
 vim.opt.runtimepath:append({ [[${flake}/neovim]], [[${flake}/neovim/lua]] })
 vim.cmd [[luafile ${flake}/neovim/init.lua]]
@@ -115,6 +121,7 @@ LUA
       plenary-nvim
       nlua-nvim
       lsp_signature-nvim
+      vim-test
 
       # cmp
       nvim-cmp

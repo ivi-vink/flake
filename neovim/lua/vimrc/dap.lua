@@ -5,21 +5,10 @@ local M = {}
 
 local function register_debug_adapters(cwd)
     local dap = require 'dap'
-    local python_args = {
-        "run",
-        "--rm",
-        "--volume=/var/run/docker.sock:/var/run/docker.sock",
-        "--interactive",
-        "--env-file=" .. cwd .. "/.env",
-        "--volume", cwd .. ":" .. cwd,
-        "--network=host",
-        "mvinkio/python",
-        "python", "-m", "debugpy.adapter"
-    }
     dap.adapters.python = {
         type = 'executable',
-        command = "docker",
-        args = python_args,
+        command = "python",
+        args = { "-m", "debugpy.adapter" }
     }
 
     dap.adapters.go = function(callback, _)
@@ -30,20 +19,6 @@ local function register_debug_adapters(cwd)
         local pid_or_err
         local port = 38697
 
-                    -- "docker",
-                    -- "run",
-                    -- "--rm",
-                    -- "--interactive",
-                    -- "-e=GOPROXY=https://proxy.golang.org",
-                    -- "-e=GOOS=linux",
-                    -- "-e=GOARCH=amd64",
-                    -- "-e=GOPATH=" .. new_root_dir .. "/go",
-                    -- "-e=GOCACHE=" .. new_root_dir .. "/.cache/go-build",
-                    -- "--workdir=" .. new_root_dir,
-                    -- "--volume=" .. new_root_dir .. ":" .. new_root_dir,
-                    -- "--network=bridge",
-                    -- "mvinkio/go",
-                    -- "gopls"
         local opts = {
             stdio = { nil, stdout },
             args = { "run",
@@ -104,32 +79,12 @@ local function set_configurations()
     local dap = require 'dap'
     dap.configurations.python = {
         {
-            -- The first three options are required by nvim-dap
-            type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
+            type = 'python';
             request = 'launch';
             name = "Launch file";
-
-            -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-
-            program = "${file}"; -- This configuration will launch the current file if used.
-            -- TODO: use container for python interpreter
-            -- pythonPath = function()
-            --   -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-            --   -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-            --   -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-            --   local cwd = vim.fn.getcwd()
-            --   if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
-            --     return cwd .. '/venv/bin/python'
-            --   elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
-            --     return cwd .. '/.venv/bin/python'
-            --   else
-            --     return '/usr/bin/python'
-            --   end
-            -- end;
+            program = "${file}";
         },
     }
-
-    -- docker run --rm -i -v /home/mike:/home/mike --network=host -w /home/mike/projects/example/hello mvinkio/godap dap -l 127.0.0.1:38697 --log --log-output="dap" --only-same-user=false
 
     dap.configurations.go = {
         {
@@ -143,9 +98,8 @@ local function set_configurations()
             name = "Debug test", -- configuration for debugging test files
             request = "launch",
             mode = "test",
-            program = vim.fn.fnamemodify(vim.fn.expand('%'),':p:h')
+            program = vim.fn.fnamemodify(vim.fn.expand('%'), ':p:h')
         },
-        -- works with go.mod packages and sub packages
         {
             type = "go",
             name = "Debug test (go.mod)",
@@ -154,6 +108,7 @@ local function set_configurations()
             program = "./${relativeFileDirname}"
         }
     }
+
     local set_go_keymaps = function()
         vim.keymap.set(
             "n",
@@ -244,9 +199,6 @@ function M.setup_dap()
     if vim.o.loadplugins == false then
         return
     end
-
-    cmd([[packadd nvim-dap]])
-    cmd([[packadd nvim-dap-ui]])
 
     local vim_startup_dir = vim.fn.getcwd()
     register_debug_adapters(vim_startup_dir)
