@@ -205,6 +205,8 @@ function M.setup()
             null_ls.builtins.formatting.alejandra,
             -- python formatter: black
             null_ls.builtins.formatting.black,
+            -- lisp formatter
+            null_ls.builtins.formatting.raco_fmt
         }
     })
 end

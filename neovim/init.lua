@@ -95,8 +95,12 @@ vim.opt.diffopt:append("vertical")
 vim.opt.shortmess:append("c")
 -- }}}
 
+
 -- load global and utility functions
 
+local racket_lang = vim.g.racket_hash_lang_dict
+racket_lang.sicp = "racket"
+vim.g.racket_hash_lang_dict = racket_lang
 vim.api.nvim_set_keymap("n", "g<space>", ":TestNearest<cr>", {})
 -- TODO: debug test
 -- vim.api.nvim_set_keymap("n", "g<cr>", ":TestNearest<cr>", {})

@@ -129,6 +129,11 @@ LUA
       cmp-buffer
       cmp-path
       cmp_luasnip
+
+      # trying out scheme
+      conjure
+      vim-racket
+      nvim-parinfer
     ];
   };
 }
