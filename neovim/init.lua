@@ -15,7 +15,7 @@ local function build_init()
     end
     allowed_globals = tbl_17_auto
   end
-  local opts = {verbosity = 1, compiler = {modules = {allowedGlobals = allowed_globals}}}
+  local opts = {verbosity = 0, compiler = {modules = {allowedGlobals = allowed_globals}}}
   local function _3_(_241)
     return _241
   end
@@ -38,32 +38,4 @@ do
   end
   vim.api.nvim_create_autocmd("VimLeavePre", {callback = _5_})
 end
-vim.g["mapleader"] = " "
-vim.g["maplocalleader"] = " "
-vim.cmd("colorscheme gruvbox-material")
-for k_7_auto, v_8_auto in pairs({backup = "false", backupcopy = "yes"}) do
-  local _6_ = {k_7_auto, v_8_auto}
-  if ((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and ((_6_)[2] == "true")) then
-    local a_9_auto = (_6_)[1]
-    vim.opt[k_7_auto] = true
-  elseif ((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and ((_6_)[2] == "false")) then
-    local a_9_auto = (_6_)[1]
-    vim.opt[k_7_auto] = false
-  elseif ((_G.type(_6_) == "table") and (nil ~= (_6_)[1]) and (nil ~= (_6_)[2])) then
-    local a_9_auto = (_6_)[1]
-    local b_10_auto = (_6_)[2]
-    vim.opt[k_7_auto] = v_8_auto
-  else
-  end
-end
-do
-  local ts = require("nvim-treesitter.configs")
-  ts.setup[{highlight = {enable = true}}]()
-end
-local cmp = require("cmp")
-local snip
-local function _8_(args)
-  return (require("luasnip")).lsp_expand(args.body)
-end
-snip = _8_
-return cmp.setup({snippet = {expand = snip}, completion = {autocomplete = false}, mapping = cmp.mapping.preset.insert({["<C-b>"] = cmp.mapping.scroll_docs(-4), ["<C-A>"] = cmp.mapping.complete()}), sources = cmp.config.sources({{name = "conjure"}, {name = "nvim_lsp"}, {name = "path"}, {name = "luasnip"}})})
+return require("conf")

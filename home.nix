@@ -106,8 +106,8 @@ Flake = {
     lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
     bash = [[${pkgs.bashInteractive}/bin/bash]]
 }
-vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]] })
-package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
+vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]],  [[~/dotnix/neovim/fnl]]})
+package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/dotnix/?/?;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
 require'neovim'
 LUA
       ";
