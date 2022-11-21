@@ -2,6 +2,7 @@
   flake,
   config,
   pkgs,
+  home-manager,
   ...
 }: {
   # Found this here: nix-community.github.io  configuration example
@@ -12,13 +13,17 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
+    docker
+    kubectl
+    k9s
+
     htop
     fortune
     vim
-    docker
     stow
     (nerdfonts.override {fonts = ["FiraCode"];})
     ripgrep
+    inotify-tools
 
     firefox-wayland
 
@@ -73,12 +78,21 @@
     };
   };
 
+  home.activation = {
+  clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+    HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
+    if [[ -d "$HOTPOT_CACHE" ]]; then
+      $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
+    fi
+  '';
+};
   programs.neovim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     extraPackages = with pkgs; [
+      fennel
       sumneko-lua-language-server
       pyright
       gopls
@@ -92,8 +106,9 @@ Flake = {
     lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
     bash = [[${pkgs.bashInteractive}/bin/bash]]
 }
-vim.opt.runtimepath:append({ [[${flake}/neovim]], [[${flake}/neovim/lua]] })
-vim.cmd [[luafile ${flake}/neovim/init.lua]]
+vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]] })
+package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
+require'neovim'
 LUA
       ";
     plugins = with pkgs.vimPlugins; [
@@ -131,10 +146,12 @@ LUA
       cmp-path
       cmp_luasnip
 
-      # trying out scheme
+      # trying out lisp
       conjure
       vim-racket
       nvim-parinfer
+      hotpot-nvim
+      cmp-conjure
     ];
   };
 }
