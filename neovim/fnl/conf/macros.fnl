@@ -21,4 +21,8 @@
        [a# "false"] (tset (. vim "opt") k# false)
        [a# b#] (tset (. vim "opt") k# v#)))))
 
-{: settings}
+(fn P [p]
+  `(print (vim.inspect ,p)))
+
+{: settings
+ : P}

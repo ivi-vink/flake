@@ -99,6 +99,7 @@
       yaml-language-server
       alejandra
       statix
+      fnlfmt
     ];
     extraConfig = "
 lua <<LUA
