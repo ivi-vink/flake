@@ -123,10 +123,6 @@ LUA
       vim-dirvish
       vim-fugitive
       vim-oscyank
-      firvish-nvim
-
-      # moving around
-      marks-nvim
 
       # Coding
       nvim-lspconfig
@@ -139,6 +135,10 @@ LUA
       nlua-nvim
       lsp_signature-nvim
       vim-test
+
+      # testing
+      neotest
+      neotest-python
 
       # cmp
       nvim-cmp

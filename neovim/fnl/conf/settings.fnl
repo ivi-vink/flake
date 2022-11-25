@@ -16,7 +16,9 @@
   loaded_tohtml false
   loaded_tutor false
   loaded_zipPlugin false
-
+  
+  mapleader " "
+  maplocalleader " "
   dirvish_mode ":sort | sort ,^.*[^/]$, r")
 
 (settings 

@@ -68,6 +68,11 @@
         in
           prev.vimPlugins
           // {
+            neotest-python = getVimPlugin {
+              name = "neotest-python";
+              git = "nvim-neotest/neotest-python";
+              rev = "e53920d145d37783c8d8428365a0a230e0a18cb5";
+            };
             firvish-nvim = getVimPlugin {
               name = "firvish-nvim";
               git = "Furkanzmc/firvish.nvim";
