@@ -114,104 +114,11 @@ augroup end
 end
 cwd_save_session()
 
-
-
-
--- general options {{{
-vim.opt.clipboard = {}
-vim.api.nvim_set_keymap(
-    "n",
-    "s",
-    "<Plug>Ysurround",
-    {silent=true,noremap=true}
-)
-
--- don't load standard plugins
-
-vim.g.loaded_2html_plugin = false
-vim.g.loaded_fzf = false
-vim.g.loaded_man = false
-vim.g.loaded_gzip = false
-vim.g.loaded_health = false
-vim.g.loaded_matchit = false
-vim.g.loaded_matchparen = false
-vim.g.loaded_netrwPlugin = false
-vim.g.loaded_rplugin = false
-vim.g.loaded_shada = false
-vim.g.loaded_spellfile = false
-vim.g.loaded_tarPlugin = false
-vim.g.loaded_tohtml = false
-vim.g.loaded_tutor = false
-vim.g.loaded_zipPlugin = false
-
 vim.cmd [[filetype plugin on]]
 vim.cmd [[filetype indent on]]
 vim.cmd [[colorscheme gruvbox-material]]
 vim.cmd [[highlight WinSeparator guibg=None]]
-vim.opt.laststatus = 3
-vim.opt.winbar = "%=%m %f"
 
-
-vim.g.dirvish_mode = ':sort | sort ,^.*[^/]$, r'
-
-vim.opt.foldopen = "block,hor,jump,mark,percent,quickfix,search,tag"
-vim.opt.complete = ".,w,k,kspell,b"
-vim.opt.completeopt = "menuone,noselect"
-
-
-vim.opt.secure = true
-vim.opt.exrc = true
-
--- relativenumbers and absolute number
-vim.opt.relativenumber = true
-vim.opt.number = true
-
--- don't show previous search pattern
-vim.opt.hlsearch = false
-
--- don't free buffer memory when abandoned
-vim.opt.hidden = true
-
--- 1 tab == 4 spaces
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-
--- use spaces instead of tabs
-vim.opt.expandtab = true
-
-vim.opt.smartindent = true
-vim.opt.autoindent = true
-
--- show special characters as listed
-vim.opt.list = true
-vim.opt.listchars = { tab = ' ', eol = "﬋" }
-vim.opt.showbreak = '﬋'
-
--- make pasting better but makes insert mappings stop working...
--- vim.opt.paste = true
-
--- magic vim patterns
-vim.opt.magic = true
-
--- make splitting consistent
-vim.opt.splitbelow = true
-
-vim.opt.wrap = false
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv('HOME') .. "/.local/share/nvim/undo"
-vim.opt.undofile = true
-vim.opt.incsearch = true
-vim.opt.termguicolors = true
-vim.opt.scrolloff = 8
-vim.opt.smd = false
-vim.opt.signcolumn = "yes"
-vim.opt.inccommand = "split"
-vim.opt.wmw = 10
-vim.opt.isfname:append("@-@")
-vim.opt.diffopt:append("vertical")
-vim.opt.shortmess:append("c")
 -- }}}
 
 

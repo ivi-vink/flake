@@ -1,5 +1,3 @@
-(import-macros {: P} :conf.macros)
-
 (tset (. vim "g") "mapleader" " ")
 (tset (. vim "g") "maplocalleader" " ")
 
@@ -11,3 +9,4 @@
 
 (require :conf.lsp)
 (require :conf.pkgs)
+(require :conf.settings)
