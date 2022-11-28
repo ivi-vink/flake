@@ -78,6 +78,7 @@
     };
   };
 
+  # fixes hotpot cannot be found error after updates
   home.activation = {
   clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
     HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
@@ -86,12 +87,19 @@
     fi
   '';
 };
+
+  xdg.configFile.nvim = {
+  	source = config.lib.file.mkOutOfStoreSymlink ./neovim;
+	recursive = true;
+  };
+
   programs.neovim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     extraPackages = with pkgs; [
+      bashInteractive
       fennel
       sumneko-lua-language-server
       pyright
@@ -101,23 +109,24 @@
       statix
       fnlfmt
     ];
-    extraConfig = "
-lua <<LUA
-Flake = {
-    lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
-    bash = [[${pkgs.bashInteractive}/bin/bash]]
-}
-vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]],  [[~/dotnix/neovim/fnl]]})
-package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/dotnix/?/?;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
-require'neovim'
-LUA
-      ";
+#      extraConfig = "
+#  lua <<LUA
+#  Flake = {
+#      lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
+#      bash = [[${pkgs.bashInteractive}/bin/bash]]
+#  }
+#  vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]],  [[~/dotnix/neovim/fnl]], [[~/dotnix/neovim/after]]})
+#  package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/dotnix/?/?;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
+#  require'neovim'
+#  LUA
+#        ";
     plugins = with pkgs.vimPlugins; [
       # highlighting
       (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
       nvim-ts-rainbow
       playground
       gruvbox-material
+      vim-just
 
       # external
       vim-dirvish
