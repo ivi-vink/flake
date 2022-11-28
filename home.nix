@@ -80,13 +80,13 @@
 
   # fixes hotpot cannot be found error after updates
   home.activation = {
-  clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-    HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
-    if [[ -d "$HOTPOT_CACHE" ]]; then
-      $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
-    fi
-  '';
-};
+    clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+      HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
+      if [[ -d "$HOTPOT_CACHE" ]]; then
+        $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
+      fi
+    '';
+  };
 
   xdg.configFile.nvim = {
   	source = config.lib.file.mkOutOfStoreSymlink ./neovim;
