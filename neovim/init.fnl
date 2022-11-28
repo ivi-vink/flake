@@ -4,7 +4,8 @@
         allowed-globals (icollect [n _ (pairs _G)] n)
         opts {:verbosity 0
               :compiler {:modules {:allowedGlobals allowed-globals}}}]
-    (build "/home/mike/dotnix/neovim/init.fnl" opts ".+" #(values $1))))
+    (build "/home/mike/dotnix/neovim/init.fnl" opts ".+" #(values $1))
+    (build)))
 
 ;; Call hotpot.setup and compile again after fs event 
 (let [hotpot (require :hotpot)

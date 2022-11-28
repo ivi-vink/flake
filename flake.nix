@@ -1,5 +1,5 @@
 {
-  description = "Home Manager configuration of Jane Doe";
+  description = "Home Manager configuration";
 
   # Specify the source of Home Manager and Nixpkgs and vim plugins.
   inputs = {
@@ -22,69 +22,10 @@
   }: let
     system = "x86_64-linux";
     mvinkioPkgs = mvinkio.legacyPackages.${system};
-    overlay = nixpkgs.lib.composeManyExtensions [
-      # (final: prev: {
-      #   tree-sitter = mvinkioPkgs.tree-sitter;
-      #   vimPlugins =
-      #     prev.vimPlugins
-      #     // {
-      #       nvim-treesitter = mvinkioPkgs.vimPlugins.nvim-treesitter.overrideAttrs (old: {
-      #         version = "2022-10-28";
-      #         src = builtins.fetchGit {
-      #           url = "file:///home/mike/projects/nvim-treesitter";
-      #           rev = "2c0ae6e8e81366ba088f1e5be62f467212cda52e";
-      #         };
-      #         passthru.withPlugins = grammarFn:
-      #           final.vimPlugins.nvim-treesitter.overrideAttrs (_: {
-      #             postPatch = let
-      #               grammars = mvinkioPkgs.tree-sitter.withPlugins grammarFn;
-      #             in ''
-      #               rm -r parser
-      #               ln -s ${grammars} parser
-      #             '';
-      #           });
-      #       });
-      #     };
-      # })
 
-      # overlay some vim plugins
-      (final: prev: {
-        vimPlugins = let
-          getVimPlugin = {
-            name,
-            git,
-            rev,
-            ref ? "master",
-          }:
-            pkgs.vimUtils.buildVimPluginFrom2Nix {
-              inherit name;
-              src = builtins.fetchGit {
-                url = "https://github.com/${git}";
-                submodules = true;
-                inherit rev;
-                inherit ref;
-              };
-            };
-        in
-          prev.vimPlugins
-          // {
-            neotest-python = getVimPlugin {
-              name = "neotest-python";
-              git = "nvim-neotest/neotest-python";
-              rev = "e53920d145d37783c8d8428365a0a230e0a18cb5";
-            };
-            firvish-nvim = getVimPlugin {
-              name = "firvish-nvim";
-              git = "Furkanzmc/firvish.nvim";
-              rev = "127f9146175d6bbaff6a8b761081cfd2279f8351";
-            };
-            nvim-parinfer = getVimPlugin {
-              name = "nvim-parinfer";
-              git = "gpanders/nvim-parinfer";
-              rev = "82bce5798993f4fe5ced20e74003b492490b4fe8";
-            };
-          };
-      })
+    overlay = nixpkgs.lib.composeManyExtensions [
+      (import ./overlays/treesitter.nix {inherit mvinkioPkgs;})
+      (import ./overlays/vimPlugins.nix {inherit pkgs;})
     ];
 
     pkgs = import nixpkgs {
@@ -96,14 +37,10 @@
   in {
     homeConfigurations.mike = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      # Specify your home configuration modules here, for example,
-      # the path to your home.nix.
       modules = [
         ./home.nix
       ];
 
-      # Optionally use extraSpecialArgs
-      # to pass through arguments to home.nix
       extraSpecialArgs = {
         flake = self;
         home-manager = home-manager;
