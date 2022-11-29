@@ -5,35 +5,44 @@
   home-manager,
   ...
 }: {
-  # Found this here: nix-community.github.io  configuration example
-
   home.username = "mike";
   home.homeDirectory = "/home/mike";
   home.stateVersion = "22.05";
   programs.home-manager.enable = true;
 
-  home.packages = with pkgs; [
-    docker
-    kubectl
-    k9s
+  home.packages = with pkgs;
+    [
+      docker
+      kubectl
+      k9s
 
-    htop
-    fortune
-    vim
-    stow
-    (nerdfonts.override {fonts = ["FiraCode"];})
-    ripgrep
-    inotify-tools
+      htop
+      fortune
+      vim
+      stow
+      (nerdfonts.override {fonts = ["FiraCode"];})
+      ripgrep
+      inotify-tools
 
-    firefox-wayland
+      firefox-wayland
 
-    swaylock
-    swayidle
-    wl-clipboard
-    mako
-    wofi
-    waybar
-  ];
+      swaylock
+      swayidle
+      wl-clipboard
+      mako
+      wofi
+      waybar
+    ]
+    ++ (import ./shell-scripts.nix {inherit pkgs;});
+
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      new-flake = "nix flake new -t github:nix-community/nix-direnv ";
+    };
+  };
 
   programs.git = {
     enable = true;
@@ -80,17 +89,17 @@
 
   # fixes hotpot cannot be found error after updates
   home.activation = {
+    neovim-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+      NEOVIM_CONFIG="${config.home.homeDirectory}/neovim"
+      XDG_CONFIG_HOME_NVIM="${config.xdg.configHome}/nvim"
+      $DRY_RUN_CMD ln -sf $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
+    '';
     clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
       if [[ -d "$HOTPOT_CACHE" ]]; then
         $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
       fi
     '';
-  };
-
-  xdg.configFile.nvim = {
-  	source = config.lib.file.mkOutOfStoreSymlink ./neovim;
-	recursive = true;
   };
 
   programs.neovim = {
@@ -109,17 +118,6 @@
       statix
       fnlfmt
     ];
-#      extraConfig = "
-#  lua <<LUA
-#  Flake = {
-#      lua_language_server = [[${pkgs.sumneko-lua-language-server}]],
-#      bash = [[${pkgs.bashInteractive}/bin/bash]]
-#  }
-#  vim.opt.runtimepath:append({ [[~/dotnix/neovim]], [[~/dotnix/neovim/lua]],  [[~/dotnix/neovim/fnl]], [[~/dotnix/neovim/after]]})
-#  package.path = [[/home/mike/dotnix/?/init.lua;]] .. [[/home/mike/dotnix/?/?;]] .. [[/home/mike/.cache/nvim/hotpot/hotpot.nvim/lua/?/init.lua;]] .. package.path
-#  require'neovim'
-#  LUA
-#        ";
     plugins = with pkgs.vimPlugins; [
       # highlighting
       (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
