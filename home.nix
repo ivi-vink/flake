@@ -40,7 +40,7 @@
   programs.bash = {
     enable = true;
     shellAliases = {
-      new-flake = "nix flake new -t github:nix-community/nix-direnv ";
+      newflake = "nix flake new -t github:nix-community/nix-direnv ";
     };
   };
 
@@ -142,6 +142,7 @@
       nlua-nvim
       lsp_signature-nvim
       vim-test
+      vim-rest-console
 
       # testing
       neotest
