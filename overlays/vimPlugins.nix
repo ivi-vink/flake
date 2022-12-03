@@ -39,9 +39,9 @@
         rev = "838c9096d4c5d64d1000a6442a358746324c2123";
       };
       vim-rest-console = getVimPlugin {
-          name = "vim-rest-console";
-          git = "diepm/vim-rest-console";
-          rev = "7b407f47185468d1b57a8bd71cdd66c9a99359b2";
+        name = "vim-rest-console";
+        git = "diepm/vim-rest-console";
+        rev = "7b407f47185468d1b57a8bd71cdd66c9a99359b2";
       };
     };
 })
