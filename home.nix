@@ -15,6 +15,8 @@
       docker
       kubectl
       k9s
+      kubernetes-helm
+      azure-cli
 
       htop
       fortune
