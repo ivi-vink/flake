@@ -10,6 +10,10 @@
   home.stateVersion = "22.05";
   programs.home-manager.enable = true;
 
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
   home.packages = with pkgs;
     [
       docker
@@ -37,8 +41,11 @@
     ]
     ++ (import ./shell-scripts.nix {inherit pkgs;});
 
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   programs.bash = {
     enable = true;
     shellAliases = {
