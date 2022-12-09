@@ -17,10 +17,10 @@
   home.packages = with pkgs;
     [
       docker
-      kubectl
       k9s
       kubernetes-helm
       azure-cli
+      kubectl
 
       htop
       fortune
