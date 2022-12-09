@@ -39,6 +39,8 @@
       mako
       wofi
       waybar
+
+      (import ./home/st.nix {inherit pkgs;})
     ]
     ++ (import ./shell-scripts.nix {inherit pkgs;});
 
@@ -60,25 +62,12 @@
     userEmail = "mike1994vink@gmail.com";
   };
 
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      env.TERM = "alacritty";
-      font = {
-        normal = {
-          family = "FiraCode Nerd Font";
-          style = "Regular";
-        };
-      };
-    };
-  };
-
   xsession = {
     enable = true;
     windowManager.spectrwm = {
       enable = true;
       programs = {
-        term = "alacritty";
+        term = "st";
         search = "dmenu -ip -p 'Window name/id:'";
         browser = "firefox";
         lock = "slock";
