@@ -35,6 +35,11 @@
       inherit system;
     };
   in {
+    nixosConfigurations.lemptop = nixpkgs.lib.nixosSystem {
+      inherit system;
+      modules = [ ./configuration.nix ./lemptop.nix ];
+    };
+
     homeConfigurations.mike = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       modules = [
