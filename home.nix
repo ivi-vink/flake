@@ -25,6 +25,7 @@
       htop
       fortune
       vim
+      dmenu
       stow
       (nerdfonts.override {fonts = ["FiraCode"];})
       ripgrep
@@ -80,8 +81,10 @@
         term = "alacritty";
         search = "dmenu -ip -p 'Window name/id:'";
         browser = "firefox";
+        lock = "slock";
       };
       bindings = {
+        lock = "Mod+s";
         browser = "Mod+w";
         term = "Mod+Return";
         restart = "Mod+Shift+r";
