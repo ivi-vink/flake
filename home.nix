@@ -52,6 +52,11 @@
   programs.bash = {
     enable = true;
     shellAliases = {
+      s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
+      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#${config.home.username}";
+      V = "xrandr --output HDMI1 --auto --output eDP1 --off";
+      v = "xrandr --output eDP1 --auto --output HDMI1 --off";
+      vV = "xrandr --output eDP1 --auto --output HDMI1 --off";
       newflake = "nix flake new -t github:nix-community/nix-direnv ";
     };
   };
@@ -93,7 +98,11 @@
     neovim-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       NEOVIM_CONFIG="${config.home.homeDirectory}/neovim"
       XDG_CONFIG_HOME_NVIM="${config.xdg.configHome}/nvim"
-      $DRY_RUN_CMD ln -sf $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
+      if [ -L $XDG_CONFIG_HOME_NVIM ] && [ -e $XDG_CONFIG_HOME_NVIM ]; then
+          $DRY_RUN_CMD echo "neovim linked"
+      else
+          $DRY_RUN_CMD ln -s $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
+      fi
     '';
     clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"

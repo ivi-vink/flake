@@ -6,6 +6,8 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "docker"];
   };
+
+  virtualisation.docker.enable = true;
   
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
