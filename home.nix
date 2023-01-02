@@ -93,8 +93,8 @@
     };
   };
 
-  # fixes hotpot cannot be found error after updates
   home.activation = {
+    # links neovim repo to xdg config home
     neovim-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       NEOVIM_CONFIG="${config.home.homeDirectory}/neovim"
       XDG_CONFIG_HOME_NVIM="${config.xdg.configHome}/nvim"
@@ -104,6 +104,7 @@
           $DRY_RUN_CMD ln -s $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
       fi
     '';
+    # fixes hotpot cannot be found error after updates
     clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
       if [[ -d "$HOTPOT_CACHE" ]]; then

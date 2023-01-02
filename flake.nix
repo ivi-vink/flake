@@ -24,7 +24,6 @@
     mvinkioPkgs = mvinkio.legacyPackages.${system};
 
     overlay = nixpkgs.lib.composeManyExtensions [
-      (import ./overlays/treesitter.nix {inherit mvinkioPkgs;})
       (import ./overlays/vimPlugins.nix {inherit pkgs;})
     ];
 
