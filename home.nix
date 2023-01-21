@@ -65,6 +65,10 @@
     enable = true;
     userName = "Mike Vink";
     userEmail = "mike1994vink@gmail.com";
+    ignores = [
+      "/.direnv/"
+      "/.envrc"
+    ];
   };
 
   xsession = {
@@ -89,6 +93,9 @@
         workspace_limit = 5;
         focus_mode = "manual";
         focus_close = "next";
+        bar_action = "spectrwmbar";
+        bar_action_expand = 1;
+        bar_font_color = "grey, white,  rgb:00/00/ff,  rgb:ee/82/ee,  rgb:4b/00/82,  rgb:00/80/00,  rgb:ff/ff/00,  rgb:ff/a5/00, rgb:eb/40/34";
       };
     };
   };
