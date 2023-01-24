@@ -58,7 +58,7 @@
       V = "xrandr --output HDMI1 --auto --output eDP1 --off";
       v = "xrandr --output eDP1 --auto --output HDMI1 --off";
       vV = "xrandr --output eDP1 --auto --output HDMI1 --off";
-      newflake = "nix flake new -t github:nix-community/nix-direnv ";
+      newflake = "nix flake new -t ~/flake ";
     };
   };
 

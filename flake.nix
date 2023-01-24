@@ -50,5 +50,10 @@
         home-manager = home-manager;
       };
     };
+
+    templates.default = {
+        path = ./templates/flake;
+        description = "nix flake new -t ~/flake";
+    };
   };
 }
