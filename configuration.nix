@@ -30,6 +30,7 @@
     vim
     wget
     git
+    pinentry-curses
   ];
 
   system.stateVersion = "22.11";
