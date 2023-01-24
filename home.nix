@@ -28,6 +28,7 @@
       dmenu
       stow
       (nerdfonts.override {fonts = ["FiraCode"];})
+      subversion
       ripgrep
       inotify-tools
 
@@ -42,7 +43,7 @@
 
       (import ./home/st.nix {inherit pkgs;})
     ]
-    ++ (import ./shell-scripts.nix {inherit pkgs;});
+    ++ (import ./shell-scripts.nix {inherit pkgs config;});
 
   programs.direnv = {
     enable = true;
