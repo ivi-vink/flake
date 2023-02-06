@@ -149,7 +149,7 @@
     ];
     plugins = with pkgs.vimPlugins; [
       # highlighting
-      (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
+      nvim-treesitter.withAllGrammars
       nvim-ts-rainbow
       playground
       gruvbox-material
