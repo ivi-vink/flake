@@ -21,6 +21,7 @@
       kubernetes-helm
       azure-cli
       kubectl
+      jq
 
       htop
       fortune
