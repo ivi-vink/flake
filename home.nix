@@ -32,6 +32,7 @@
       subversion
       ripgrep
       inotify-tools
+      fzf
 
       firefox-wayland
 
