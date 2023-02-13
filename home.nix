@@ -19,6 +19,7 @@
       docker
       k9s
       kubernetes-helm
+      powershell
       azure-cli
       kubectl
       jq
@@ -56,6 +57,7 @@
     enable = true;
     shellAliases = {
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
+      b = "/run/current-system/bin/switch-to-configuration boot";
       h = "home-manager switch --flake ${config.home.homeDirectory}/flake#${config.home.username}";
       V = "xrandr --output HDMI1 --auto --output eDP1 --off";
       v = "xrandr --output eDP1 --auto --output HDMI1 --off";
@@ -174,10 +176,6 @@
       lsp_signature-nvim
       vim-test
       vim-rest-console
-
-      # testing
-      neotest
-      neotest-python
 
       # cmp
       nvim-cmp
