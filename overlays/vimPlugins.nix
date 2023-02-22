@@ -43,5 +43,11 @@
         git = "diepm/vim-rest-console";
         rev = "7b407f47185468d1b57a8bd71cdd66c9a99359b2";
       };
+      codeium-vim = getVimPlugin {
+        name = "codeium-vim";
+        git = "Exafunction/codeium.vim";
+        rev = "be2fa21f4f63850382a0cefeaa9f766b977c9f0c";
+        ref = "refs/heads/main";
+      };
     };
 })

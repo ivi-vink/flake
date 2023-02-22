@@ -5,6 +5,12 @@
   home-manager,
   ...
 }: {
+  imports = [
+    ./home/codeium.nix
+    ./home/neovim.nix
+    ./home/st.nix
+  ];
+
   home.username = "mike";
   home.homeDirectory = "/home/mike";
   home.stateVersion = "22.05";
@@ -39,12 +45,10 @@
 
       swaylock
       swayidle
-      wl-clipboard
+      xclip
       mako
       wofi
       waybar
-
-      (import ./home/st.nix {inherit pkgs;})
     ]
     ++ (import ./shell-scripts.nix {inherit pkgs config;});
 
@@ -77,13 +81,13 @@
   };
 
   programs.gpg = {
-      enable = true;
+    enable = true;
   };
   services.gpg-agent = {
-      enable = true;
+    enable = true;
   };
   programs.password-store = {
-      enable = true;
+    enable = true;
   };
 
   xsession = {
@@ -113,83 +117,5 @@
         bar_font_color = "grey, white,  rgb:00/00/ff,  rgb:ee/82/ee,  rgb:4b/00/82,  rgb:00/80/00,  rgb:ff/ff/00,  rgb:ff/a5/00, rgb:eb/40/34";
       };
     };
-  };
-
-  home.activation = {
-    # links neovim repo to xdg config home
-    neovim-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-      NEOVIM_CONFIG="${config.home.homeDirectory}/neovim"
-      XDG_CONFIG_HOME_NVIM="${config.xdg.configHome}/nvim"
-      if [ -L $XDG_CONFIG_HOME_NVIM ] && [ -e $XDG_CONFIG_HOME_NVIM ]; then
-          $DRY_RUN_CMD echo "neovim linked"
-      else
-          $DRY_RUN_CMD ln -s $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
-      fi
-    '';
-    # fixes hotpot cannot be found error after updates
-    clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-      HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
-      if [[ -d "$HOTPOT_CACHE" ]]; then
-        $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
-      fi
-    '';
-  };
-
-  programs.neovim = {
-    enable = true;
-    package = pkgs.neovim-unwrapped;
-    viAlias = true;
-    vimAlias = true;
-    extraPackages = with pkgs; [
-      bashInteractive
-      fennel
-      sumneko-lua-language-server
-      pyright
-      gopls
-      yaml-language-server
-      alejandra
-      statix
-      fnlfmt
-    ];
-    plugins = with pkgs.vimPlugins; [
-      # highlighting
-      nvim-treesitter.withAllGrammars
-      nvim-ts-rainbow
-      playground
-      gruvbox-material
-      vim-just
-
-      # external
-      vim-dirvish
-      vim-fugitive
-      vim-oscyank
-
-      # Coding
-      nvim-lspconfig
-      nvim-dap
-      nvim-dap-ui
-      luasnip
-      trouble-nvim
-      null-ls-nvim
-      plenary-nvim
-      nlua-nvim
-      lsp_signature-nvim
-      vim-test
-      vim-rest-console
-
-      # cmp
-      nvim-cmp
-      cmp-nvim-lsp
-      cmp-buffer
-      cmp-path
-      cmp_luasnip
-
-      # trying out lisp
-      conjure
-      vim-racket
-      nvim-parinfer
-      hotpot-nvim
-      cmp-conjure
-    ];
   };
 }
