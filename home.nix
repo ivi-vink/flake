@@ -20,6 +20,10 @@
     EDITOR = "nvim";
   };
 
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.krew/bin"
+  ];
+
   home.packages = with pkgs;
     [
       docker
@@ -28,7 +32,9 @@
       powershell
       azure-cli
       kubectl
+      krew
       jq
+      wireshark
 
       htop
       fortune
