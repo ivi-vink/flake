@@ -20,6 +20,7 @@
     home-manager,
     ...
   }: let
+    username = builtins.getEnv "USER";
     system = "x86_64-linux";
     mvinkioPkgs = mvinkio.legacyPackages.${system};
 
@@ -39,21 +40,21 @@
       modules = [./configuration.nix ./lemptop.nix];
     };
 
-    homeConfigurations.mike = home-manager.lib.homeManagerConfiguration {
+    homeConfigurations.mvinkio = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       modules = [
         ./home.nix
       ];
-
       extraSpecialArgs = {
         flake = self;
         home-manager = home-manager;
+        username = username;
       };
     };
 
     templates.default = {
-        path = ./templates/flake;
-        description = "nix flake new -t ~/flake";
+      path = ./templates/flake;
+      description = "nix flake new -t ~/flake";
     };
   };
 }

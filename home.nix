@@ -1,5 +1,6 @@
 {
   flake,
+  username,
   config,
   pkgs,
   home-manager,
@@ -10,10 +11,11 @@
     ./home/neovim.nix
     ./home/st.nix
   ];
-
-  home.username = "mike";
-  home.homeDirectory = "/home/mike";
+  home.homeDirectory = "/home/${username}";
+  home.username = username;
   home.stateVersion = "22.05";
+
+
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
@@ -26,35 +28,19 @@
 
   home.packages = with pkgs;
     [
-      docker
-      k9s
+      ansible
       kubernetes-helm
       powershell
       azure-cli
       kubectl
       krew
       jq
-      wireshark
 
       htop
-      fortune
-      vim
-      dmenu
-      stow
-      (nerdfonts.override {fonts = ["FiraCode"];})
       subversion
       ripgrep
       inotify-tools
       fzf
-
-      firefox-wayland
-
-      swaylock
-      swayidle
-      xclip
-      mako
-      wofi
-      waybar
     ]
     ++ (import ./shell-scripts.nix {inherit pkgs config;});
 
@@ -68,7 +54,7 @@
     shellAliases = {
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
       b = "/run/current-system/bin/switch-to-configuration boot";
-      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#${config.home.username}";
+      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio";
       V = "xrandr --output HDMI1 --auto --output eDP1 --off";
       v = "xrandr --output eDP1 --auto --output HDMI1 --off";
       vV = "xrandr --output eDP1 --auto --output HDMI1 --off";
