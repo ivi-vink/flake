@@ -5,6 +5,9 @@ LIST_PROJECTS="/_apis/projects?api-version=7.1-preview.4"
 AUTH_HEADER="Authorization: Basic $WORK_AZDO_GIT_AUTH"
 LIST_REPOSITORIES="/_apis/git/repositories?api-version=7.1-preview.1"
 DIR_THROWAWAY_REPOS="$HOME/ephemeral-projects/"
+if [ ! -d $DIR_THROWAWAY_REPOS ]; then
+    mkdir -p $DIR_THROWAWAY_REPOS
+fi
 MAX_REPOS=20
 
 COUNT=$(find "$DIR_THROWAWAY_REPOS" -mindepth 1 -maxdepth 1 -type d | wc -l)
@@ -13,7 +16,7 @@ then
     STALE=$(( COUNT - MAX_REPOS ))
     OLDEST=$(find "$DIR_THROWAWAY_REPOS" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' 2>/dev/null \
         | sort -n | head -n$STALE | cut -d' ' -f2)
-    
+
     for dir in $OLDEST
     do
         rm -i -r $dir
@@ -21,6 +24,7 @@ then
 fi
 
 
+echo "curl -s -H \"$AUTH_HEADER\" $WORK_AZDO_GIT_ORG_URL$LIST_PROJECTS"
 curl -s -H "$AUTH_HEADER" $WORK_AZDO_GIT_ORG_URL$LIST_PROJECTS \
 | jq '
 .value[].name

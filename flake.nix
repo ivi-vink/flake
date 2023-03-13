@@ -44,9 +44,12 @@
       inherit pkgs;
       modules = [
         ./home.nix
+        ./home/st.nix
+        ./home/neovim.nix
+        ./home/codeium.nix
+        ./home/packages.nix
       ];
       extraSpecialArgs = {
-        flake = self;
         home-manager = home-manager;
         username = username;
       };

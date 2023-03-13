@@ -3,7 +3,6 @@
   username,
   config,
   pkgs,
-  home-manager,
   ...
 }: {
   imports = [
@@ -26,23 +25,7 @@
     "${config.home.homeDirectory}/.krew/bin"
   ];
 
-  home.packages = with pkgs;
-    [
-      ansible
-      kubernetes-helm
-      powershell
-      azure-cli
-      kubectl
-      krew
-      jq
-
-      htop
-      subversion
-      ripgrep
-      inotify-tools
-      fzf
-    ]
-    ++ (import ./shell-scripts.nix {inherit pkgs config;});
+  programs.starship.enable = true;
 
   programs.direnv = {
     enable = true;
@@ -52,9 +35,10 @@
   programs.bash = {
     enable = true;
     shellAliases = {
+      ls = "ls --color=auto";
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
       b = "/run/current-system/bin/switch-to-configuration boot";
-      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio";
+      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio --impure";
       V = "xrandr --output HDMI1 --auto --output eDP1 --off";
       v = "xrandr --output eDP1 --auto --output HDMI1 --off";
       vV = "xrandr --output eDP1 --auto --output HDMI1 --off";
