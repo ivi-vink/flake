@@ -8,7 +8,7 @@
   };
 
   virtualisation.docker.enable = true;
-  
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -19,10 +19,18 @@
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;
   services.xserver.libinput.enable = true;
-  
+
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
   hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   programs.slock.enable = true;
 
