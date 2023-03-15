@@ -5,11 +5,6 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./home/codeium.nix
-    ./home/neovim.nix
-    ./home/st.nix
-  ];
   home.homeDirectory = "/home/${username}";
   home.username = username;
   home.stateVersion = "22.05";
@@ -35,6 +30,7 @@
   programs.bash = {
     enable = true;
     shellAliases = {
+      k9s = "COLORTERM=truecolor k9s";
       ls = "ls --color=auto";
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
       b = "/run/current-system/bin/switch-to-configuration boot";
