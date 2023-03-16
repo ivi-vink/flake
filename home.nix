@@ -1,6 +1,7 @@
 {
   flake,
   username,
+  email,
   config,
   pkgs,
   ...
@@ -45,10 +46,11 @@
   programs.git = {
     enable = true;
     userName = "Mike Vink";
-    userEmail = "mike1994vink@gmail.com";
+    userEmail = email;
     ignores = [
       "/.direnv/"
       "/.envrc"
+      "/.env"
     ];
   };
 

@@ -47,8 +47,11 @@
       nvim-ts-rainbow
       playground
       gruvbox-material
+      kanagawa-nvim
       vim-just
       lsp_lines-nvim
+      heirline-nvim
+      gitsigns-nvim
 
       # external
       vim-dirvish

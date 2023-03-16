@@ -21,6 +21,7 @@
     ...
   }: let
     username = builtins.getEnv "USER";
+    email = builtins.getEnv "EMAIL";
     system = "x86_64-linux";
     mvinkioPkgs = mvinkio.legacyPackages.${system};
 
@@ -50,8 +51,7 @@
         ./home/packages.nix
       ];
       extraSpecialArgs = {
-        home-manager = home-manager;
-        username = username;
+        inherit home-manager username email;
       };
     };
 
