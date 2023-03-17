@@ -5,22 +5,36 @@
   home-manager,
   username,
   ...
-}: {
-  home.packages = with pkgs;
+}: let
+  core-packages = with pkgs;
     [
-      ansible
+      # k8s and friends
       kubernetes-helm
-      powershell
-      azure-cli
       kubectl
       krew
       jq
-
+      ansible
+      # shell tools
+      powershell
+      azure-cli
       htop
       subversion
       ripgrep
       inotify-tools
       fzf
-    ]
-    ++ (import ../shell-scripts.nix {inherit pkgs config;});
+    ] ++ (import ../shell-scripts.nix {inherit pkgs config;});
+  mike-extra-packages = with pkgs; [
+    (nerdfonts.override {fonts = ["FiraCode"];})
+    docker
+    k9s
+    dmenu
+    firefox-wayland
+    xclip
+  ];
+in {
+  home.packages = core-packages ++ (
+    if (username == "mike")
+    then mike-extra-packages
+    else []
+  );
 }
