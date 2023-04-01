@@ -34,6 +34,7 @@
       bashInteractive
       fennel
       sumneko-lua-language-server
+      fennel-language-server
       pyright
       gopls
       yaml-language-server
@@ -44,11 +45,10 @@
     plugins = with pkgs.vimPlugins; [
       # highlighting
       nvim-treesitter.withAllGrammars
-      nvim-ts-rainbow
+      nvim-treesitter-context
       playground
       gruvbox-material
       kanagawa-nvim
-      vim-just
       lsp_lines-nvim
       heirline-nvim
       gitsigns-nvim
@@ -67,10 +67,10 @@
       trouble-nvim
       null-ls-nvim
       plenary-nvim
-      nlua-nvim
       lsp_signature-nvim
       vim-test
       vim-rest-console
+      harpoon
 
       # cmp
       nvim-cmp
@@ -84,7 +84,6 @@
       vim-racket
       nvim-parinfer
       hotpot-nvim
-      cmp-conjure
     ];
   };
 }
