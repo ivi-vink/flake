@@ -59,6 +59,7 @@
       vim-oscyank
 
       # Coding
+      telescope-nvim
       codeium-vim
       nvim-lspconfig
       nvim-dap
