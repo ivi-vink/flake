@@ -27,7 +27,7 @@
 
     overlay = nixpkgs.lib.composeManyExtensions [
       (import ./overlays/vimPlugins.nix {inherit pkgs;})
-      (import ./overlays/fennel-language-server.nix {inherit pkgs;})
+      # (import ./overlays/fennel-language-server.nix {inherit pkgs;})
     ];
 
     pkgs = import nixpkgs {

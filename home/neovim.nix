@@ -34,7 +34,7 @@
       bashInteractive
       fennel
       sumneko-lua-language-server
-      fennel-language-server
+      #fennel-language-server
       pyright
       gopls
       yaml-language-server

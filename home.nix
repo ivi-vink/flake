@@ -10,7 +10,6 @@
   home.username = username;
   home.stateVersion = "22.05";
 
-
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
@@ -36,9 +35,11 @@
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
       b = "/run/current-system/bin/switch-to-configuration boot";
       h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio --impure";
-      V = "xrandr --output HDMI1 --auto --output eDP1 --off";
-      v = "xrandr --output eDP1 --auto --output HDMI1 --off";
-      vV = "xrandr --output eDP1 --auto --output HDMI1 --off";
+      fa = "azdo-switch-project";
+      v = "nvim";
+      M = "xrandr --output HDMI1 --auto --output eDP1 --off";
+      m = "xrandr --output eDP1 --auto --output HDMI1 --off";
+      mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
       newflake = "nix flake new -t ~/flake ";
     };
   };
