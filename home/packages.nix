@@ -22,7 +22,9 @@
       ripgrep
       inotify-tools
       fzf
-    ] ++ (import ../shell-scripts.nix {inherit pkgs config;});
+      github-cli
+    ]
+    ++ (import ../shell-scripts.nix {inherit pkgs config;});
   mike-extra-packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
     docker
@@ -32,9 +34,11 @@
     xclip
   ];
 in {
-  home.packages = core-packages ++ (
-    if (username == "mike")
-    then mike-extra-packages
-    else []
-  );
+  home.packages =
+    core-packages
+    ++ (
+      if (username == "mike")
+      then mike-extra-packages
+      else []
+    );
 }

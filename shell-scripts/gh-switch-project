@@ -1,0 +1,15 @@
+#!@bash@/bin/bash
+eval "$(pass show personal/shell-scripts/secrets)"
+repo=$(gh repo list --json owner,name -q '.[] | "\(.owner.login)/\(.name)"' | fzf)
+GIT_DIR="$HOME/projects"
+if [ ! -d $GIT_DIR ]; then
+    mkdir -p $GIT_DIR
+fi
+
+DEST_DIR="$GIT_DIR/$(echo $repo | cut -d '/' -f2)"
+if [ ! -d $DEST_DIR ] 
+then
+    gh repo clone $repo $DEST_DIR
+fi
+cd $DEST_DIR
+$EDITOR
