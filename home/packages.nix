@@ -24,6 +24,7 @@
       fzf
       github-cli
       fd
+      argocd
     ]
     ++ (import ../shell-scripts.nix {inherit pkgs config;});
   mike-extra-packages = with pkgs; [
