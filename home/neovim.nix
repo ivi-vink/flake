@@ -52,6 +52,8 @@
       lsp_lines-nvim
       heirline-nvim
       gitsigns-nvim
+      noice-nvim
+      nui-nvim
 
       # external
       vim-dirvish
@@ -75,6 +77,8 @@
 
       # cmp
       nvim-cmp
+      cmp-cmdline
+      cmp-cmdline-history
       cmp-nvim-lsp
       cmp-buffer
       cmp-path
