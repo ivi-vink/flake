@@ -10,20 +10,6 @@ if [ ! -d $GIT_DIR ]; then
 fi
 MAX_REPOS=20
 
-COUNT=$(find "$GIT_DIR" -mindepth 1 -maxdepth 1 -type d | wc -l)
-if [ "$COUNT" -gt "$MAX_REPOS" ]
-then
-    STALE=$(( COUNT - MAX_REPOS ))
-    OLDEST=$(find "$GIT_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' 2>/dev/null \
-        | sort -n | head -n$STALE | cut -d' ' -f2)
-
-    for dir in $OLDEST
-    do
-        rm -i -r $dir
-    done
-fi
-
-
 echo "curl -s -H \"$AUTH_HEADER\" $WORK_AZDO_GIT_ORG_URL$LIST_PROJECTS"
 PROJECT=$(curl -s -H "$AUTH_HEADER" $WORK_AZDO_GIT_ORG_URL$LIST_PROJECTS \
 | jq '
