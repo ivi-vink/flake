@@ -31,7 +31,7 @@
       ]);
     in {
       devShells.default = pkgs.mkShell {
-        name = "default-shell";
+        name = "dev";
         buildInputs = [
           terraform
           poetry
