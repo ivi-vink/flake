@@ -30,7 +30,6 @@
   programs.newsboat = {
     enable = true;
     autoReload = true;
-    urls = [{url = "https://github.com/rancher/rancher/releases.atom";}];
     extraConfig = ''
       # general settings
       max-items 50
@@ -66,6 +65,10 @@
 
   programs.bash = {
     enable = true;
+    profileExtra = ''
+      # include nix.sh if it exists
+      [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
+    '';
     shellAliases = {
       k9s = "COLORTERM=truecolor k9s";
       ls = "ls --color=auto";
