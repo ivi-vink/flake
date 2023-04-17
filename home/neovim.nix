@@ -58,11 +58,11 @@
       # external
       vim-dirvish
       vim-fugitive
+      vim-dispatch
       vim-oscyank
 
       # Coding
       telescope-nvim
-      codeium-vim
       nvim-lspconfig
       nvim-dap
       nvim-dap-ui

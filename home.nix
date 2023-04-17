@@ -27,6 +27,12 @@
     nix-direnv.enable = true;
   };
 
+  programs.newsboat = {
+    enable = true;
+    autoReload = true;
+    urls = [{url = "https://github.com/rancher/rancher/releases.atom";}];
+  };
+
   programs.bash = {
     enable = true;
     shellAliases = {
