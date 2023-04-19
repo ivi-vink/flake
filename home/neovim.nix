@@ -64,6 +64,7 @@
       # Coding
       telescope-nvim
       nvim-lspconfig
+      omnisharp-extended-lsp-nvim
       nvim-dap
       nvim-dap-ui
       luasnip
