@@ -3,8 +3,13 @@ TERRAGRUNT_ARGS=()
 CONTEXT=""
 ENV=""
 MODULE=""
+FULL=0
 while [[ $# -gt 0 ]]; do
     case $1 in
+        -full)
+            FULL=1
+            shift
+            ;;
         -m|--module-path)
             MODULE="$2"
             shift
@@ -40,6 +45,7 @@ case ${TERRAGRUNT_ARGS[0]} in
         ;;
     apply|destroy)
         TTY="-t"
+        TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
         ;;
     *)
         exit 1
@@ -61,10 +67,24 @@ do
     esac
 done
 
+for var in $(printenv)
+do
+    case $var in
+        TF_*)
+            VARIABLES="$VARIABLES$(printf ' -e %s' $var)"
+            ;;
+    esac
+done
+
 ENVIRONMENTS="$REPO/environments"
 WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 
 # TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
 # TODO(mike): check expiry of azure directory
 # echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'"
-docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'
+echo $VARIABLES
+if [[ $FULL -eq 0 ]]; then
+    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^ .*[#~+-] .*|^[[:punct:]]|Plan|^\S.*)'
+else
+    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]}
+fi
