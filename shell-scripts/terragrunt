@@ -1,0 +1,60 @@
+#!/bin/bash
+TERRAGRUNT_ARGS=()
+CONTEXT=""
+ENV=""
+MODULE=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -m|--module-path)
+            MODULE="$2"
+            shift
+            shift
+            ;;
+        -m=*|--module-path=*)
+            MODULE="${1#*=}"
+            shift
+            ;;
+        -e|--env)
+            ENV="$2"
+            shift
+            shift
+            ;;
+        -e=*|--env=*)
+            ABS_ENV="${1#*=}"
+            CONTEXT=${ABS_ENV%/*}
+            ENV=${ABS_ENV#*/}
+            shift
+            ;;
+        *|-*)
+            TERRAGRUNT_ARGS+=("$1")
+            shift
+    esac
+done
+
+if [[ ${TERRAGRUNT_ARGS[0]} == "plan" ]];
+then
+    TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
+fi
+
+REPO=""
+EXTRA_MOUNTS=""
+case "$CONTEXT" in
+    k8s)
+        REPO="$HOME/$TERRAFORM_K8S"
+        EXTRA_MOUNTS="-v ${HOME}/$TERRAFORM_K8S_MODULES:/root/terraform/k8s-modules"
+        ;;
+    *)
+        REPO="$HOME/$TERRAFORM_K8S"
+esac
+
+ENVIRONMENTS="$REPO/environments"
+WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
+
+VARIABLES=""
+for var in $(pass show work/env)
+do
+    VARIABLES="$VARIABLES$(printf ' -e %s' "$var")"
+done
+
+# TODO(mike): check expiry of azure directory
+docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
