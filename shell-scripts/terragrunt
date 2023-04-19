@@ -15,7 +15,9 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -e|--env)
-            ENV="$2"
+            ABS_ENV="$2"
+            CONTEXT=${ABS_ENV%/*}
+            ENV=${ABS_ENV#*/}
             shift
             shift
             ;;
@@ -31,30 +33,38 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ ${TERRAGRUNT_ARGS[0]} == "plan" ]];
-then
-    TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
-fi
-
-REPO=""
-EXTRA_MOUNTS=""
-case "$CONTEXT" in
-    k8s)
-        REPO="$HOME/$TERRAFORM_K8S"
-        EXTRA_MOUNTS="-v ${HOME}/$TERRAFORM_K8S_MODULES:/root/terraform/k8s-modules"
+TTY=""
+case ${TERRAGRUNT_ARGS[0]} in
+    plan)
+        TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
+        ;;
+    apply|destroy)
+        TTY="-t"
         ;;
     *)
-        REPO="$HOME/$TERRAFORM_K8S"
+        exit 1
+        ;;
 esac
+
+VARIABLES=""
+REPO="${PWD}"
+TERRAGRUNT_EXTRA_MOUNTS=""
+for var in $(pass show work/env)
+do
+    case $var in
+        TERRAGRUNT_EXTRA_MOUNTS)
+            TERRAGRUNT_EXTRA_MOUNTS="$var"
+            ;;
+        *)
+            VARIABLES="$VARIABLES$(printf ' -e %s' "$var")"
+            ;;
+    esac
+done
 
 ENVIRONMENTS="$REPO/environments"
 WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 
-VARIABLES=""
-for var in $(pass show work/env)
-do
-    VARIABLES="$VARIABLES$(printf ' -e %s' "$var")"
-done
-
+# TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
 # TODO(mike): check expiry of azure directory
-docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
+# echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'"
+docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'
