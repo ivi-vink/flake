@@ -25,6 +25,16 @@
     '';
   };
 
+  editorconfig = {
+    enable = true;
+    settings = {
+      "*.{fnl,rkt,nix,md,hcl,tf,py,cpp,qml,js,txt,json,html,lua,yaml,yml,bash,sh,go}" = {
+        trim_trailing_whitespace = true;
+        insert_final_newline = true;
+      };
+    };
+  };
+
   programs.neovim = {
     enable = true;
     package = pkgs.neovim-unwrapped;

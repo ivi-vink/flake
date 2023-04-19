@@ -27,53 +27,6 @@
     nix-direnv.enable = true;
   };
 
-
-  editorconfig = {
-    enable = true;
-    settings = {
-      "*.{fnl,rkt,nix,md,hcl,tf,py,cpp,qml,js,txt,json,html,lua,yaml,yml,bash,sh,go}" = {
-        trim_trailing_whitespace = true;
-        insert_final_newline = true;
-      };
-    };
-  };
-
-  programs.newsboat = {
-    enable = true;
-    autoReload = true;
-    extraConfig = ''
-      # general settings
-      max-items 50
-
-      # unbind keys
-      unbind-key ENTER
-      unbind-key j
-      unbind-key k
-      unbind-key J
-      unbind-key K
-
-      # bind keys - vim style
-      bind-key j down
-      bind-key k up
-      bind-key l open
-      bind-key h quit
-
-      # solarized
-      color background         default   default
-      color listnormal         default   default
-      color listnormal_unread  default   default
-      color listfocus          black     cyan
-      color listfocus_unread   black     cyan
-      color info               default   black
-      color article            default   default
-
-      # highlights
-      highlight article "^(Title):.*$" blue default
-      highlight article "https?://[^ ]+" red default
-      highlight article "\\[image\\ [0-9]+\\]" green default
-    '';
-  };
-
   programs.bash = {
     enable = true;
     profileExtra = ''
@@ -105,6 +58,7 @@
       "/.direnv/"
       "/.envrc"
       "/.env"
+      "/.vimsession.vim"
     ];
   };
 

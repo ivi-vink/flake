@@ -50,6 +50,7 @@
         ./home/neovim.nix
         ./home/codeium.nix
         ./home/packages.nix
+        ./home/newsboat.nix
       ];
       extraSpecialArgs = {
         inherit home-manager username email;
