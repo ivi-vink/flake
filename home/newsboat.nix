@@ -5,7 +5,8 @@
     urls = [{url = "https://github.com/rancher/rancher/releases.atom";}];
     extraConfig = ''
       # general settings
-      max-items 50
+      cleanup-on-quit no
+      max-items 100
 
       # unbind keys
       unbind-key ENTER
