@@ -60,6 +60,8 @@
       vim-fugitive
       vim-dispatch
       vim-oscyank
+      venn-nvim
+      gv-vim
 
       # Coding
       telescope-nvim

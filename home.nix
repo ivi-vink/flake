@@ -100,6 +100,7 @@
   };
   services.gpg-agent = {
     enable = true;
+    defaultCacheTtl = 34560000;
   };
   programs.password-store = {
     enable = true;
