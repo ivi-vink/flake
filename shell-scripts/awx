@@ -1,0 +1,8 @@
+#!/bin/bash
+# Removes ansi escape codes from ansible outputs
+error () {
+    echo "$1"
+    exit 1
+}
+command -v awx || error "awx cli not found"
+awx "$@" | filter-ansi

@@ -84,7 +84,7 @@ WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 # echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'"
 echo $VARIABLES
 if [[ $FULL -eq 0 ]]; then
-    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^ .*[#~+-] .*|^[[:punct:]]|Plan|^\S.*)'
+    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep -E '(^ .*[#~+-] .*|^[[:punct:]]|Plan|^\S.*)'
 else
     docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]}
 fi
