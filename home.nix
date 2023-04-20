@@ -43,6 +43,7 @@
       h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio --impure";
       fa = "azdo-switch-project";
       v = "nvim";
+      V = "nvim -S .vimsession.vim";
       M = "xrandr --output HDMI1 --auto --output eDP1 --off";
       m = "xrandr --output eDP1 --auto --output HDMI1 --off";
       mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
