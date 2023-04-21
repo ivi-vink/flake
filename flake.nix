@@ -57,9 +57,15 @@
       };
     };
 
-    templates.default = {
-      path = ./templates/flake;
-      description = "nix flake new -t ~/flake";
+    templates = {
+      default = {
+        path = ./templates/flake;
+        description = "Flake with python and go stuff";
+      };
+      ansible = {
+        path = ./templates/ansible;
+        description = "Flake with ansible and shellhook to login to awx";
+      }
     };
   };
 }

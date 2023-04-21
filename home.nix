@@ -48,6 +48,7 @@
       m = "xrandr --output eDP1 --auto --output HDMI1 --off";
       mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
       newflake = "nix flake new -t ~/flake ";
+      ansible-flake = "nix flake new -t ~/flake#ansible ";
     };
   };
 
