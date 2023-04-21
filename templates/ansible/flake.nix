@@ -30,8 +30,10 @@
           poetry
         ];
         shellHook = ''
-          source ~/awx-login.sh
-          [[ -f ./.venv/bin/activate ]] && source ./.venv/bin/activate
+          [[ -f ./.venv/bin/activate ]] && {
+              source ./.venv/bin/activate
+              source ~/awx-login.sh
+          }
         '';
       };
     });
