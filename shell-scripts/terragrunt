@@ -45,6 +45,14 @@ case ${TERRAGRUNT_ARGS[0]} in
         ;;
     apply|destroy)
         TTY="-t"
+        for arg in $TERRAGRUNT_ARGS; do
+            if [[ $arg -eq "gruntplan" ]]; then
+                TTY=""
+            fi
+        done
+        TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
+        ;;
+    init)
         TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
         ;;
     *)

@@ -1,2 +1,2 @@
-#!@bash@/bin/bash
-cat - | sed -e 's/\x1b\[[0-9;]*m//g'
+# #!@bash@/bin/bash
+cat - | sed -E -e 's/\x1b\[[0-9;]*[mGKHF]|\r//g'
