@@ -65,7 +65,7 @@
       ansible = {
         path = ./templates/ansible;
         description = "Flake with ansible and shellhook to login to awx";
-      }
+      };
     };
   };
 }
