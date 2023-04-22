@@ -1,0 +1,22 @@
+#!@bash@/bin/bash
+echo " Compiliiing ${@}"
+
+error () {
+    echo "$1"
+    exit 1
+}
+
+case "${@}" in
+    ansible-lint*)
+        echo " \-> ansible-lint"
+        shift
+        ansible-lint --profile production --write=all -qq --nocolor ${@}
+        ;;
+    awx*)
+        echo " \-> awx"
+        awx "$@" | filter-ansi
+        ;;
+    *)
+        echo "Nope. Not compiling that. ARGS: ${@}"
+        ;;
+esac

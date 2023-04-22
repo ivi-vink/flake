@@ -1,0 +1,2 @@
+#!@bash@/bin/bash
+ansible-lint --profile production --write=all -q --nocolor
