@@ -60,7 +60,7 @@
       "/.direnv/"
       "/.envrc"
       "/.env"
-      "/.vimsession.vim"
+      ".vimsession.vim"
     ];
   };
 
