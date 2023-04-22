@@ -13,7 +13,6 @@
       kubectl
       krew
       jq
-      ansible
       # shell tools
       powershell
       azure-cli
