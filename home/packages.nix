@@ -33,6 +33,7 @@
     dmenu
     firefox-wayland
     xclip
+    libreoffice
   ];
 in {
   home.packages =
