@@ -7,9 +7,14 @@ error () {
 }
 
 case "${@}" in
-    ansible-lint*)
-        echo " \-> ansible-lint"
+    racket*)
         shift
+        echo " \-> racket -l errortrace -t ${@}"
+        racket -l errortrace -t ${@}
+        ;;
+    ansible-lint*)
+        shift
+        echo " \-> ansible-lint --profile production --write=all -qq --nocolor"
         ansible-lint --profile production --write=all -qq --nocolor ${@}
         ;;
     awx*)
