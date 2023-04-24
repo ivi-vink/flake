@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "dev-env"
+version = "0.1.0"
+description = "Virtualenv"
+authors = ["Mike Vink"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+awxkit = "^22.0.0"
+ansible-lint = {version="^6.14.0", markers = "platform_system != 'Windows'"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
