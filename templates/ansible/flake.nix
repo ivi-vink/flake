@@ -28,11 +28,18 @@
         name = "dev";
         buildInputs = [
           poetry
+          pkgs.ansible-language-server
         ];
         shellHook = ''
           [[ -f ./.venv/bin/activate ]] && {
               source ./.venv/bin/activate
               source ~/awx-login.sh
+              # NOTE(mike): this is necessary to make ansible-lint work with
+              # playbooks that use:
+              #vars_files:
+              #  - ./secrets/vault.yaml
+              initool s ansible.cfg defaults vault_identity devena | initool s - defaults vault_password_file ~/pass-ansible-vault-client > /tmp/ansible.cfg
+              cp /tmp/ansible.cfg ansible.cfg
           }
         '';
       };

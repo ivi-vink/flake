@@ -13,6 +13,8 @@
       kubectl
       krew
       jq
+      dasel
+      initool
       # shell tools
       powershell
       azure-cli
