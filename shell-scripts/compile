@@ -20,7 +20,7 @@ case "${@}" in
     ansible-playbook*)
         shift
         echo " \-> ansible-playbook -e@<(pass)"
-        ansible-playbook -e '{"ansible_become_pass":"'$ANSIBLE_USER_PASSWORD'"}' ${@}
+        ansible-playbook ${@}
         ;;
     awx*)
         echo " \-> awx"
