@@ -64,6 +64,7 @@
       gitsigns-nvim
       noice-nvim
       nui-nvim
+      vim-helm
 
       # external
       vim-dirvish
@@ -74,16 +75,15 @@
       gv-vim
 
       # Coding
+      plenary-nvim
       telescope-nvim
       nvim-lspconfig
+      null-ls-nvim
+      lsp_signature-nvim
       omnisharp-extended-lsp-nvim
       nvim-dap
       nvim-dap-ui
       luasnip
-      trouble-nvim
-      null-ls-nvim
-      plenary-nvim
-      lsp_signature-nvim
       vim-test
       vim-rest-console
       harpoon
@@ -91,7 +91,6 @@
       # cmp
       nvim-cmp
       cmp-cmdline
-      cmp-cmdline-history
       cmp-nvim-lsp
       cmp-buffer
       cmp-path
