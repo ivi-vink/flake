@@ -1,0 +1,17 @@
+#!@bash@/bin/bash
+VAULT_ID=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --vault-id)
+            VAULT_ID=$2
+            shift
+            shift
+            ;;
+        --vault-id=*)
+            VAULT_ID="${1#*=}"
+            shift
+            ;;
+    esac
+done
+
+pass show work/ansible-vault/$VAULT_ID
