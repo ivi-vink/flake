@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/bash
 echo " Compiliiing ${@}"
 
 error () {
@@ -7,6 +7,12 @@ error () {
 }
 
 case "${@}" in
+    helm\ lint*)
+        shift
+        shift
+        echo " \-> helm lint --set cluster=debug-cluster --strict --quiet --with-subcharts ${@}"
+        helm lint --set cluster=debug-cluster --strict --quiet --with-subcharts ${@} | sed -u -E -e "s@$(basename ${PWD})/|error during tpl function execution for \".*\"@@g"
+        ;;
     racket*)
         shift
         echo " \-> racket -l errortrace -t ${@}"
