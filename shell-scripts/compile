@@ -17,6 +17,11 @@ case "${@}" in
         echo " \-> ansible-lint --profile production --write=all -qq --nocolor"
         ansible-lint --profile production --write=all -qq --nocolor ${@}
         ;;
+    ansible-playbook*)
+        shift
+        echo " \-> ansible-playbook -e@<(pass)"
+        ansible-playbook -e $PASSWORD ${@}
+        ;;
     awx*)
         echo " \-> awx"
         awx "$@" | filter-ansi

@@ -55,9 +55,6 @@ case ${TERRAGRUNT_ARGS[0]} in
     init)
         TERRAGRUNT_ARGS+=(-no-color -compact-warnings)
         ;;
-    *)
-        exit 1
-        ;;
 esac
 
 VARIABLES=""
@@ -90,7 +87,6 @@ WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 # TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
 # TODO(mike): check expiry of azure directory
 # echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'"
-echo $VARIABLES
 if [[ $FULL -eq 0 ]]; then
     docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep --line-buffered -E '(^ .*[#~+-] .*|^[[:punct:]]|^Plan.*|^\S.*)'
 else
