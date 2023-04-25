@@ -42,15 +42,13 @@
     vimAlias = true;
     extraPackages = with pkgs; [
       bashInteractive
-      fennel
       sumneko-lua-language-server
-      #fennel-language-server
       pyright
       gopls
-      yaml-language-server
+      fennel
+      fnlfmt
       alejandra
       statix
-      fnlfmt
     ];
     plugins = with pkgs.vimPlugins; [
       # highlighting
@@ -67,6 +65,7 @@
       vim-helm
 
       # external
+      git-worktree-nvim
       vim-dirvish
       vim-fugitive
       vim-dispatch
