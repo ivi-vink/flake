@@ -13,6 +13,7 @@
       {url = "https://github.com/ansible/awx/releases";}
       {url = "https://azurecomcdn.azureedge.net/en-us/updates/feed/?product=azure-devops";}
       {url = "https://www.hashicorp.com/blog/categories/products-technology/feed.xml";}
+      {url = "https://kubernetes.io/feed.xml";}
     ];
     extraConfig = ''
       # general settings
