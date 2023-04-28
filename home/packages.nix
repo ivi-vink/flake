@@ -13,6 +13,7 @@
       kubectl
       krew
       jq
+      yq-go
       dasel
       initool
       # shell tools
@@ -31,6 +32,7 @@
   mike-extra-packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
     docker
+    kind
     k9s
     dmenu
     firefox-wayland
