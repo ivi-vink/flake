@@ -11,6 +11,7 @@
       # k8s and friends
       kubernetes-helm
       kubectl
+      kind
       krew
       jq
       yq-go
@@ -32,7 +33,6 @@
   mike-extra-packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
     docker
-    kind
     k9s
     dmenu
     firefox-wayland
