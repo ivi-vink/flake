@@ -57,6 +57,10 @@
     enable = true;
     userName = "Mike Vink";
     userEmail = email;
+    extraConfig = {
+      worktree.guessRemote = true;
+      remote.origin.fetch = "+refs/heads/*:refs/remotes/origin/*";
+    };
     ignores = [
       "/.direnv/"
       "/.envrc"

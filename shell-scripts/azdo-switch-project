@@ -25,9 +25,9 @@ curl -s -H '$AUTH_HEADER' $WORK_AZDO_GIT_ORG_URL/{}$LIST_REPOSITORIES \
 | fzf)
 
 DEST_DIR="$GIT_DIR/$(echo $PROJECT | cut -d '/' -f3)"
-if [ ! -d $DEST_DIR ] 
+if [ ! -d $DEST_DIR ]
 then
-    git clone $WORK_AZDO_GIT_ORG_URL/$PROJECT $DEST_DIR
+    git clone --bare $WORK_AZDO_GIT_ORG_URL/$PROJECT $DEST_DIR
 fi
 cd $DEST_DIR
 $EDITOR
