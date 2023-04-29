@@ -37,6 +37,8 @@
     '';
     shellAliases = {
       k9s = "COLORTERM=truecolor k9s";
+      k = "kubectl ";
+      d = "docker ";
       ls = "ls --color=auto";
       s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
       b = "/run/current-system/bin/switch-to-configuration boot";
