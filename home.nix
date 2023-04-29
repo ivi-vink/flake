@@ -61,7 +61,9 @@
     userEmail = email;
     extraConfig = {
       worktree.guessRemote = true;
-      remote.origin.fetch = "+refs/heads/*:refs/remotes/origin/*";
+      "includeIf.hasconfig:core.bare:true" = {
+        path = home.file.".git-bare".target;
+      };
     };
     ignores = [
       "/.direnv/"
