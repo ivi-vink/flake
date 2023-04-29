@@ -1,4 +1,4 @@
-#!/bin/bash
+#!@bash@/bin/bash
 error () {
     echo "$1"
     exit 1
@@ -7,7 +7,7 @@ error () {
 eval "$(pass show personal/shell-scripts/secrets)"
 DEST_DIR=""
 case "${@}" in
-    "az "*)
+    az|"az "*)
         shift
         LIST_PROJECTS="/_apis/projects?api-version=7.1-preview.4"
         AUTH_HEADER="Authorization: Basic $WORK_AZDO_GIT_AUTH"
@@ -38,7 +38,7 @@ case "${@}" in
             git clone --bare $WORK_AZDO_GIT_ORG_URL/$PROJECT $DEST_DIR
         fi
         ;;
-    "gh "*)
+    gh|"gh "*)
         shift
         repo=$(gh repo list --json owner,name -q '.[] | "\(.owner.login)/\(.name)"' | fzf --print-query -1)
         GIT_DIR="$HOME/projects"
@@ -62,8 +62,8 @@ case "${@}" in
         ;;
 esac
 
-if [[ $DEST_DIR -ne "" ]]; then
+if ! [[ -z "$DEST_DIR" ]]; then
     cd $DEST_DIR
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    $EDITOR
+    $EDITOR "$DEST_DIR"
 fi
