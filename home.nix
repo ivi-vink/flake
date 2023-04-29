@@ -61,9 +61,6 @@
     userEmail = email;
     extraConfig = {
       worktree.guessRemote = true;
-      "includeIf.hasconfig:core.bare:true" = {
-        path = home.file.".git-bare".target;
-      };
     };
     ignores = [
       "/.direnv/"
