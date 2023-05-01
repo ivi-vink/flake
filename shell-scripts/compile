@@ -24,6 +24,7 @@ case "${@}" in
         ;;
     awx*)
         echo " \-> awx"
+        shift
         awx "$@" | filter-ansi
         ;;
     helm\ lint*)

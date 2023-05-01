@@ -4,7 +4,7 @@ error () {
     exit 1
 }
 
-eval "$(pass show personal/shell-scripts/secrets)"
+eval "$(pass show work/shell-scripts/secrets)"
 DEST_DIR=""
 case "${@}" in
     az|"az "*)
