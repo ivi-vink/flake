@@ -10,7 +10,8 @@
       {url = "https://github.com/kyverno/kyverno/releases.atom";}
       {url = "https://github.com/hashicorp/terraform/releases.atom";}
       {url = "https://github.com/ansible/ansible/releases.atom";}
-      {url = "https://github.com/ansible/awx/releases";}
+      {url = "https://github.com/ansible/awx/releases.atom";}
+      {url = "https://kubeshark.co/rss.xml";}
       {url = "https://azurecomcdn.azureedge.net/en-us/updates/feed/?product=azure-devops";}
       {url = "https://www.hashicorp.com/blog/categories/products-technology/feed.xml";}
       {url = "https://kubernetes.io/feed.xml";}
