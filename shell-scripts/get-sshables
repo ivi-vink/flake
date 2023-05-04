@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euxo pipefail
+[[ -d ~/sshables ]] || mkdir -p ~/sshables
+
+for cluster in $(kubectl config get-clusters | tail -n +2); do
+    [[ -f ~/sshables/$cluster ]] || { echo $cluster; kubectl --context $cluster get nodes -oname > ~/sshables/$cluster; }
+done
