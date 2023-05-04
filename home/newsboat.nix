@@ -3,6 +3,7 @@
     enable = true;
     autoReload = true;
     urls = [
+      {url = "https://github.com/neovim/neovim/releases.atom";}
       {url = "https://github.com/rancher/rancher/releases.atom";}
       {url = "https://github.com/istio/istio/releases.atom";}
       {url = "https://github.com/argoproj/argo-cd/releases.atom";}
@@ -15,6 +16,10 @@
       {url = "https://azurecomcdn.azureedge.net/en-us/updates/feed/?product=azure-devops";}
       {url = "https://www.hashicorp.com/blog/categories/products-technology/feed.xml";}
       {url = "https://kubernetes.io/feed.xml";}
+      {url = "https://www.cncf.io/rss";}
+      {url = "https://blog.alexellis.io/rss/";}
+      {url = "https://www.openfaas.com/feed";}
+      {url = "https://istio.io/latest/blog/feed.xml";}
     ];
     extraConfig = ''
       # general settings
