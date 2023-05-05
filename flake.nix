@@ -66,6 +66,10 @@
         path = ./templates/ansible;
         description = "Flake with ansible and shellhook to login to awx";
       };
+      go = {
+        path = ./templates/go;
+        description = "Flake with go, gotools, and gofumpt";
+      };
     };
   };
 }

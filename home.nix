@@ -51,6 +51,7 @@
       mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
       newflake = "nix flake new -t ~/flake ";
       ansible-flake = "nix flake new -t ~/flake#ansible ";
+      go-flake = "nix flake new -t ~/flake#go ";
       lock-pass = "gpgconf --kill gpg-agent";
     };
   };
