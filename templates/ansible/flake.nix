@@ -29,6 +29,7 @@
         buildInputs = [
           poetry
           pkgs.ansible-language-server
+          pkgs.bashInteractive
         ];
         shellHook = ''
           [[ -f ./.venv/bin/activate ]] && {
