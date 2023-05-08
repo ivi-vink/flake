@@ -63,8 +63,8 @@ TERRAGRUNT_EXTRA_MOUNTS=""
 for var in $(pass show work/env)
 do
     case $var in
-        TERRAGRUNT_EXTRA_MOUNTS)
-            TERRAGRUNT_EXTRA_MOUNTS="$var"
+        TERRAGRUNT_EXTRA_MOUNTS*)
+            TERRAGRUNT_EXTRA_MOUNTS="${var#*=}"
             ;;
         *)
             VARIABLES="$VARIABLES$(printf ' -e %s' "$var")"
@@ -86,9 +86,9 @@ WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 
 # TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
 # TODO(mike): check expiry of azure directory
-# echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan|Enter)'"
+echo "docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep --line-buffered -E '(^ .*[#~+-] .*|^[[:punct:]]|^Plan.*|^\S.*)'"
 if [[ $FULL -eq 0 ]]; then
-    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep --line-buffered -E '(^ .*[#~+-] .*|^[[:punct:]]|^Plan.*|^\S.*)'
+    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep --line-buffered -E '(^ .*[#~+-] .*|^[[:punct:]]|^Plan.*|^\S.*)'
 else
-    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi
+    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi
 fi
