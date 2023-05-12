@@ -27,6 +27,23 @@
     nix-direnv.enable = true;
   };
 
+  programs.readline = {
+    enable = true;
+    extraConfig = ''
+      set editing-mode vi
+      $if mode=vi
+
+      set keymap vi-command
+      # these are for vi-command mode
+      Control-l: clear-screen
+
+      set keymap vi-insert
+      # these are for vi-insert mode
+      Control-l: clear-screen
+      $endif
+    '';
+  };
+
   programs.bash = {
     enable = true;
     profileExtra = ''
