@@ -18,8 +18,6 @@
 
   home.sessionPath = [
     "${config.home.homeDirectory}/.krew/bin"
-    # this shouldn't be here but meh
-    "${config.home.homeDirectory}/.nix-profile/bin"
   ];
 
   programs.starship.enable = true;
@@ -49,6 +47,9 @@
   programs.bash = {
     enable = true;
     profileExtra = ''
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
       # include nix.sh if it exists
       [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
       # source some workspace specific stuff

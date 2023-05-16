@@ -17,11 +17,6 @@ case "${@}" in
             cat > /tmp/docker-build-${USER} <<EOF
 FROM alpine
 
-# Add your user the alpine way
-RUN apk add --no-cache --update shadow \
-    && groupadd -g $(id -g) ${USER} \
-    && useradd -g $(id -g) --groups wheel -u $(id -u) ${USER}
-
 # Enable HTTPS support in wget and set nsswitch.conf to make resolution work within containers
 RUN apk add --no-cache --update openssl \
   && echo hosts: files dns > /etc/nsswitch.conf
@@ -41,6 +36,9 @@ RUN wget https://nixos.org/releases/nix/nix-\${NIX_VERSION}/nix-\${NIX_VERSION}-
   && /nix/var/nix/profiles/default/bin/nix-store --optimise \
   && /nix/var/nix/profiles/default/bin/nix-store --verify --check-contents
 
+# Somehow this file is missing?
+RUN mkdir -p /etc/bash && touch /etc/bash/bashrc
+
 ONBUILD ENV \
     ENV=/etc/profile \
     USER=root \
@@ -55,17 +53,29 @@ ENV \
     GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
     NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
     NIX_PATH=/nix/var/nix/profiles/per-user/root/channels
+
+# Add your user the alpine way
+RUN apk add --no-cache --update shadow \
+    && groupadd -g $(getent group docker | cut -d: -f3) docker \
+    && groupadd -g $(id -g) ${USER} \
+    && useradd -g $(id -g) --groups wheel,docker -u $(id -u) ${USER} \
+    && rm -rf /var/cache/apk/*
 EOF
             docker build . -t nixos-${USER} -f /tmp/docker-build-${USER}
         fi
         docker run --volumes-from=nix-data-${USER} --rm -it \
+        -v /var/run/docker.sock:/var/run/docker.sock \
         -v /etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
         -e GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
         -e NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
         -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+        -e http_proxy=$http_proxy \
+        -e https_proxy=$http_proxy \
+        -e SHELL=bash \
         -e USER=${USER} \
         -u $(id -u):$(id -g) \
         --group-add wheel \
+	--group-add docker \
         -v ${HOME}:${HOME} \
         -w ${HOME} \
         --name nixos-${USER} \
