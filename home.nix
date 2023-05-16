@@ -18,6 +18,8 @@
 
   home.sessionPath = [
     "${config.home.homeDirectory}/.krew/bin"
+    # this shouldn't be here but meh
+    "${config.home.homeDirectory}/.nix-profile/bin"
   ];
 
   programs.starship.enable = true;
