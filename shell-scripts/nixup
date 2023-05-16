@@ -1,15 +1,15 @@
-#!/bin/bash
+#!@bash@/bin/bash
 case "${@}" in
     bootstrap-store)
         [[ -d ${HOME}/nix ]] || {
-            docker create --name nix-data nixos/nix sh >/dev/null 2>&1
-            sudo docker cp nix-data:/nix /
-            docker rm nix-data
+            docker create --name nix-data-${USER} nixos/nix sh >/dev/null 2>&1
+            sudo docker cp nix-data-${USER}:/nix /
+            docker rm nix-data-${USER}
         }
-        docker create -v ${HOME}/nix:/nix --name nix-data nixos/nix sh >/dev/null 2>&1
+        docker create -v ${HOME}/nix:/nix --name nix-data-${USER} nixos/nix sh >/dev/null 2>&1
         ;;
     nuke)
-        docker rm nix-data
+        docker rm nix-data-${USER}
         docker rm nixos-${USER}
         ;;
     "")
@@ -58,7 +58,7 @@ ENV \
 EOF
             docker build . -t nixos-${USER} -f /tmp/docker-build-${USER}
         fi
-        docker run --volumes-from=nix-data --rm -it \
+        docker run --volumes-from=nix-data-${USER} --rm -it \
         -v /etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
         -e GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
         -e NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
@@ -66,16 +66,16 @@ EOF
         -e USER=${USER} \
         -u $(id -u):$(id -g) \
         --group-add wheel \
-            -v ${HOME}:${HOME} \
-            -w ${HOME} \
-            --name nixos-${USER} \
-            --network host \
-            nixos-${USER} bash
+        -v ${HOME}:${HOME} \
+        -w ${HOME} \
+        --name nixos-${USER} \
+        --network host \
+        nixos-${USER} bash --login
         ;;
     clear)
-        docker run --rm --volumes-from=nix-data nixos/nix nix-collect-garbage -d
+        docker run --rm --volumes-from=nix-data-${USER} nixos/nix nix-collect-garbage -d
         ;;
     list)
-        docker run --rm --volumes-from nix-data nixos/nix ls -la /nix
+        docker run --rm --volumes-from nix-data-${USER} nixos/nix ls -la /nix
         ;;
 esac
