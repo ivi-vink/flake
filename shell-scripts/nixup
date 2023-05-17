@@ -3,7 +3,7 @@ case "${@}" in
     bootstrap-store)
         [[ -d ${HOME}/nix ]] || {
             docker create --name nix-data-${USER} nixos/nix sh >/dev/null 2>&1
-            sudo docker cp nix-data-${USER}:/nix /
+            sudo docker cp nix-data-${USER}:/nix ~
             docker rm nix-data-${USER}
         }
         docker create -v ${HOME}/nix:/nix --name nix-data-${USER} nixos/nix sh >/dev/null 2>&1
@@ -75,7 +75,7 @@ EOF
         -e USER=${USER} \
         -u $(id -u):$(id -g) \
         --group-add wheel \
-	--group-add docker \
+        --group-add docker \
         -v ${HOME}:${HOME} \
         -w ${HOME} \
         --name nixos-${USER} \
