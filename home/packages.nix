@@ -25,6 +25,9 @@
       htop
       subversion
       ripgrep
+      gnused
+      gnugrep
+      curl
       inotify-tools
       fzf
       github-cli

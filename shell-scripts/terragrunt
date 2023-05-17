@@ -1,4 +1,4 @@
-#!/bin/bash
+#!@bash@/bin/bash
 TERRAGRUNT_ARGS=()
 CONTEXT=""
 ENV=""

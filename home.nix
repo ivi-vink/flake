@@ -48,6 +48,9 @@
     enable = true;
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
+      set -s set-clipboard on
+      set -g default-terminal "tmux-256color"
+      set-option -sa terminal-overrides ",xterm-256color:RGB"
       set-option -g focus-events on
       set-option -sg escape-time 10
     '';
