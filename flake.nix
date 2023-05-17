@@ -51,6 +51,7 @@
         ./home/codeium.nix
         ./home/packages.nix
         ./home/newsboat.nix
+        ./home/kakoune.nix
       ];
       extraSpecialArgs = {
         inherit home-manager username email;

@@ -69,6 +69,7 @@ EOF
         -e GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
         -e NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
         -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+        -e no_proxy=$no_proxy \
         -e http_proxy=$http_proxy \
         -e https_proxy=$http_proxy \
         -e SHELL=bash \

@@ -18,6 +18,9 @@
       dasel
       initool
       # shell tools
+      bashInteractive
+      k9s
+      tmux
       powershell
       azure-cli
       htop
