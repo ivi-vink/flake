@@ -44,9 +44,18 @@
     '';
   };
 
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
+      set-option -g focus-events on
+      set-option -sg escape-time 10
+    '';
+  };
+
   programs.bash = {
     enable = true;
-    profileExtra = ''
+    bashrcExtra = ''
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
       fi
