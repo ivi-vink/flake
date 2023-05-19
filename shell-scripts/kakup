@@ -1,9 +1,15 @@
-# #!@bash@/bin/bash
-if ! tmux has-session -t kakoune-${USER}; then
-    tmux new -s kakoune-${USER} -d
-    export TMUX=$(tmux display-message -p '#{socket_path}')
-fi
-if ! kak -l | grep kakoune-${USER}; then
-    kak -s kakoune-${USER} -d &
-fi
-tmux attach -t kakoune-${USER}
+client="$(fd -d1 "." -t d $HOME $HOME/projects |
+    fzf |
+    {
+        pushd $(cat -) >/dev/null 2>&1
+        servers=kakoune-servers-${USER}  
+        name=${PWD#$HOME/} 
+        client=kakoune@$name
+        tmux has-session -t $servers || tmux new -d -s $servers kak -s $name -d\; rename-window $name
+        tmux list-windows -t $servers -F "#{window_name}" | grep $name >/dev/null 2>&1 || tmux new-window -t $servers -d kak -s $name -d\; rename-window $name
+        tmux has-session -t $client || tmux new -d -s $client kak -c $name
+        popd >/dev/null 2>&1
+        echo $client
+    })"
+echo "client"
+tmux attach -t "$client"
