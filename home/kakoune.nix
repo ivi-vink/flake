@@ -9,6 +9,7 @@
     enable = true;
 
     config = {
+      colorScheme = "gruvbox-dark";
       autoReload = "yes";
       numberLines = {
         enable = true;
@@ -16,16 +17,6 @@
       };
     };
     extraConfig = ''
-      def ide %{
-          rename-client main
-          set global jumpclient main
-
-          new rename-client tools
-          set global toolsclient tools
-
-          new rename-client docs
-          set global docsclient docs
-      }
       # Source a local project kak config if it exists
       # Make sure it is set as a kak filetype
       hook global BufCreate (.*/)?(\.kakrc\.local) %{
@@ -71,33 +62,31 @@
       #     {left-of}              The pane to the left of the active pane
       #     {right-of}             The pane to the right of the active pane
 
-      map global user q ':new <ret>' -docstring "Open quickfix window"
-      define-command -override -hidden -params 1.. split-impl %{
+      declare-user-mode split
+      define-command -override -hidden -params 1.. tmux %{
           echo %sh{
-              tmux=$${kak_client_env_TMUX:-$TMUX}
+              tmux=''${kak_client_env_TMUX:-$TMUX}
               if [ -z "$tmux" ]; then
                   echo "fail 'This command is only available in a tmux session'"
                   exit
               fi
-              TMUX=$tmux tmux select-pane -t "$1" # < /dev/null > /dev/null 2>&1 &
+              eval TMUX=$tmux tmux ''${@}
           }
       }
-
+      
       map global normal <c-w> %{:enter-user-mode split<ret>} -docstring "Navigate splits"
-      map global split j %{:split-impl '{down-of}'<ret>} -docstring "Down"
-      map global split k %{:split-impl '{up-of}'<ret>} -docstring "Down"
-      map global split h %{:split-impl '{left-of}'<ret>} -docstring "Down"
-      map global split l %{:split-impl '{right-of}'<ret>} -docstring "Down"
+      map global split j %{:tmux select-pane -t "{down-of}"<ret>} -docstring "Down"
+      map global split k %{:tmux select-pane -t "{up-of}"<ret>} -docstring "Up"
+      map global split h %{:tmux select-pane -t "{left-of}"<ret>} -docstring "Left"
+      map global split l %{:tmux select-pane -t "{right-of}"<ret>} -docstring "Right"
+      map global split = %{:tmux select-layout even-vertical<ret>} -docstring "Balance"
+      map global split o %{:tmux kill-pane -a<ret>} -docstring "Only"
+
+      map global insert <c-w> '<left><a-;>B<a-;>d' -docstring "Delete word before cursor"
 
       define-command -override -params 0.. split %{
-          echo %sh{
-              tmux=$${kak_client_env_TMUX:-$TMUX}
-              if [ -z "$tmux" ]; then
-                  echo "fail 'This command is only available in a tmux session'"
-                  exit
-              fi
-              TMUX=$tmux tmux split-window -t "$${kak_client_env_TMUX_PANE}" kak "$${kak_buffile}" # < /dev/null > /dev/null 2>&1 &
-          }
+          tmux split-window -t %val{client_env_TMUX_PANE} kak -c %val{session} %val{buffile}
+          tmux select-layout even-vertical
       }
       alias global sp split
     '';

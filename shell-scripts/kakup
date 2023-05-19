@@ -1,0 +1,9 @@
+# #!@bash@/bin/bash
+if ! tmux has-session -t kakoune-${USER}; then
+    tmux new -s kakoune-${USER} -d
+    export TMUX=$(tmux display-message -p '#{socket_path}')
+fi
+if ! kak -l | grep kakoune-${USER}; then
+    kak -s kakoune-${USER} -d &
+fi
+tmux attach -t kakoune-${USER}
