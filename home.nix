@@ -53,6 +53,19 @@
       set-option -sa terminal-overrides ",xterm-256color:RGB"
       set-option -g focus-events on
       set-option -sg escape-time 10
+
+      bind-key -n C-s copy-mode
+      set-window-option -g mode-keys vi
+      bind-key -T copy-mode-vi v send -X begin-selection
+      bind-key -T copy-mode-vi V send -X select-line
+      bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+
+      set-hook -g pane-focus-in 'run-shell "[[ \"$(tmux display-message -p #{pane_in_mode})\" -eq 0 ]] || tmux send-keys -X cancel"'
+      bind-key -T copy-mode-vi C-w switch-client -T splits
+      bind-key -T splits j select-pane -t '{down-of}'
+      bind-key -T splits k select-pane -t '{up-of}'
+      bind-key -T splits h select-pane -t '{left-of}'
+      bind-key -T splits l select-pane -t '{right-of}'
     '';
   };
 
