@@ -1,13 +1,16 @@
 session-or-client() {
         {
-            pushd $(cat -)
-	    DIRSTACK
+            project="$(cat -)"
+            if [[ -z $project ]]; then
+                return
+            fi
+            pushd $project
             export servers=kakoune-servers-${USER}
             export name=${PWD#$HOME/}
             export name=${name//\//-}
             export client=kakoune@$name
 
-            tmux has-session -t $servers || tmux new -d -s $servers kak -s $name -d\; rename-window $name
+            tmux has-session -t $servers || tmux new -d -s $servers -n $name kak -s $name -d
             tmux list-windows -t $servers -F "#{window_name}" | grep $name || tmux new-window -t $servers -n $name -d kak -s $name -d
 	    if [[ -z $TMUX ]]; then
                 tmux has-session -t $client || tmux new -d -s $client -n $name kak -c $name
@@ -19,6 +22,6 @@ session-or-client() {
         echo $client
 }
 
-client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf | session-or-client)"
+client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | session-or-client)"
 echo "client: $client"
-tmux attach -t "$client"
+[[ $client ]] && tmux attach -t "$client"

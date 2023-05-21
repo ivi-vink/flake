@@ -31,6 +31,7 @@
         require-module tmux
         require-module tmux-repl
         alias global terminal tmux-terminal-vertical
+        alias global sp new
     '';
   };
 }

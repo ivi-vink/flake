@@ -59,6 +59,8 @@
       bind-key -T copy-mode-vi v send -X begin-selection
       bind-key -T copy-mode-vi V send -X select-line
       bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+      bind-key -T copy-mode-vi : command-prompt
+      set -s command-alias[0] sp='splitw "kak -c \"$(tmux display-message -p \"#{window_name}\")\" || ${pkgs.bashInteractive}/bin/bash"'
 
       set-hook -g pane-focus-in 'run-shell "[[ \"$(tmux display-message -p #{pane_in_mode})\" -eq 0 ]] || tmux send-keys -X cancel"'
       bind-key -T copy-mode-vi C-w switch-client -T splits
