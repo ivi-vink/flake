@@ -132,6 +132,10 @@
 
   xsession = {
     enable = true;
+    initExtra = ''
+        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
+        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
+    '';
     windowManager.spectrwm = {
       enable = true;
       programs = {

@@ -9,8 +9,8 @@
     src = fetchFromGitHub {
       owner = "mvinkio";
       repo = "st";
-      rev = "67b580fc4f0bbe1862caf5e71f14b768036904c2";
-      sha256 = "sha256-60ougrGKYL7uwfxePi/YhkHCihlLiwAomh0hpVAcRtg=";
+      rev = "e03a7d3f0b6bf4028389a82d372d0f89a922b9da";
+      sha256 = "sha256-xAMChf8DepEnIhb0/GluvcWWBm9d0Pgipm9HeRi1wUk=";
     };
     buildInputs = oldAttrs.buildInputs ++ [harfbuzz];
   }));
