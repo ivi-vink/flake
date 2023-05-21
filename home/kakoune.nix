@@ -19,8 +19,14 @@
       else
           ln -sf ${pkgs.kakoune-unwrapped}/share/kak/autoload $XDG_CONFIG_HOME_KAK/autoload/default
       fi
+      if [ -L   $XDG_CONFIG_HOME_KAK/autoload/default ] && [ -e  $XDG_CONFIG_HOME_KAK/autoload/default ]; then
+          $DRY_RUN_CMD echo "kakoune share linked"
+      else
+          ln -sf ${pkgs.kakoune-unwrapped}/share/kak/autoload $XDG_CONFIG_HOME_KAK/autoload/default
+      fi
     '';
   };
+
   programs.kakoune = {
     enable = true;
     plugins = with pkgs.kakounePlugins; [
@@ -33,5 +39,9 @@
         alias global terminal tmux-terminal-vertical
         alias global sp new
     '';
+  };
+
+  home.file."${config.xdg.configHome}/kak-lsp/kak-lsp.toml" = {
+      source = ./kak-lsp.toml;
   };
 }

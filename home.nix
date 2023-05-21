@@ -8,7 +8,7 @@
 }: {
   home.homeDirectory = "/home/${username}";
   home.username = username;
-  home.stateVersion = "22.05";
+  home.stateVersion = "23.05";
 
   programs.home-manager.enable = true;
 
@@ -18,9 +18,10 @@
 
   home.sessionPath = [
     "${config.home.homeDirectory}/.krew/bin"
+    "${config.home.homeDirectory}/.cargo/bin"
   ];
 
-  programs.starship.enable = true;
+  programs.starship.enable = false;
 
   programs.direnv = {
     enable = true;
@@ -74,6 +75,7 @@
   programs.bash = {
     enable = true;
     bashrcExtra = ''
+      unset LD_PRELOAD
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
       fi
