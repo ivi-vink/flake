@@ -19,6 +19,7 @@
   home.sessionPath = [
     "${config.home.homeDirectory}/.krew/bin"
     "${config.home.homeDirectory}/.cargo/bin"
+    "${pkgs.ncurses}/bin"
   ];
 
   programs.starship.enable = false;
@@ -50,7 +51,7 @@
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
       set -s set-clipboard on
-      set -g default-terminal "tmux-256color"
+      set -g default-terminal "xterm-256color"
       set-option -sa terminal-overrides ",xterm-256color:RGB"
       set-option -g focus-events on
       set-option -sg escape-time 10
@@ -65,10 +66,10 @@
 
       set-hook -g pane-focus-in 'run-shell "[[ \"$(tmux display-message -p #{pane_in_mode})\" -eq 0 ]] || tmux send-keys -X cancel"'
       bind-key -T copy-mode-vi C-w switch-client -T splits
-      bind-key -T splits j select-pane -t '{down-of}'
-      bind-key -T splits k select-pane -t '{up-of}'
-      bind-key -T splits h select-pane -t '{left-of}'
-      bind-key -T splits l select-pane -t '{right-of}'
+      bind-key -T splits j send -X cancel\; select-pane -t '{down-of}'
+      bind-key -T splits k send -X cancel\; select-pane -t '{up-of}'
+      bind-key -T splits h send -X cancel\; select-pane -t '{left-of}'
+      bind-key -T splits l send -X cancel\; select-pane -t '{right-of}'
     '';
   };
 
@@ -83,9 +84,10 @@
       [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
       # source some workspace specific stuff
       [[ -f ~/env.sh ]] && . ~/env.sh
+      export COLORTERM=truecolor
     '';
     shellAliases = {
-      k9s = "COLORTERM=truecolor k9s";
+      k9s = "k9s";
       k = "kubectl ";
       d = "docker ";
       ls = "ls --color=auto";
