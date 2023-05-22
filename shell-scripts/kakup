@@ -5,25 +5,19 @@ session-or-client() {
                 return
             fi
             pushd $project
-            export servers=kakoune-servers-${USER}
             export name=${PWD#$HOME/}
             export name=${name//\//-}
-            export client=kakoune@$name
-	    export KAKUP_TMUX=$TMUX
-	    echo "KAKUP_TMUX=$KAKUP_TMUX"
+            export server=kaks@$name
+            export client=kakc@$name
 
-            tmux has-session -t $servers || {
-		tmux new -d -s $servers -n $name bash -c "[[ -f .envrc ]] && eval \"$(direnv export bash)\"; { kak -s $name -d & }; tmux wait -S $name; wait"
+            tmux has-session -t $server || {
+		tmux new -d -s $server -n $server bash -c "[[ -f .envrc ]] && eval \"$(direnv export bash)\"; { kak -s $name -d & }; tmux wait -S $name; wait"
         	tmux wait $name
 	    }
-            tmux list-windows -t $servers -F "#{window_name}" | grep $name || {
-		tmux new-window -t $servers -n $name -d bash -c "[[ -f .envrc ]] && eval \"$(direnv export bash)\"; { kak -s $name -d & }; tmux wait -S $name; wait"
-        	tmux wait $name
-	    }
-            if [[ -z $KAKUP_TMUX ]]; then
-		TMUX=$KAKUP_TMUX tmux has-session -t $client || tmux new -d -s $client -n $name kak -c $name
+            if [[ -z $TMUX ]]; then
+		tmux has-session -t $client || tmux new -d -s $client -n $client kak -c $name
             else
-            	TMUX=$KAKUP_TMUX tmux new-window -n $name kak -c $name
+            	tmux new-window -n $client kak -c $name
             fi
             popd
         } </dev/stdin >debug 2>&1
