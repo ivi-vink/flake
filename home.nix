@@ -56,20 +56,37 @@
       set-option -g focus-events on
       set-option -sg escape-time 10
 
-      bind-key -n C-s copy-mode
       set-window-option -g mode-keys vi
       bind-key -T copy-mode-vi v send -X begin-selection
       bind-key -T copy-mode-vi V send -X select-line
       bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
       bind-key -T copy-mode-vi : command-prompt
-      set -s command-alias[0] sp='run-shell "[[ \"$(tmux display-message -p #{pane_in_mode})\" -eq 0 ]] || tmux send-keys -X cancel; tmux splitw \"kak -c \"$(tmux display-message -p \"#{window_name}\" | sed \"s/kakc@//\")\" || /nix/store/kbcrs84s1x8yd5bp1nq6q6ihda8nd2lp-bash-interactive-5.2-p15/bin/bash\""'
 
-      set-hook -g pane-focus-in 'run-shell "[[ \"$(tmux display-message -p #{pane_in_mode})\" -eq 0 ]] || tmux send-keys -X cancel"'
-      bind-key -T copy-mode-vi C-w switch-client -T splits
-      bind-key -T splits j send -X cancel\; select-pane -t '{down-of}'
-      bind-key -T splits k send -X cancel\; select-pane -t '{up-of}'
-      bind-key -T splits h send -X cancel\; select-pane -t '{left-of}'
-      bind-key -T splits l send -X cancel\; select-pane -t '{right-of}'
+      # Make our own copy-mode with Kakoune!
+      #        cursor_y=$(tmux display-message -t "''${pane_id}" -p "#{cursor_y}") ;\
+      #        cursor_x=$(tmux display-message -t "''${pane_id}" -p "#{cursor_x}") ;\
+      #        pane_height=$(tmux display-message -t "''${pane_id}" -p "#{pane_height}") ;\
+      #        line_count="$(wc -l "$file" |awk "{print \$1}")" ;\
+      #        sel_line=$(( line_count - ( pane_height - cursor_y ) + 1 )) ;\
+      #        printf "sel = %s\n" "$line_count" >>/tmp/debug.log ;\
+      #        cursor="''${sel_line}.''${cursor_x},''${sel_line}.''${cursor_x}" ;\
+      #        printf "cursor = %s\n" "$cursor" >>/tmp/debug.log
+      
+      bind -n C-s run-shell '\
+          kakoune_session="$(tmux display-message -p "#{window_name}" | sed "s/kakc@//")" ;\
+          dispatch_name="dispatch://$(tmux display-message -p "#{pane_start_command}")" ;\
+          output=$(mktemp -d /tmp/kak-tmux.XXXXXXXX)/fifo ;\
+    	  mkfifo ''${output} ;\
+              ( tmux capture-pane -t $TMUX_PANE -S- -E- -J -e -p | filter-ansi >''${output} & ) ;\
+              tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "\
+                kak -c $kakoune_session -e \"\
+                   edit -fifo ''${output} -scroll \"''${dispatch_name}\" ;\
+                   set-option buffer readonly true ;\
+                   set-option window filetype dispatch ;\
+                   hook -always -once buffer BufCloseFifo .* %{ nop %sh{ rm -r $(dirname ''${output}) } } ;\
+                   \" ;\
+          	  " \;
+    	  tmux swap-pane -s kaks@$kakoune_session:"$dispatch_name".0 -t :'
     '';
   };
 
