@@ -77,7 +77,7 @@
           dispatch_name="dispatch://$(tmux display-message -p "#{pane_start_command}")" ;\
           output=$(mktemp -d /tmp/kak-tmux.XXXXXXXX)/fifo ;\
     	  mkfifo ''${output} ;\
-              ( tmux capture-pane -t $TMUX_PANE -S- -E- -J -e -p | filter-ansi >''${output} & ) ;\
+              ( tmux capture-pane -S '-' -E '-' -J -e -p -t $TMUX_PANE | filter-ansi >''${output} & ) ;\
               tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "\
                 kak -c $kakoune_session -e \"\
                    edit -fifo ''${output} -scroll \"''${dispatch_name}\" ;\
