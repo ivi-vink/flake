@@ -80,7 +80,7 @@
               ( tmux capture-pane -S '-' -E '-' -J -e -p -t $TMUX_PANE | filter-ansi >''${output} & ) ;\
               tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "\
                 kak -c $kakoune_session -e \"\
-                   edit -fifo ''${output} -scroll \"''${dispatch_name}\" ;\
+                   edit -fifo ''${output} \"''${dispatch_name}\" ;\
                    set-option buffer readonly true ;\
                    set-option window filetype dispatch ;\
                    hook -always -once buffer BufCloseFifo .* %{ nop %sh{ rm -r $(dirname ''${output}) } } ;\
