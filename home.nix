@@ -50,7 +50,7 @@
     enable = true;
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
-      set -s set-clipboard on
+      set -g set-clipboard on
       set -g default-terminal "xterm-256color"
       set-option -sa terminal-overrides ",xterm-256color:RGB"
       set-option -g focus-events on
