@@ -17,6 +17,7 @@
       yq-go
       dasel
       initool
+      nnn
       # shell tools
       bashInteractive
       k9s

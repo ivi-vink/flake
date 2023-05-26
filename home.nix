@@ -50,7 +50,7 @@
     enable = true;
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
-      set -g set-clipboard on
+      set -s set-clipboard on
       set -g default-terminal "xterm-256color"
       set-option -sa terminal-overrides ",xterm-256color:RGB"
       set-option -g focus-events on
@@ -71,22 +71,8 @@
       #        printf "sel = %s\n" "$line_count" >>/tmp/debug.log ;\
       #        cursor="''${sel_line}.''${cursor_x},''${sel_line}.''${cursor_x}" ;\
       #        printf "cursor = %s\n" "$cursor" >>/tmp/debug.log
-      
-      bind -n C-s run-shell '\
-          kakoune_session="$(tmux display-message -p "#{window_name}" | sed "s/kakc@//")" ;\
-          dispatch_name="dispatch://$(tmux display-message -p "#{pane_start_command}")" ;\
-          output=$(mktemp -d /tmp/kak-tmux.XXXXXXXX)/fifo ;\
-    	  mkfifo ''${output} ;\
-              ( tmux capture-pane -S '-' -E '-' -J -e -p -t $TMUX_PANE | filter-ansi >''${output} & ) ;\
-              tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "\
-                kak -c $kakoune_session -e \"\
-                   edit -fifo ''${output} \"''${dispatch_name}\" ;\
-                   set-option buffer readonly true ;\
-                   set-option window filetype dispatch ;\
-                   hook -always -once buffer BufCloseFifo .* %{ nop %sh{ rm -r $(dirname ''${output}) } } ;\
-                   \" ;\
-          	  " \;
-    	  tmux swap-pane -s kaks@$kakoune_session:"$dispatch_name".0 -t :'
+
+      bind -n C-s run-shell tmux-normal-mode
     '';
   };
 
