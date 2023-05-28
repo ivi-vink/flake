@@ -1,11 +1,18 @@
 kakoune_session="$(tmux display-message -p "#{window_name}" | sed "s/kakc@//")"
 dispatch_name="dispatch://$(tmux display-message -p "#{pane_start_command}")"
-output=$(mktemp -d /tmp/kak-tmux.XXXXXXXX)/fifo
-mkfifo ${output}
-( tmux capture-pane -S '-' -E '-' -J -e -p -t $TMUX_PANE | filter-ansi >${output} & )
-tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "
-    kak -c '$kakoune_session' -e \"edit -fifo ${output} -scroll '${dispatch_name}';\
-           set-option buffer readonly true ;\
-           set-option window filetype dispatch ;\
-           hook -always -once buffer BufCloseFifo .* %{ nop %sh{ rm -r $(dirname ${output}) } }\""
-tmux swap-pane -s kaks@$kakoune_session:"$dispatch_name".0 -t :
+case "${@}" in
+    '')
+        output=$(mktemp -d /tmp/kak-tmux.XXXXXXXX)/fifo
+        mkfifo ${output}
+        ( tmux capture-pane -S '-' -E '-' -J -e -p -t $TMUX_PANE | filter-ansi >${output} & )
+        tmux new-window -t kaks@$kakoune_session -n "$dispatch_name" -d "
+            kak -c '$kakoune_session' -e \"edit -fifo ${output} -scroll '${dispatch_name}';\
+                   set-option buffer readonly true ;\
+                   set-option window filetype dispatch ;\
+                   hook -always -once buffer BufCloseFifo .* %{ nop %sh{ rm -r $(dirname ${output}) } }\""
+        tmux swap-pane -s kaks@$kakoune_session:"$dispatch_name".0 -t :
+        ;;
+    --quit)
+        tmux break-pane -t kaks@$kakoune_session -a -d -n "$dispatch_name"
+        ;;
+esac

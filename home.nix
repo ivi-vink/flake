@@ -73,6 +73,7 @@
       #        printf "cursor = %s\n" "$cursor" >>/tmp/debug.log
 
       bind -n C-s run-shell tmux-normal-mode
+      bind -n C-q run-shell 'tmux-normal-mode --quit'
     '';
   };
 
@@ -116,6 +117,8 @@
     userEmail = email;
     extraConfig = {
       worktree.guessRemote = true;
+      mergetool.fugitive.cmd = "vim -f -c \"Gdiff\" \"$MERGED\"";
+      merge.tool = "fugitive";
     };
     ignores = [
       "/.direnv/"
