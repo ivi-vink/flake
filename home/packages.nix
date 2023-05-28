@@ -32,6 +32,7 @@
       inotify-tools
       fzf
       github-cli
+      lazygit
       fd
       argocd
       parallel
