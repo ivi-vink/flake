@@ -36,6 +36,7 @@
       fd
       argocd
       parallel
+      bc
       glibc
     ]
     ++ (import ../shell-scripts.nix {inherit pkgs config;});
