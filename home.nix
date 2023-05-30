@@ -22,7 +22,7 @@
     "${pkgs.ncurses}/bin"
   ];
 
-  programs.starship.enable = false;
+  programs.starship.enable = true;
 
   programs.direnv = {
     enable = true;
