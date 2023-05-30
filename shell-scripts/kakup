@@ -20,10 +20,15 @@ session-or-client() {
             	tmux new-window -n $client kak -c $name
             fi
             popd
-        } </dev/stdin >debug 2>&1
+        } </dev/stdin >/dev/null 2>&1
         echo $client
 }
 
-client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | session-or-client)"
+case "${@}" in
+    "")		client="$(pwd | session-or-client)" ;;
+    .)  	client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | session-or-client)" ;;
+    *)		client="$(echo "${@}" | session-or-client)" ;;
+esac
+
 echo "client: $client"
 [[ $client ]] && tmux attach -t "$client"

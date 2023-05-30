@@ -18,6 +18,7 @@
       dasel
       initool
       nnn
+      python311Packages.editorconfig
       # shell tools
       bashInteractive
       k9s
