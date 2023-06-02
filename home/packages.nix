@@ -43,6 +43,7 @@
     ++ (import ../shell-scripts.nix {inherit pkgs config;});
   mike-extra-packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
+    noto-fonts-emoji
     docker
     k9s
     dmenu
