@@ -11,16 +11,16 @@ session-or-client() {
             export client=kakc@$name
 
             tmux has-session -t $server || {
-		tmux new -d -s $server -n $server bash -c "[[ -f .envrc ]] && eval \"$(direnv export bash)\"; { kak -s $name -d & }; tmux wait -S $name; wait"
-        	tmux wait $name
-	    }
+                tmux new -d -s $server -n $server bash -c '[[ -f .envrc ]] && eval "$(direnv export bash)"; { kak -s '$name' -d & }; tmux wait -S '$name'; wait'
+                tmux wait "$name"
+            }
             if [[ -z $TMUX ]]; then
 		tmux has-session -t $client || tmux new -d -s $client -n $client kak -c $name
             else
             	tmux new-window -n $client kak -c $name
             fi
             popd
-        } </dev/stdin >/dev/null 2>&1
+        } </dev/stdin >debug 2>&1
         echo $client
 }
 

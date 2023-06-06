@@ -1,5 +1,5 @@
-bsnippet_support = true
-erbosity = 2
+snippet_support = true
+verbosity = 2
 
 [server]
 # exit session if no requests were received during given period in seconds
@@ -397,6 +397,12 @@ args = ["--stdio"]
 filetypes = ["zig"]
 roots = ["build.zig"]
 command = "zls"
+
+[language.cs]
+filetypes = ["cs"]
+roots = [".git"]
+command = "OmniSharp"
+args = ["--encoding", "utf-8", "-z", "--languageserver", "DotNet:enablePackageRestore=false", "FormattingOptions:EnableEditorConfigSupport=true", "Sdk:IncludePrereleases=true"]
 
 # Semantic tokens support
 # See https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_semanticTokens

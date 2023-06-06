@@ -65,10 +65,12 @@ EOF
         fi
         docker run --volumes-from=nix-data-${USER} --rm -it \
         -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /etc/kube:/etc/kube \
+        -v /etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-bundle.crt \
         -v /etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
-        -e GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
-        -e NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
-        -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+        -e GIT_SSL_CAINFO=/etc/ssl/certs/ca-bundle.crt \
+        -e NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt \
+        -e SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt \
         -e no_proxy=$no_proxy \
         -e http_proxy=$http_proxy \
         -e https_proxy=$http_proxy \
