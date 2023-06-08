@@ -4,7 +4,11 @@
   pkgs,
   home-manager,
   ...
-}: {
+}:
+  let
+  kakouneWithPlugins = pkgs.wrapKakoune pkgs.kakoune-unwrapped { configure = { plugins = with pkgs.kakounePlugins; [kak-lsp parinfer-rust]; }; };
+  in {
+  home.packages = [kakouneWithPlugins];
   home.activation = {
     kakoune-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       KAK_CONFIG="${config.home.homeDirectory}/kakoune"
@@ -14,34 +18,18 @@
       else
           $DRY_RUN_CMD ln -s $KAK_CONFIG $XDG_CONFIG_HOME_KAK
       fi
-      if [ -L   $XDG_CONFIG_HOME_KAK/autoload/default ] && [ -e  $XDG_CONFIG_HOME_KAK/autoload/default ]; then
-          $DRY_RUN_CMD echo "kakoune share linked"
-      else
-          ln -sf ${pkgs.kakoune-unwrapped}/share/kak/autoload $XDG_CONFIG_HOME_KAK/autoload/default
-      fi
-      if [ -L   $XDG_CONFIG_HOME_KAK/autoload/default ] && [ -e  $XDG_CONFIG_HOME_KAK/autoload/default ]; then
-          $DRY_RUN_CMD echo "kakoune share linked"
-      else
-          ln -sf ${pkgs.kakoune-unwrapped}/share/kak/autoload $XDG_CONFIG_HOME_KAK/autoload/default
-      fi
+      rm -rf $XDG_CONFIG_HOME_KAK/autoload/default
+      ln -sf ${kakouneWithPlugins}/share/kak/autoload $XDG_CONFIG_HOME_KAK/autoload/default
     '';
   };
-
-  programs.kakoune = {
-    enable = true;
-    plugins = with pkgs.kakounePlugins; [
-      kak-lsp
-    ];
-    extraConfig = ''
-        set global windowing_modules ""
-        require-module tmux
-        require-module tmux-repl
-        alias global terminal tmux-terminal-vertical
-        alias global sp new
-    '';
-  };
-
   home.file."${config.xdg.configHome}/kak-lsp/kak-lsp.toml" = {
       source = ./kak-lsp.toml;
   };
+
+        #set global windowing_modules ""
+        #require-module tmux
+        #require-module tmux-repl
+        #alias global terminal tmux-terminal-vertical
+        #alias global sp new
+
 }
