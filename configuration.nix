@@ -132,7 +132,7 @@
     pinentry-curses
   ];
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
   nix.package = pkgs.nixUnstable;
   nix.extraOptions = ''
     experimental-features = nix-command flakes

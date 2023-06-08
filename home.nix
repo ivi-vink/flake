@@ -10,6 +10,7 @@
   home.username = username;
   home.stateVersion = "23.05";
 
+  fonts.fontconfig.enable = true;
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
