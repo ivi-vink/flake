@@ -24,9 +24,30 @@ session-or-client() {
         echo $client
 }
 
+is-bare() {
+    project="$(cat -)"
+    pushd $project >/dev/null 2>&1
+    if grep 'bare = true' config >/dev/null 2>&1 ; then
+        branch="$(git branch -a --format '%(refname)' | fzf -1)"
+        echo "$branch" >debug 2>&1
+        if [[ "$branch" == "refs/remotes/"* ]]; then
+            git branch ${branch#refs/remotes/*/} -t $branch >debug 2>&1
+            git worktree add ${branch#refs/remotes/*/} ${branch#refs/remotes/*/} >debug 2>&1
+            branch="${branch#refs/remotes/*/}"
+        elif [[ "$branch" == "refs/heads/"* ]]; then
+            branch="${branch#refs/heads/}"
+            git worktree add $branch $branch >debug 2>&1
+        fi
+        echo "$project/$branch"
+    else
+        echo "$project"
+    fi
+    popd >/dev/null 2>&1
+}
+
 case "${@}" in
     "")		client="$(pwd | session-or-client)" ;;
-    .)  	client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | session-or-client)" ;;
+    .)  	client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | is-bare | session-or-client)" ;;
     *)		client="$(echo "${@}" | session-or-client)" ;;
 esac
 
