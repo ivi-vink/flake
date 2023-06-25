@@ -25,11 +25,30 @@ session-or-client() {
         echo $client
 }
 
-is-bare() {
-    project="$(cat -)"
+search() {
+    if tty -s
+    then
+        fd -d1 "." -t d $HOME $HOME/projects | fzf -1
+    else
+        output=$(mktemp -d /tmp/kakup.XXXXXXXX)/fifo
+        mkfifo ${output}
+        st -e bash -c "fd -d1 '.' -t d $HOME $HOME/projects | fzf -1 | tee ${output} >/dev/null 2>&1" &
+        project="$(cat ${output})"
+        rm -r $(dirname ${output})
+    fi
+
     pushd $project >/dev/null 2>&1
     if grep 'bare = true' config >/dev/null 2>&1 ; then
-        branch="$(git branch -a --format '%(refname)' | fzf -1)"
+        if tty -s
+        then
+            branch="$(git branch -a --format '%(refname)' | fzf -1)"
+        else
+            output=$(mktemp -d /tmp/kakup.XXXXXXXX)/fifo
+            mkfifo ${output}
+            st -e bash -c "git branch -a --format '%(refname)' | fzf -1 >${output}" &
+            branch="$(cat ${output})"
+            rm -r $(dirname ${output})
+        fi
         echo "$branch" >debug 2>&1
         if [[ "$branch" == "refs/remotes/"* ]]; then
             git branch ${branch#refs/remotes/*/} -t $branch >debug 2>&1
@@ -46,22 +65,9 @@ is-bare() {
     popd >/dev/null 2>&1
 }
 
-search() {
-    if tty -s
-    then
-        fd -d1 "." -t d $HOME $HOME/projects | fzf -1
-    else
-        output=$(mktemp -d /tmp/kakup.XXXXXXXX)/fifo
-        mkfifo ${output}
-        st -e bash -c "fd -d1 '.' -t d $HOME $HOME/projects | fzf -1 | tee ${output} >/dev/null 2>&1" &
-        cat ${output}
-        rm -r $(dirname ${output})
-    fi
-}
-
 case "${@}" in
     "")		client="$(pwd | session-or-client)" ;;
-    .)  	client="$(search | is-bare | session-or-client)" ;;
+    .)  	client="$(search | session-or-client)" ;;
     *)		client="$(echo "${@}" | session-or-client)" ;;
 esac
 

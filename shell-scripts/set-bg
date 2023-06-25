@@ -12,5 +12,3 @@ else
     sxiv -tob ~/bg | parallel wal -i
 fi
 kak -l | parallel '<<< "colorscheme wal" kak -p {}'
-pgrep -x st | parallel kill
-st -e tmux attach &
