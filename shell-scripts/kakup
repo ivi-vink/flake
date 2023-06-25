@@ -7,6 +7,7 @@ session-or-client() {
             pushd $project
             export name=${PWD#$HOME/}
             export name=${name//\//-}
+            export name=${name#-}
             export server=kaks@$name
             export client=kakc@$name
 
@@ -45,11 +46,30 @@ is-bare() {
     popd >/dev/null 2>&1
 }
 
+search() {
+    if tty -s
+    then
+        fd -d1 "." -t d $HOME $HOME/projects | fzf -1
+    else
+        output=$(mktemp -d /tmp/kakup.XXXXXXXX)/fifo
+        mkfifo ${output}
+        st -e bash -c "fd -d1 '.' -t d $HOME $HOME/projects | fzf -1 | tee ${output} >/dev/null 2>&1" &
+        cat ${output}
+        rm -r $(dirname ${output})
+    fi
+}
+
 case "${@}" in
     "")		client="$(pwd | session-or-client)" ;;
-    .)  	client="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1 | is-bare | session-or-client)" ;;
+    .)  	client="$(search | is-bare | session-or-client)" ;;
     *)		client="$(echo "${@}" | session-or-client)" ;;
 esac
 
-echo "client: $client"
-[[ $client ]] && tmux attach -t "$client"
+[[ ! -z "$client" ]] && {
+    if tty -s
+    then
+        tmux attach -t "$client"
+    else
+        st -e tmux attach -t "$client"
+    fi
+}

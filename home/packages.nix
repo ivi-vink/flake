@@ -39,7 +39,8 @@
       argocd
       parallel
       bc
-      glibc
+      sxiv
+      nushell
     ]
     ++ (import ../shell-scripts.nix {inherit pkgs config;});
   mike-extra-packages = with pkgs; [

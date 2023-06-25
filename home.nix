@@ -53,7 +53,7 @@
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
       set -s set-clipboard on
       set -g default-terminal "xterm-256color"
-      set-option -sa terminal-overrides ",xterm-256color:RGB"
+      set -as terminal-overrides ',xterm*:RGB'
       set-option -g focus-events on
       set-option -sg escape-time 10
 
@@ -81,6 +81,7 @@
   programs.bash = {
     enable = true;
     bashrcExtra = ''
+      [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
       unset LD_PRELOAD
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
@@ -92,6 +93,8 @@
       export COLORTERM=truecolor
     '';
     shellAliases = {
+      e = "kakup ";
+      es = "kakup .";
       k9s = "k9s";
       k = "kubectl ";
       d = "docker ";
@@ -111,6 +114,8 @@
       lock-pass = "gpgconf --kill gpg-agent";
     };
   };
+
+  programs.nushell.enable = true;
 
   programs.git = {
     enable = true;

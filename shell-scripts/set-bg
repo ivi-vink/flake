@@ -1,0 +1,16 @@
+#!@bash@/bin/bash
+reload=0
+while getopts "r" opt; do
+  case "$opt" in
+    h|\?) exit 0 ;;
+    r)  reload=1 ;;
+  esac
+done
+if [ $reload -eq 1 ]; then
+    (cat ~/.cache/wal/sequences &)
+else
+    sxiv -tob ~/bg | parallel wal -i
+fi
+kak -l | parallel '<<< "colorscheme wal" kak -p {}'
+pgrep -x st | parallel kill
+st -e tmux attach
