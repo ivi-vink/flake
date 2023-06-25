@@ -1,0 +1,3 @@
+[submodule "home/dwm"]
+	path = home/dwm
+	url = https://github.com/mvinkio/dwm

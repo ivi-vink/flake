@@ -52,6 +52,7 @@
         ./home/packages.nix
         ./home/newsboat.nix
         ./home/kakoune.nix
+        ./home/mpv.nix
       ];
       extraSpecialArgs = {
         inherit home-manager username email;

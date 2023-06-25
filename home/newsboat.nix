@@ -20,6 +20,7 @@
       {url = "https://blog.alexellis.io/rss/";}
       {url = "https://www.openfaas.com/feed";}
       {url = "https://istio.io/latest/blog/feed.xml";}
+      {url = "https://www.youtube.com/feeds/videos.xml?channel_id=UCUyeluBRhGPCW4rPe_UvBZQ";}
     ];
     extraConfig = ''
       #show-read-feeds no
