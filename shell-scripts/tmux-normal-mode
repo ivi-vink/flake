@@ -1,3 +1,13 @@
+      # Make our own copy-mode with Kakoune!
+      #        cursor_y=$(tmux display-message -t "''${pane_id}" -p "#{cursor_y}") ;\
+      #        cursor_x=$(tmux display-message -t "''${pane_id}" -p "#{cursor_x}") ;\
+      #        pane_height=$(tmux display-message -t "''${pane_id}" -p "#{pane_height}") ;\
+      #        line_count="$(wc -l "$file" |awk "{print \$1}")" ;\
+      #        sel_line=$(( line_count - ( pane_height - cursor_y ) + 1 )) ;\
+      #        printf "sel = %s\n" "$line_count" >>/tmp/debug.log ;\
+      #        cursor="''${sel_line}.''${cursor_x},''${sel_line}.''${cursor_x}" ;\
+      #        printf "cursor = %s\n" "$cursor" >>/tmp/debug.log
+
 kakoune_session="$(tmux display-message -p "#{window_name}" | sed "s/kakc@//")"
 dispatch_name="dispatch://$(tmux display-message -p "#{pane_start_command}")"
 case "${@}" in

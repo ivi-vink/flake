@@ -52,6 +52,7 @@
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
       set -s set-clipboard on
+      setw -g mouse on
       set -g default-terminal "xterm-256color"
       set -as terminal-overrides ',xterm*:RGB'
       set-option -g focus-events on
@@ -62,16 +63,6 @@
       bind-key -T copy-mode-vi V send -X select-line
       bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
       bind-key -T copy-mode-vi : command-prompt
-
-      # Make our own copy-mode with Kakoune!
-      #        cursor_y=$(tmux display-message -t "''${pane_id}" -p "#{cursor_y}") ;\
-      #        cursor_x=$(tmux display-message -t "''${pane_id}" -p "#{cursor_x}") ;\
-      #        pane_height=$(tmux display-message -t "''${pane_id}" -p "#{pane_height}") ;\
-      #        line_count="$(wc -l "$file" |awk "{print \$1}")" ;\
-      #        sel_line=$(( line_count - ( pane_height - cursor_y ) + 1 )) ;\
-      #        printf "sel = %s\n" "$line_count" >>/tmp/debug.log ;\
-      #        cursor="''${sel_line}.''${cursor_x},''${sel_line}.''${cursor_x}" ;\
-      #        printf "cursor = %s\n" "$cursor" >>/tmp/debug.log
 
       bind -n C-s run-shell tmux-normal-mode
       bind -n C-q run-shell 'tmux-normal-mode --quit'
@@ -149,6 +140,7 @@
   xsession = {
     enable = true;
     initExtra = ''
+        wal -R &
         ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
         ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
     '';
@@ -159,6 +151,8 @@
         search = "dmenu -ip -p 'Window name/id:'";
         browser = "firefox";
         lock = "slock";
+        editor = "bash -c 'kakup'";
+        projecteditor = "bash -c 'kakup .'";
       };
       bindings = {
         lock = "Mod+s";
@@ -166,6 +160,8 @@
         term = "Mod+Return";
         restart = "Mod+Shift+r";
         quit = "Mod+Shift+q";
+        editor = "Mod+e";
+        projecteditor = "Mod+Shift+e";
       };
       settings = {
         modkey = "Mod4";
