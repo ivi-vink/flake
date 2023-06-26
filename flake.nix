@@ -46,7 +46,7 @@
       inherit pkgs;
       modules = [
         ./home.nix
-        ./home/st.nix
+        ./home/suckless.nix
         ./home/neovim.nix
         ./home/codeium.nix
         ./home/packages.nix
