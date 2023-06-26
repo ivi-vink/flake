@@ -34,6 +34,9 @@
                };
             })
         ];
+        config = {
+            gpu-context = "drm";
+        };
         bindings = {
             l="seek 5";
             h="seek -5";
