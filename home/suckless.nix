@@ -84,6 +84,7 @@ in {
     opacityRules = [
       "100:class_g = 'dwm'"
       "100:name *= 'Firefox'"
+      "100:name *= 'mpv'"
       "100:name *= 'LibreWolf'"
     ];
     settings = {
