@@ -7,7 +7,8 @@ while getopts "r" opt; do
   esac
 done
 if [ $reload -eq 1 ]; then
-    (cat ~/.cache/wal/sequences &)
+    # (cat ~/.cache/wal/sequences &)
+    wal -R
 else
     sxiv -tob ~/bg | parallel wal -i
 fi

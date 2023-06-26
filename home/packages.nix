@@ -32,6 +32,8 @@
       gnugrep
       curl
       inotify-tools
+      alejandra
+      statix
       fzf
       github-cli
       lazygit
@@ -51,6 +53,7 @@
     docker
     k9s
     dmenu
+    librewolf
     firefox-wayland
     xclip
     libreoffice

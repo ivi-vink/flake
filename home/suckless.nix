@@ -6,35 +6,41 @@
   ...
 }: let
   st-fork = with pkgs; (st.overrideAttrs (oldAttrs: rec {
-    src = fetchFromGitHub {
-      owner = "mvinkio";
-      repo = "st";
-      rev = "e03a7d3f0b6bf4028389a82d372d0f89a922b9da";
-      sha256 = "sha256-xAMChf8DepEnIhb0/GluvcWWBm9d0Pgipm9HeRi1wUk=";
-    };
+    src = /. + config.home.homeDirectory + "/flake/home/st";
     buildInputs = oldAttrs.buildInputs ++ [harfbuzz];
   }));
 
   dwm-fork = with pkgs; (dwm.overrideAttrs (oldAttrs: rec {
-    src = (/. + config.home.homeDirectory + "/flake/home/dwm");
+    src = /. + config.home.homeDirectory + "/flake/home/dwm";
   }));
+
+  dwmblocks-fork = with pkgs; (stdenv.mkDerivation rec {
+    pname = "dwmblocks";
+    version = "1.0";
+    src = /. + config.home.homeDirectory + "/flake/home/dwmblocks";
+    buildInputs = [xorg.libX11];
+    installPhase = ''
+      install -m755 -D dwmblocks $out/bin/dwmblocks
+    '';
+  });
 
   dwm-xsession = {
     enable = true;
     initExtra = ''
-        ${dwm-fork}/bin/dwm
-        wal -R &
-        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
-        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
+      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
+      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
+      wal -R
+      dwm
+      dwmblocks &
     '';
   };
 
   spectrwm-xsession = {
     enable = true;
     initExtra = ''
-        wal -R &
-        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
-        ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
+      wal -R &
+      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
+      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
     '';
     windowManager.spectrwm = {
       enable = true;
@@ -67,8 +73,64 @@
     };
   };
 in {
-  xsession = if (true) then dwm-xsession else spectrwm-xsession;
+  xsession =
+    if true
+    then dwm-xsession
+    else spectrwm-xsession;
+  services.picom = {
+    enable = true;
+    activeOpacity = 0.9;
+    inactiveOpacity = 0.7;
+    opacityRules = [
+      "100:class_g = 'dwm'"
+      "100:name *= 'Firefox'"
+      "100:name *= 'LibreWolf'"
+    ];
+    settings = {
+      inactive-opacity-override = false;
+      frame-opacity = 1;
+    };
+  };
+  services.dunst = {
+    enable = true;
+    settings = {
+      global = {
+        monitor = 0;
+        follow = "keyboard";
+        width = 370;
+        height = 350;
+        offset = "0x19";
+        padding = 2;
+        horizontal_padding = 2;
+        transparency = 25;
+        font = "Monospace 12";
+        format = "<b>%s</b>\\n%b";
+      };
+
+      urgency_low = {
+        background = "#1d2021";
+        foreground = "#928374";
+        timeout = 3;
+      };
+
+      urgency_normal = {
+        foreground = "#ebdbb2";
+        background = "#458588";
+        timeout = 5;
+      };
+
+      urgency_critical = {
+        background = "#1cc24d";
+        foreground = "#ebdbb2";
+        frame_color = "#fabd2f";
+        timeout = 10;
+      };
+    };
+  };
   home.packages = [
     st-fork
+    dwm-fork
+    dwmblocks-fork
+    pkgs.libnotify
   ];
 }
