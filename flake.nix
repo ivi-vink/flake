@@ -53,6 +53,10 @@
         ./home/newsboat.nix
         ./home/kakoune.nix
         ./home/mpv.nix
+        ./email/gmail.nix
+        ./email/mailsync.nix
+        ./email/neomutt.nix
+        ./email/notmuch.nix
       ];
       extraSpecialArgs = {
         inherit home-manager username email;

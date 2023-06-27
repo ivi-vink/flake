@@ -128,6 +128,7 @@
       enable = true;
     };
     binds = [
+        { map = ["index" "pager"]; key = "x"; action = "noop"; }
         { map = ["index" "pager"]; key = "i"; action = "noop"; }
         { map = ["index" "pager"]; key = "g"; action = "noop"; }
         { map = ["index"]; key = "\\Cf"; action = "noop"; }
@@ -144,7 +145,6 @@
         { map = ["pager"]; key = "j"; action = "next-line"; }
         { map = ["pager"]; key = "k"; action = "previous-line"; }
         { map = ["pager"]; key = "l"; action = "view-attachments"; }
-        { map = ["index"]; key = "D"; action = "delete-message"; }
         { map = ["index"]; key = "U"; action = "undelete-message"; }
         { map = ["index"]; key = "L"; action = "limit"; }
         { map = ["index"]; key = "h"; action = "noop"; }
@@ -158,7 +158,6 @@
         { map = ["pager"]; key = "G"; action = "bottom"; }
         { map = ["index" "pager" "browser"]; key = "d"; action = "half-down"; }
         { map = ["index" "pager" "browser"]; key = "u"; action = "half-up"; }
-        { map = ["index" "pager"]; key =  "S"; action = "sync-mailbox"; }
         { map = ["index" "pager"]; key =  "R"; action = "group-reply"; }
         { map = ["index"]; key = "\031"; action = "previous-undeleted"; }
         { map = ["index"]; key = "\005"; action = "next-undeleted"; }
@@ -167,8 +166,13 @@
         { map = ["editor"]; key = "<Tab>"; action = "complete-query"; }
     ];
     macros = [
+      { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
+      { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
+      { map = ["index"]; key = "D"; action = "<delete-message>"; }
+      { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook &<enter>"; }
+      { map = ["index"]; key = "c"; action = "<change-vfolder>?"; }
+      { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
       { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
-      { map = ["index"]; key = "<right>"; action = "<enter-command>toggle sidebar_visible<enter><refresh>"; }
     ];
   };
 }

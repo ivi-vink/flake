@@ -5,13 +5,10 @@
   home-manager,
   ...
 }: {
-  programs.mbsync = {
-      enable = true;
-  };
   programs.notmuch = {
       enable = true;
       new = {
-          tags = ["unread" "inbox"];
+          tags = ["new"];
           ignore = [".mbsyncstate" ".uidvalidity"];
       };
       search.excludeTags = ["deleted" "spam"];

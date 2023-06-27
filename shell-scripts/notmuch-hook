@@ -1,0 +1,10 @@
+. <(pass show personal/notmuch)
+notmuch new --quiet
+notmuch tag -new +jobs -- from:jobs-listing* or from:jobs-noreply*
+notmuch tag -new +houses -- from:"$MAKELAAR" or thread:"{$MAKELAAR}"
+notmuch tag -new -inbox +dev -- from:/.*github.com/ or thread:"{from:/.*github.com/}"
+
+notmuch tag -new +inbox +unread -- tag:new and path:gmail/Inbox/**
+notmuch tag -new +archive -- 'path:gmail/Archive/** -path:gmail/Inbox/** -path:gmail/[Gmail]/** -path:gmail/FarDrafts/** -path:gmail/Important/** -path:gmail/Sent/**'
+notmuch tag --remove-all +trash -- path:gmail/Trash/**
+notmuch tag --remove-all +spam -- folder:/Spam/
