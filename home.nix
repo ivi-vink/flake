@@ -9,12 +9,16 @@
   home.homeDirectory = "/home/${username}";
   home.username = username;
   home.stateVersion = "23.05";
+  xdg = {
+    enable = true;
+  };
 
   fonts.fontconfig.enable = true;
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    EDITOR = "kak";
+    TERMINAL = "st";
   };
 
   home.sessionPath = [
@@ -136,5 +140,4 @@
   programs.password-store = {
     enable = true;
   };
-
 }

@@ -20,6 +20,7 @@
       nnn
       python311Packages.editorconfig
       # shell tools
+      pstree
       pywal
       bashInteractive
       k9s

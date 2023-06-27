@@ -1,3 +1,4 @@
+#!@bash@/bin/bash
 session-or-client() {
         {
             project="$(cat -)"
@@ -65,14 +66,26 @@ search() {
     popd >/dev/null 2>&1
 }
 
-case "${@}" in
-    "")		client="$(pwd | session-or-client)" ;;
-    .)  	client="$(search | session-or-client)" ;;
-    *)		client="$(echo "${@}" | session-or-client)" ;;
-esac
+NEW_TERM=0
+while getopts "tf" opt; do
+  case "$opt" in
+    h|\?) exit 0 ;;
+    t)  NEW_TERM=1 ;;
+    f)  client="$(search | session-or-client)"  ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+[ -z "$client" ] && {
+    case "${@}" in
+        "")		client="$(pwd | session-or-client)" ;;
+        *)		client="$(echo "${@}" | session-or-client)" ;;
+    esac
+}
 
 [[ ! -z "$client" ]] && {
-    if tty -s
+    if [ $NEW_TERM -eq 0 ]
     then
         tmux attach -t "$client"
     else
