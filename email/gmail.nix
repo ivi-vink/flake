@@ -16,9 +16,12 @@
         passwordCommand = ["${pkgs.pass}/bin/pass" "personal/neomutt"];
         imap = { host = "imap.gmail.com"; port = 993; tls = { enable = true; }; };
         smtp = { host = "smtp.gmail.com"; port = 587; tls = { enable = true; useStartTls = true; }; };
+        msmtp = {
+            enable = true;
+        };
         neomutt = {
           enable = true;
-          sendMailCommand = "echo 'hi'";
+          sendMailCommand = "msmtp -a gmail";
           mailboxName = "=== gmail ===";
           extraConfig = ''
             set spoolfile='Inbox'

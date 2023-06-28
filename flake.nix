@@ -20,6 +20,7 @@
     home-manager,
     ...
   }: let
+    home = builtins.getEnv "HOME";
     username = builtins.getEnv "USER";
     email = builtins.getEnv "EMAIL";
     system = "x86_64-linux";
@@ -27,6 +28,7 @@
 
     overlay = nixpkgs.lib.composeManyExtensions [
       (import ./overlays/vimPlugins.nix {inherit pkgs;})
+      (import ./overlays/suckless.nix {inherit pkgs home;})
       # (import ./overlays/fennel-language-server.nix {inherit pkgs;})
     ];
 
@@ -36,6 +38,7 @@
       ];
       inherit system;
     };
+
   in {
     nixosConfigurations.lemptop = nixpkgs.lib.nixosSystem {
       inherit system;
@@ -53,6 +56,7 @@
         ./home/newsboat.nix
         ./home/kakoune.nix
         ./home/mpv.nix
+        ./home/zathura.nix
         ./email/gmail.nix
         ./email/mailsync.nix
         ./email/neomutt.nix

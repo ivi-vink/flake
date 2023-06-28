@@ -5,13 +5,35 @@
   home-manager,
   ...
 }: {
+  programs.msmtp = {
+      enable = true;
+  };
+
+  xdg.configFile."neomutt/mailcap" = {
+      text = ''
+        text/plain; $EDITOR %s ;
+        text/html; openfile %s ; nametemplate=%s.html
+        text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -dump -width=1024 %s; nametemplate=%s.html; copiousoutput;
+        image/*; openfile %s ;
+        video/*; setsid mpv --quiet %s &; copiousoutput
+        audio/*; mpv %s ;
+        application/pdf; openfile %s ;
+        application/pgp-encrypted; gpg -d '%s'; copiousoutput;
+        application/pgp-keys; gpg --import '%s'; copiousoutput;
+        application/x-subrip; $EDITOR %s ;
+      '';
+  };
+
   programs.neomutt = {
     enable = true;
     sort = "reverse-date";
+   sidebar = {
+      enable = true;
+    };
     extraConfig = ''
         set use_threads=yes
         set send_charset="us-ascii:utf-8"
-        set mailcap_path = $HOME/.config/mutt/mailcap
+        set mailcap_path = $HOME/.config/neomutt/mailcap
         set mime_type_query_command = "file --mime-type -b %s"
         set date_format="%y/%m/%d %I:%M%p"
         set index_format="%2C %Z %?X?A& ? %D %-15.15F %s (%-4.4c)"
@@ -124,9 +146,6 @@
         mono body bold "^gpg: BAD signature from.*"
         color body red default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
     '';
-   sidebar = {
-      enable = true;
-    };
     binds = [
         { map = ["index" "pager"]; key = "x"; action = "noop"; }
         { map = ["index" "pager"]; key = "i"; action = "noop"; }

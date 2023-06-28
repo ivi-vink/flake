@@ -11,6 +11,28 @@
   home.stateVersion = "23.05";
   xdg = {
     enable = true;
+    mimeApps = {
+        enable = true;
+        defaultApplications = {
+            "text/x-shellscript"        =  ["text.desktop"];
+            "x-scheme-handler/magnet"   =  ["torrent.desktop"];
+            "application/x-bittorrent"  =  ["torrent.desktop"];
+            "x-scheme-handler/mailto"   =  ["mail.desktop"];
+            "text/plain"                =  ["text.desktop"];
+            "application/postscript"    =  ["pdf.desktop"];
+            "application/pdf"           =  ["pdf.desktop"];
+            "image/png"                 =  ["img.desktop"];
+            "image/jpeg"                =  ["img.desktop"];
+            "image/gif"                 =  ["img.desktop"];
+            "application/rss+xml"       =  ["rss.desktop"];
+            "video/x-matroska"          =  ["video.desktop"];
+            "video/mp4"                 =  ["video.desktop"];
+            "x-scheme-handler/lbry"     =  ["lbry.desktop"];
+            "inode/directory"           =  ["file.desktop"];
+        };
+    };
+    desktopEntries = {
+    };
   };
 
   fonts.fontconfig.enable = true;
@@ -88,25 +110,25 @@
       export COLORTERM=truecolor
     '';
     shellAliases = {
-      e = "kakup ";
-      es = "kakup .";
-      k9s = "k9s";
-      k = "kubectl ";
-      d = "docker ";
-      ls = "ls --color=auto";
-      s = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
-      b = "/run/current-system/bin/switch-to-configuration boot";
-      h = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio --impure";
-      fa = "azdo-switch-project";
-      v = "nvim";
-      V = "nvim -S .vimsession.vim";
-      M = "xrandr --output HDMI1 --auto --output eDP1 --off";
-      m = "xrandr --output eDP1 --auto --output HDMI1 --off";
-      mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
-      newflake = "nix flake new -t ~/flake ";
+      e             = "kakup ";
+      es            = "kakup -f";
+      k9s           = "k9s";
+      k             = "kubectl ";
+      d             = "docker ";
+      ls            = "ls --color=auto";
+      s             = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/flake#";
+      b             = "/run/current-system/bin/switch-to-configuration boot";
+      h             = "home-manager switch --flake ${config.home.homeDirectory}/flake#mvinkio --impure";
+      fa            = "azdo-switch-project";
+      v             = "nvim";
+      V             = "nvim -S .vimsession.vim";
+      M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
+      m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
+      mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
+      newflake      = "nix flake new -t ~/flake ";
       ansible-flake = "nix flake new -t ~/flake#ansible ";
-      go-flake = "nix flake new -t ~/flake#go ";
-      lock-pass = "gpgconf --kill gpg-agent";
+      go-flake      = "nix flake new -t ~/flake#go ";
+      lock-pass     = "gpgconf --kill gpg-agent";
     };
   };
 
