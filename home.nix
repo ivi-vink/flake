@@ -6,9 +6,11 @@
   pkgs,
   ...
 }: {
+  programs.home-manager.enable = true;
   home.homeDirectory = "/home/${username}";
   home.username = username;
   home.stateVersion = "23.05";
+  fonts.fontconfig.enable = true;
   xdg = {
     enable = true;
     mimeApps = {
@@ -31,12 +33,27 @@
             "inode/directory"           =  ["file.desktop"];
         };
     };
+    mime.enable = true;
     desktopEntries = {
+        text= { type = "Application"; name = "Text editor"; exec = "${pkgs.st}/bin/st -e kak %u"; };
+        file = { type = "Application"; name = "File Manager"; exec = "${pkgs.st}/bin/st -e lfub %u"; };
+        torrent = { type = "Application"; name = "Torrent"; exec = "${pkgs.coreutils}/bin/env transadd %U"; };
+        img = { type = "Application"; name = "Image Viewer"; exec = "${pkgs.sxiv}/bin/sxiv -a %u"; };
+        video = { type = "Application"; name = "Video Viewer"; exec = "${pkgs.mpv}/bin/mpv -quiet %f"; };
+        mail = { type = "Application"; name = "Mail"; exec = "${pkgs.st}/bin/st -e neomutt %u"; };
+        pdf = { type = "Application"; name = "PDF reader"; exec = "${pkgs.zathura}/bin/zathura %u"; };
+        rss = { type = "Application"; name = "RSS feed addition"; exec = "${pkgs.coreutils}/bin/env rssadd %u"; };
     };
   };
 
-  fonts.fontconfig.enable = true;
-  programs.home-manager.enable = true;
+  programs.ssh = {
+      enable = true;
+      matchBlocks = {
+          "*" = {
+              identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+          };
+      };
+  };
 
   home.sessionVariables = {
     EDITOR = "kak";
@@ -156,8 +173,8 @@
   };
   services.gpg-agent = {
     enable = true;
-    defaultCacheTtl = 34560000;
-    maxCacheTtl = 34560000;
+    defaultCacheTtl = 34550000;
+    maxCacheTtl = 34550000;
   };
   programs.password-store = {
     enable = true;

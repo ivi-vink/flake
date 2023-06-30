@@ -29,7 +29,7 @@
           Type = "oneshot";
           RemainAfterExit = "no";
           ExecSearchPath = "${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
-          ExecStart = "mailsync";
+          ExecStart = "${pkgs.coreutils}/bin/env mailsync";
       };
   };
 }

@@ -83,23 +83,23 @@ syncandnotify() {
 esac
 }
 
-allchannels="$(grep -hs "Channel" "$MBSYNCRC" "$MPOPRC" | sort -u)"
+allgroups="$(grep -hs "Group" "$MBSYNCRC" "$MPOPRC" | sort -u)"
 
 # Get accounts to sync. All if no argument. Prefix with `error` if non-existent.
 IFS='
 '
 if [ -z "$1" ]; then
-	tosync="$allchannels"
+	tosync="$allgroups"
 else
-	tosync="$(for arg in "$@"; do for availacc in $allchannels; do
-		[ "$arg" = "${availacc##* }" ] && echo "$availacc" && break
+	tosync="$(for arg in "$@"; do for grp in $allgroups; do
+		[ "$arg" = "${grp##* }" ] && echo "$grp" && break
 	done || echo "error $arg"; done)"
 fi
 
-for channel in $tosync; do
-	case $channel in
-		Channel*) syncandnotify imap "${channel##* }" & ;;
-		account*) syncandnotify pop "${channel##* }" & ;;
+for grp in $tosync; do
+	case $grp in
+		Group*) syncandnotify imap "${grp##* }" & ;;
+		account*) syncandnotify pop "${grp##* }" & ;;
 		error*) echo "ERROR: Account ${channelt##* } not found." ;;
 	esac
 done

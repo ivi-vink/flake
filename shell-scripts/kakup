@@ -29,7 +29,7 @@ session-or-client() {
 search() {
     if tty -s
     then
-        fd -d1 "." -t d $HOME $HOME/projects | fzf -1
+        project="$(fd -d1 "." -t d $HOME $HOME/projects | fzf -1)"
     else
         output=$(mktemp -d /tmp/kakup.XXXXXXXX)/fifo
         mkfifo ${output}

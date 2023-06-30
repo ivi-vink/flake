@@ -8,6 +8,9 @@
 }: let
   core-packages = with pkgs;
     [
+      # nixopsnixops
+      age
+      sops
       # k8s and friends
       kubernetes-helm
       kubectl
@@ -17,9 +20,16 @@
       yq-go
       dasel
       initool
-      nnn
       python311Packages.editorconfig
-      # shell tools
+      # other stuff
+      coreutils
+      dnsutils
+      iputils
+      profanity
+      file
+      lf
+      ueberzug
+      lynx
       pstree
       pywal
       bashInteractive

@@ -1,15 +1,12 @@
 {
   description = "Home Manager configuration";
 
-  # Specify the source of Home Manager and Nixpkgs and vim plugins.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     mvinkio.url = "github:mvinkio/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    sops-nix.url = "github:Mic92/sops-nix";
+    home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
   outputs = {
@@ -18,6 +15,7 @@
     mvinkio,
     nixpkgs-stable,
     home-manager,
+    sops-nix,
     ...
   }: let
     home = builtins.getEnv "HOME";
@@ -42,7 +40,7 @@
   in {
     nixosConfigurations.lemptop = nixpkgs.lib.nixosSystem {
       inherit system;
-      modules = [./configuration.nix ./lemptop.nix];
+      modules = [./configuration.nix ./lemptop.nix sops-nix.nixosModules.sops];
     };
 
     homeConfigurations.mvinkio = home-manager.lib.homeManagerConfiguration {

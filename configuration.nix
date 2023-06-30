@@ -5,7 +5,7 @@
 }: {
   users.users.mike = {
     isNormalUser = true;
-    extraGroups = ["wheel" "networkmanager" "docker"];
+    extraGroups = ["wheel" "networkmanager" "docker" "transmission"];
   };
 
   virtualisation.docker.enable = true;
@@ -118,6 +118,10 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+  };
+
+  services.transmission = {
+      enable = true;
   };
 
   hardware.bluetooth.enable = true;
