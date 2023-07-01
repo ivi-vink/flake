@@ -21,10 +21,12 @@
       dasel
       initool
       python311Packages.editorconfig
+      gnutls
       # other stuff
       coreutils
       dnsutils
       iputils
+      inetutils
       profanity
       file
       lf

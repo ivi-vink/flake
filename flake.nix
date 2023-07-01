@@ -43,7 +43,7 @@
       modules = [./configuration.nix ./lemptop.nix sops-nix.nixosModules.sops];
     };
 
-    homeConfigurations.mvinkio = home-manager.lib.homeManagerConfiguration {
+    homeConfigurations.mike = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       modules = [
         ./home.nix
