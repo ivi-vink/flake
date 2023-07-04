@@ -111,6 +111,8 @@
   services.xserver.displayManager.startx.enable = true;
   services.xserver.libinput.enable = true;
 
+  services.pcscd.enable = true;
+
   sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
