@@ -177,7 +177,8 @@
         { map = ["pager"]; key = "G"; action = "bottom"; }
         { map = ["index" "pager" "browser"]; key = "d"; action = "half-down"; }
         { map = ["index" "pager" "browser"]; key = "u"; action = "half-up"; }
-        { map = ["index" "pager"]; key =  "R"; action = "group-reply"; }
+        { map = ["index" "pager"]; key =  "\\Cr"; action = "group-reply"; }
+        { map = ["index" "pager"]; key =  "R"; action = "group-chat-reply"; }
         { map = ["index"]; key = "\031"; action = "previous-undeleted"; }
         { map = ["index"]; key = "\005"; action = "next-undeleted"; }
         { map = ["pager"]; key = "\031"; action = "previous-line"; }

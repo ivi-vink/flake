@@ -6,18 +6,19 @@ session-or-client() {
                 return
             fi
             pushd $project
-            export name=${PWD#$HOME/}
-            export name=${name//\//-}
-            export name=${name#-}
-            export server=kaks@$name
-            export client=kakc@$name
+            name=${PWD#$HOME/}
+            name=${name//\//-}
+            name=${name#-}
+            server=kaks@$name
+            client=kakc@$name
+            TMUX_ENV="-e KAK_SERVER=$server -e KAK_CLIENT=$client"
 
             tmux has-session -t $server || {
-                tmux new -d -s $server -n $server bash -c '[[ -f .envrc ]] && eval "$(direnv export bash)"; { kak -s '$name' -d & }; tmux wait -S '$name'; wait'
+                tmux new $TMUX_ENV -d -s $server -n $server bash -c '[[ -f .envrc ]] && eval "$(direnv export bash)"; { kak -s '$name' -d & }; tmux wait -S '$name'; wait'
                 tmux wait "$name"
             }
             if [[ -z $TMUX ]]; then
-		tmux has-session -t $client || tmux new -d -s $client -n $client kak -c $name
+		tmux has-session -t $client || tmux new $TMUX_ENV -d -s $client -n $client kak -c $name
             else
             	tmux new-window -n $client kak -c $name
             fi

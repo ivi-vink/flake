@@ -111,7 +111,12 @@
   services.xserver.displayManager.startx.enable = true;
   services.xserver.libinput.enable = true;
 
+  services.udev.packages = [ pkgs.yubikey-personalization ];
   services.pcscd.enable = true;
+  security.pam.services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+  };
 
   sound.enable = true;
   security.rtkit.enable = true;

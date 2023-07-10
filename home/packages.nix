@@ -27,6 +27,8 @@
       dnsutils
       iputils
       inetutils
+      usbutils
+      calcurse
       profanity
       file
       lf
