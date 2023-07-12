@@ -118,6 +118,7 @@
       bind-key -T window h select-pane -t '{left-of}'
       bind-key -T window = select-layout even-vertical
       bind-key -T window o kill-pane -a
+      bind-key -T window _ resize-pane -y 90%
       bind-key -T window n run-shell '
         window="$(tmux display -p "#{window_name}")"
         if [[ "''${window##kakc@}" != "$window" ]]; then
