@@ -17,10 +17,8 @@ session-or-client() {
                 tmux new $TMUX_ENV -d -s $server -n $server bash -c '[[ -f .envrc ]] && eval "$(direnv export bash)"; { kak -s '$name' -d & }; tmux wait -S '$name'; wait'
                 tmux wait "$name"
             }
-            if [[ -z $TMUX ]]; then
+            if [[ -z $TMUX ]] || [ $SWITCH_TO_SESSION -eq 1 ]; then
 		tmux has-session -t $client || tmux new $TMUX_ENV -d -s $client -n $client kak -c $name
-            else
-            	tmux new-window -n $client kak -c $name
             fi
             popd
         } </dev/stdin >debug 2>&1
@@ -68,11 +66,13 @@ search() {
 }
 
 NEW_TERM=0
-while getopts "tf" opt; do
+SWITCH_TO_SESSION=0
+while getopts "tfF" opt; do
   case "$opt" in
     h|\?) exit 0 ;;
     t)  NEW_TERM=1 ;;
     f)  client="$(search | session-or-client)"  ;;
+    F)  SWITCH_TO_SESSION=1; client="$(search | session-or-client)"  ;;
   esac
 done
 
@@ -86,10 +86,15 @@ shift $((OPTIND - 1))
 }
 
 [[ ! -z "$client" ]] && {
-    if [ $NEW_TERM -eq 0 ]
-    then
+    if [ $NEW_TERM -eq 1 ]; then
+        st -e tmux attach -t "$client"
+    elif [[ -z $TMUX ]]; then
         tmux attach -t "$client"
     else
-        st -e tmux attach -t "$client"
+        if [ $SWITCH_TO_SESSION -eq 0 ]; then
+            tmux new-window -n $client kak -c ${client##kakc@}
+        else
+            tmux switch -t $client
+        fi
     fi
 }

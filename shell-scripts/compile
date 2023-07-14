@@ -34,6 +34,7 @@ case "${@}" in
         helm lint --set cluster=debug-cluster --strict --quiet --with-subcharts ${@} | sed -u -E -e "s@$(basename ${PWD})/|error during tpl function execution for \".*\"@@g"
         ;;
     *)
-        echo "Nope. Not compiling that. ARGS: ${@}"
+        echo " \-> ${@}"
+        ${@}
         ;;
 esac
