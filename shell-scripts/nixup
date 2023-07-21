@@ -6,7 +6,7 @@ case "${@}" in
             sudo docker cp nix-data-${USER}:/nix ~
             docker rm nix-data-${USER}
         }
-        docker create -v ${HOME}/nix:/nix --name nix-data-${USER} nixos/nix sh >/dev/null 2>&1
+        docker create -v ${HOME}/nix:/nix --name nix-data-${USER} nixos/nix sh
         ;;
     nuke)
         docker rm nix-data-${USER}

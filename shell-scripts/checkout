@@ -4,13 +4,13 @@ error () {
     exit 1
 }
 
-eval "$(pass show work/shell-scripts/secrets)"
+. <(pass show work/env)
 DEST_DIR=""
 case "${@}" in
     az|"az "*)
         shift
         LIST_PROJECTS="/_apis/projects?api-version=7.1-preview.4"
-        AUTH_HEADER="Authorization: Basic $WORK_AZDO_GIT_AUTH"
+        AUTH_HEADER="Authorization: Basic $(echo -n ":$GIT_PASS" | base64)"
         LIST_REPOSITORIES="/_apis/git/repositories?api-version=7.1-preview.1"
         GIT_DIR="$HOME/projects/"
         if [ ! -d $GIT_DIR ]; then

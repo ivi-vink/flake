@@ -64,7 +64,7 @@ for var in $(pass show work/env)
 do
     case $var in
         TERRAGRUNT_EXTRA_MOUNTS*)
-            TERRAGRUNT_EXTRA_MOUNTS="${var#*=}"
+            TERRAGRUNT_EXTRA_MOUNTS="$TERRAGRUNT_EXTRA_MOUNTS ${var#*=}"
             ;;
         *)
             VARIABLES="$VARIABLES$(printf ' -e %s' "$var")"
