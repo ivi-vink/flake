@@ -27,7 +27,7 @@
   programs.neomutt = {
     enable = true;
     sort = "reverse-date";
-   sidebar = {
+    sidebar = {
       enable = true;
     };
     extraConfig = ''
@@ -147,7 +147,7 @@
         color body red default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
     '';
     binds = [
-        { map = ["index" "pager"]; key = "x"; action = "noop"; }
+        { map = ["index" "pager"]; key = "x"; action = "modify-labels"; }
         { map = ["index" "pager"]; key = "i"; action = "noop"; }
         { map = ["index" "pager"]; key = "g"; action = "noop"; }
         { map = ["index"]; key = "\\Cf"; action = "noop"; }
@@ -188,6 +188,7 @@
     macros = [
       { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
       { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
+      { map = ["index"]; key = "h"; action = "<mark-message>z<enter><change-folder>^<enter>'z"; }
       { map = ["index"]; key = "D"; action = "<delete-message>"; }
       { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook &<enter>"; }
       { map = ["index"]; key = "c"; action = "<change-vfolder>?"; }

@@ -18,7 +18,7 @@ in {
   };
   services.picom = {
     enable = true;
-    activeOpacity = 0.9;
+    activeOpacity = 0.99;
     inactiveOpacity = 0.7;
     opacityRules = [
       "100:class_g = 'dwm'"

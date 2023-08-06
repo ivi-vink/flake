@@ -48,11 +48,6 @@
 
   programs.ssh = {
       enable = true;
-      matchBlocks = {
-          "*" = {
-              identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
-          };
-      };
   };
 
   home.sessionVariables = {
@@ -90,14 +85,18 @@
     '';
   };
 
+  programs.emacs = {
+      enable = true;
+  };
+
   programs.tmux = {
     enable = true;
     extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
       set -s set-clipboard on
       setw -g mouse on
-      set -g default-terminal "xterm-256color"
-      set -as terminal-overrides ',xterm*:RGB'
+      set -g default-terminal "st-256color"
+      set -ga terminal-overrides ",xterm-256color:Tc"
       set-option -g focus-events on
       set-option -sg escape-time 10
       # unbind C-b

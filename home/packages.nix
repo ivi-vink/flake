@@ -28,6 +28,7 @@
       iputils
       inetutils
       usbutils
+      maim
       calcurse
       profanity
       file
