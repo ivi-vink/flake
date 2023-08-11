@@ -1,7 +1,7 @@
 ;; do autoload stuff here
 (package-initialize)
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
 (defvar rc/package-contents-refreshed nil)
 
@@ -33,9 +33,15 @@
 (rc/require 'dash-functional)
 (require 'dash-functional)
 
-;; (require 'ido)
-(require 'ido-completing-read+)
-(require 'smex)
+(defun rc/get-default-font ()
+  (cond
+   ((eq system-type 'windows-nt) "Consolas-13")))
+(add-to-list 'default-frame-alist `(font . ,(rc/get-default-font)))
+(rc/require 'ansi-color)
+
+(rc/require 'ido)
+(rc/require 'ido-completing-read+)
+(rc/require 'smex)
 (ido-mode t)
 (ido-everywhere t)
 (ido-ubiquitous-mode t)
@@ -92,6 +98,7 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-.") 'mc/mark-all-in-region)
 
 (rc/require 'cl-lib 'magit)
 (setq magit-auto-revert-mode nil)
@@ -106,6 +113,7 @@
 
 (rc/require
  'nix-mode
+ 'yaml-pro
  )
 
 (rc/require-theme 'gruber-darker)
@@ -119,7 +127,7 @@
  '(custom-safe-themes
    '("e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
  '(package-selected-packages
-   '(nix-mode direnv gruber-darker-theme magit multiple-cursors ido-completing-read+ editorconfig smex)))
+   '(yaml-pro yaml-mode nix-mode direnv gruber-darker-theme magit multiple-cursors ido-completing-read+ editorconfig smex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
