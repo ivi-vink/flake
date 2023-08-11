@@ -46,10 +46,15 @@
     };
   };
 
-  programs.ssh = {
-      enable = true;
-  };
-
+#  programs.ssh = {
+#      enable = true;
+#      matchBlocks = {
+#          "*" = {
+#              identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+#          };
+#      };
+#  };
+#
   home.sessionVariables = {
     EDITOR = "kak";
     TERMINAL = "st";
@@ -136,6 +141,7 @@
   programs.bash = {
     enable = true;
     bashrcExtra = ''
+      export PATH=$PATH:$HOME/.local/bin
       [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
       unset LD_PRELOAD
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
