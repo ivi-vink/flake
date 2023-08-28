@@ -28,6 +28,9 @@
       iputils
       inetutils
       usbutils
+      gcc
+      raylib
+      gdb
       maim
       calcurse
       profanity

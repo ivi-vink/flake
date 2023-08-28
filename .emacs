@@ -111,6 +111,16 @@
 (setq-default dired-dwim-target t)
 (setq dired-listing-switches "-alh")
 
+;; stolen from: https://emacs.stackexchange.com/questions/24698/ansi-escape-sequences-in-compilation-mode
+(rc/require 'ansi-color)
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region
+     compilation-filter-start (point))))
+(add-hook 'compilation-filter-hook
+          #'endless/colorize-compilation)
+
 (rc/require
  'nix-mode
  'yaml-pro
@@ -127,7 +137,7 @@
  '(custom-safe-themes
    '("e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
  '(package-selected-packages
-   '(yaml-pro yaml-mode nix-mode direnv gruber-darker-theme magit multiple-cursors ido-completing-read+ editorconfig smex)))
+   '(paredit nix-mode direnv gruber-darker-theme magit multiple-cursors ido-completing-read+ editorconfig smex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
