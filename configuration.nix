@@ -136,7 +136,10 @@
 
   programs.slock.enable = true;
 
+  documentation.dev.enable = true;
   environment.systemPackages = with pkgs; [
+    man-pages
+    man-pages-posix
     vim
     wget
     git
