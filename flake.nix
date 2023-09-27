@@ -9,7 +9,7 @@
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = {
+  outputs = inputs@{
     self,
     nixpkgs,
     mvinkio,
@@ -27,7 +27,6 @@
     overlay = nixpkgs.lib.composeManyExtensions [
       (import ./overlays/vimPlugins.nix {inherit pkgs;})
       (import ./overlays/suckless.nix {inherit pkgs home;})
-      # (import ./overlays/fennel-language-server.nix {inherit pkgs;})
     ];
 
     pkgs = import nixpkgs {
@@ -37,7 +36,11 @@
       inherit system;
     };
 
-  in {
+    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib);
+
+  in with lib; {
+    inherit lib;
+
     nixosConfigurations.lemptop = nixpkgs.lib.nixosSystem {
       inherit system;
       modules = [./configuration.nix ./lemptop.nix sops-nix.nixosModules.sops];
@@ -45,23 +48,14 @@
 
     homeConfigurations.mike = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      modules = [
-        ./home.nix
-        ./home/suckless.nix
-        ./home/neovim.nix
-        ./home/codeium.nix
-        ./home/packages.nix
-        ./home/newsboat.nix
-        ./home/kakoune.nix
-        ./home/mpv.nix
-        ./home/zathura.nix
-        ./email/gmail.nix
-        ./email/mailsync.nix
-        ./email/neomutt.nix
-        ./email/notmuch.nix
-      ];
+      modules =
+        (attrValues
+          (attrsets.mergeAttrsList [
+            (modulesIn ./home)
+            (modulesIn ./email)
+          ])) ++ [./home.nix];
       extraSpecialArgs = {
-        inherit home-manager username email;
+        inherit inputs username email;
       };
     };
 

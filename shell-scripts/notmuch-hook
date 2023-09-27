@@ -4,14 +4,14 @@ notmuch tag -new +unread +jobs -- 'tag:new and (from:jobs-listings* or from:jobs
 notmuch tag -new +unread +houses -- 'tag:new and (from:"'$MAKELAAR'" or thread:{'$MAKELAAR'})'
 notmuch tag -new -inbox +unread +dev -- 'tag:new and (from:/.*github.com/ or thread:{from:/.*github.com/})'
 
-notmuch tag -new +inbox +unread -- tag:new and path:gmail/Inbox/**
+notmuch tag -new +inbox +unread -- tag:new
 
 # Gmail + mbsync = a lot of duplicates due to the archive
-notmuch tag -new -inbox +archive -- 'path:gmail/Archive/** -path:gmail/Inbox/** -path:gmail/[Gmail]/** -path:gmail/FarDrafts/** -path:gmail/Important/** -path:gmail/Sent/**'
+notmuch tag -new -inbox +archive -- 'folder:/Archive/ -folder:/Inbox/ -folder:/\[Gmail\]/ -folder:/FarDrafts/ -folder:/Important/ -folder:/Sent/'
 
 # Tag messages with files that were moved to trash in neomutt
-notmuch tag --remove-all +trash -- path:gmail/Trash/**
+notmuch tag --remove-all +trash -- folder:/Trash/
 # Same but with messages with files that were moved to spam
 notmuch tag --remove-all +spam -- folder:/Spam/
 # Remove files of messages that were tagged but still have files left behind in the mailbox, should be fine since gmail already keeps a duplicate in the Archive so the message will not be deleted only one file of the message
-notmuch search --output=files -- 'path:gmail/Inbox/** -tag:inbox' | grep Inbox | xargs >/dev/null 2>&1 rm
+notmuch search --output=files -- 'folder:/Inbox/ -tag:inbox' | grep Inbox | xargs >/dev/null 2>&1 rm

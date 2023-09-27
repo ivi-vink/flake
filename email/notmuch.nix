@@ -1,8 +1,7 @@
 {
-  flake,
+  inputs,
   config,
   pkgs,
-  home-manager,
   ...
 }: {
   programs.notmuch = {

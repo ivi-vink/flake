@@ -3,7 +3,6 @@
   flake,
   config,
   pkgs,
-  home-manager,
   ...
 }: {
     programs.mpv = {

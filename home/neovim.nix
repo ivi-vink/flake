@@ -1,28 +1,23 @@
 {
-  flake,
+  inputs,
   config,
   pkgs,
-  home-manager,
   ...
 }: {
   home.activation = {
-    # links neovim repo to xdg config home
-    neovim-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-      NEOVIM_CONFIG="${config.home.homeDirectory}/neovim"
-      XDG_CONFIG_HOME_NVIM="${config.xdg.configHome}/nvim"
-      if [ -L $XDG_CONFIG_HOME_NVIM ] && [ -e $XDG_CONFIG_HOME_NVIM ]; then
-          $DRY_RUN_CMD echo "neovim linked"
-      else
-          $DRY_RUN_CMD ln -s $NEOVIM_CONFIG $XDG_CONFIG_HOME_NVIM
-      fi
-    '';
     # fixes hotpot cannot be found error after updates
-    clearHotpotCache = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+    clearHotpotCache = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       HOTPOT_CACHE="${config.xdg.cacheHome}/nvim/hotpot"
       if [[ -d "$HOTPOT_CACHE" ]]; then
         $DRY_RUN_CMD rm -rf "$VERBOSE_ARG" "$HOTPOT_CACHE"
       fi
     '';
+  };
+
+  xdg = {
+    configFile = with config.lib.meta; {
+      "nvim".source = mkMutableSymlink ../neovim;
+    };
   };
 
   editorconfig = {

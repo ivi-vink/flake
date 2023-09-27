@@ -1,8 +1,8 @@
 {
+  inputs,
   flake,
   config,
   pkgs,
-  home-manager,
   ...
 }:
   let
@@ -10,7 +10,7 @@
   in {
   home.packages = [kakouneWithPlugins];
   home.activation = {
-    kakoune-symlink = home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+    kakoune-symlink = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       KAK_CONFIG="${config.home.homeDirectory}/kakoune"
       XDG_CONFIG_HOME_KAK="${config.xdg.configHome}/kak"
       if [ -L $XDG_CONFIG_HOME_KAK ] && [ -e $XDG_CONFIG_HOME_KAK ]; then

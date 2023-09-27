@@ -2,7 +2,6 @@
   flake,
   config,
   pkgs,
-  home-manager,
   username,
   ...
 }: let
@@ -29,6 +28,8 @@
       inetutils
       usbutils
       gcc
+      pkgsi686Linux.glibc
+      gnumake
       raylib
       gdb
       maim
@@ -37,6 +38,7 @@
       file
       lf
       ueberzug
+      mypaint
       lynx
       pstree
       pywal

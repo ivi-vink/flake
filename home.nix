@@ -13,6 +13,9 @@
   fonts.fontconfig.enable = true;
   xdg = {
     enable = true;
+    configFile = with config.lib.meta; {
+      "emacs/init.el".source = mkMutableSymlink ./emacs/init.el;
+    };
     mimeApps = {
         enable = true;
         defaultApplications = {
@@ -46,15 +49,15 @@
     };
   };
 
-#  programs.ssh = {
-#      enable = true;
-#      matchBlocks = {
-#          "*" = {
-#              identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
-#          };
-#      };
-#  };
-#
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "*" = {
+        identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      };
+    };
+  };
+
   home.sessionVariables = {
     EDITOR = "kak";
     TERMINAL = "st";
