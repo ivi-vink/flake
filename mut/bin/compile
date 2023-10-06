@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 echo " Compiliiing ${@}"
 
 error () {

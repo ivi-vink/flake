@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 VAULT_ID=""
 while [[ $# -gt 0 ]]; do
     case $1 in

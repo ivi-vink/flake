@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 session-or-client() {
         {
             project="$(cat -)"

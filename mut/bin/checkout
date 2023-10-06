@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 error () {
     echo "$1"
     exit 1

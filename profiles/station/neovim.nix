@@ -7,7 +7,7 @@
   hm = {
     xdg = {
       configFile = with config.lib.meta; {
-        "nvim".source = mkMutableSymlink ../neovim;
+        "nvim".source = mkMutableSymlink /mut/neovim;
       };
     };
 

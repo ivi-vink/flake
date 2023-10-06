@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 case "${@}" in
     bootstrap-store)
         [[ -d ${HOME}/nix ]] || {

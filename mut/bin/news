@@ -1,4 +1,4 @@
-#!@bash@/bin/bash
+#!/bin/sh
 cat <(cat ~/.config/newsboat/urls) <(for url in $(env | grep NEWSBOAT_URL_); do
     printf '%s\n' ${url#NEWSBOAT_URL_*=}
 done) > ~/.newsboat-urls
