@@ -5,6 +5,7 @@
   pkgs,
   ...
 }: {
+  hm = {
     programs.mpv = {
         enable = true;
         scripts = [
@@ -44,4 +45,5 @@
             S="cycle sub";
         };
     };
+  };
 }

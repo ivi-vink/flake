@@ -4,9 +4,10 @@
   pkgs,
   ...
 }: {
-  programs.zathura = {
-    enable = true;
-    extraConfig = ''
+  hm = {
+    programs.zathura = {
+      enable = true;
+      extraConfig = ''
       set sandbox none
       set statusbar-h-padding 0
       set statusbar-v-padding 0
@@ -23,5 +24,6 @@
       map p print
       map g goto top
     '';
+    };
   };
 }

@@ -1,8 +1,8 @@
 {inputs,lib,config, ...}: with lib; {
   lib.meta = {
-    configPath = "${config.home.homeDirectory}/flake";
+    configPath = "${config.users.users.mike.home}/flake";
     mkMutableSymlink = path:
-      config.lib.file.mkOutOfStoreSymlink
+      config.hm.lib.file.mkOutOfStoreSymlink
         (config.lib.meta.configPath + removePrefix (toString inputs.self) (toString path));
   };
 }

@@ -4,11 +4,12 @@
   pkgs,
   ...
 }: {
-  programs.msmtp = {
+  hm = {
+    programs.msmtp = {
       enable = true;
-  };
+    };
 
-  xdg.configFile."neomutt/mailcap" = {
+    xdg.configFile."neomutt/mailcap" = {
       text = ''
         text/plain; $EDITOR %s ;
         text/html; openfile %s ; nametemplate=%s.html
@@ -21,15 +22,15 @@
         application/pgp-keys; gpg --import '%s'; copiousoutput;
         application/x-subrip; $EDITOR %s ;
       '';
-  };
-
-  programs.neomutt = {
-    enable = true;
-    sort = "reverse-date";
-    sidebar = {
-      enable = true;
     };
-    extraConfig = ''
+
+    programs.neomutt = {
+      enable = true;
+      sort = "reverse-date";
+      sidebar = {
+        enable = true;
+      };
+      extraConfig = ''
         set use_threads=yes
         set send_charset="us-ascii:utf-8"
         set mailcap_path = $HOME/.config/neomutt/mailcap
@@ -145,7 +146,7 @@
         mono body bold "^gpg: BAD signature from.*"
         color body red default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
     '';
-    binds = [
+      binds = [
         { map = ["index" "pager"]; key = "x"; action = "modify-labels"; }
         { map = ["index" "pager"]; key = "i"; action = "noop"; }
         { map = ["index" "pager"]; key = "g"; action = "noop"; }
@@ -183,16 +184,17 @@
         { map = ["pager"]; key = "\031"; action = "previous-line"; }
         { map = ["pager"]; key = "\005"; action = "next-line"; }
         { map = ["editor"]; key = "<Tab>"; action = "complete-query"; }
-    ];
-    macros = [
-      { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
-      { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
-      { map = ["index"]; key = "h"; action = "<mark-message>z<enter><change-folder>^<enter>'z"; }
-      { map = ["index"]; key = "D"; action = "<delete-message>"; }
-      { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook &<enter>"; }
-      { map = ["index"]; key = "c"; action = "<change-vfolder>?"; }
-      { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
-      { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
-    ];
+      ];
+      macros = [
+        { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
+        { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
+        { map = ["index"]; key = "h"; action = "<mark-message>z<enter><change-folder>^<enter>'z"; }
+        { map = ["index"]; key = "D"; action = "<delete-message>"; }
+        { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook &<enter>"; }
+        { map = ["index"]; key = "c"; action = "<change-vfolder>?"; }
+        { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
+        { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
+      ];
+    };
   };
 }

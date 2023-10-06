@@ -5,5 +5,5 @@
 	path = mut/st
 	url = https://github.com/mvinkio/st
 [submodule "mut/dwmblocks"]
-	path = home/dwmblocks
+	path = mut/dwmblocks
 	url = https://github.com/mvinkio/dwmblocks

@@ -2,7 +2,6 @@
   flake,
   config,
   pkgs,
-  username,
   ...
 }: let
   core-packages = with pkgs;
@@ -65,8 +64,7 @@
       sxiv
       nushell
       sent
-    ]
-    ++ (import ../shell-scripts.nix {inherit pkgs config;});
+    ];
   mike-extra-packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
     noto-fonts
@@ -80,11 +78,10 @@
     libreoffice
   ];
 in {
-  home.packages =
-    core-packages
-    ++ (
-      if (username == "mike")
-      then mike-extra-packages
-      else []
-    );
+  hm = {
+    home.packages =
+      core-packages
+      ++
+      mike-extra-packages;
+  };
 }

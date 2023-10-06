@@ -43,16 +43,16 @@
     };
   };
 in {
-  home.activation = {
-    # links codeium into place
-    codium-symlink = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-      CODEIUM_TARGET="${config.home.homeDirectory}/.codeium/bin/c8fda9657259bb7f3d432c1b558db921db4257aa"
-      if [ -L $CODEIUM_TARGET ] && [ -e $CODEIUM_TARGET ]; then
-          $DRY_RUN_CMD echo "codeium linked"
-      else
-          mkdir -p $CODEIUM_TARGET
-          $DRY_RUN_CMD ln -sf ${codeium} "$CODEIUM_TARGET/language_server_linux_x64"
-      fi
-    '';
-  };
+  # home.activation = {
+  #   # links codeium into place
+  #   codium-symlink = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #     CODEIUM_TARGET="${config.home.homeDirectory}/.codeium/bin/c8fda9657259bb7f3d432c1b558db921db4257aa"
+  #     if [ -L $CODEIUM_TARGET ] && [ -e $CODEIUM_TARGET ]; then
+  #         $DRY_RUN_CMD echo "codeium linked"
+  #     else
+  #         mkdir -p $CODEIUM_TARGET
+  #         $DRY_RUN_CMD ln -sf ${codeium} "$CODEIUM_TARGET/language_server_linux_x64"
+  #     fi
+  #   '';
+  # };
 }
