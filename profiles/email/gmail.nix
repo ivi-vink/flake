@@ -86,7 +86,7 @@
           enable = true;
           create = "both"; remove = "both"; expunge = "both";
           groups = {
-            gmail = {
+            family = {
                 channels = {
                     Inbox = { farPattern = "INBOX"; nearPattern = "INBOX"; extraConfig = { Create = "Near"; Expunge = "Both"; }; };
                     Archive = { farPattern = "[Gmail]/All Mail"; nearPattern = "Archive"; extraConfig = { Create = "Near"; Expunge = "Both"; }; };

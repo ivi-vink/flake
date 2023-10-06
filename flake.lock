@@ -20,22 +20,6 @@
         "type": "github"
       }
     },
-    "mvinkio": {
-      "locked": {
-        "lastModified": 1669579238,
-        "narHash": "sha256-Kk48N1r48jAj6iiCiXgwcv9cXasTDY8hgrsRaPrXicw=",
-        "owner": "mvinkio",
-        "repo": "nixpkgs",
-        "rev": "007f4f91390d742aff1e605d057283e486f12a3b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mvinkio",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1695644571,
@@ -53,22 +37,6 @@
       }
     },
     "nixpkgs-stable": {
-      "locked": {
-        "lastModified": 1685573264,
-        "narHash": "sha256-Zffu01pONhs/pqH07cjlF10NnMDLok8ix5Uk4rhOnZQ=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "380be19fbd2d9079f677978361792cb25e8a3635",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-22.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-stable_2": {
       "locked": {
         "lastModified": 1694908564,
         "narHash": "sha256-ducA98AuWWJu5oUElIzN24Q22WlO8bOfixGzBgzYdVc=",
@@ -103,16 +71,14 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "mvinkio": "mvinkio",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-stable": "nixpkgs-stable",
         "sops-nix": "sops-nix"
       }
     },
     "sops-nix": {
       "inputs": {
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-stable": "nixpkgs-stable_2"
+        "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
         "lastModified": 1695284550,

@@ -1,9 +1,9 @@
-[submodule "home/dwm"]
-	path = home/dwm
+[submodule "mut/dwm"]
+	path = mut/dwm
 	url = https://github.com/mvinkio/dwm
-[submodule "home/st"]
-	path = home/st
+[submodule "mut/st"]
+	path = mut/st
 	url = https://github.com/mvinkio/st
-[submodule "home/dwmblocks"]
+[submodule "mut/dwmblocks"]
 	path = home/dwmblocks
 	url = https://github.com/mvinkio/dwmblocks

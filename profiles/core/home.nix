@@ -1,7 +1,5 @@
 {
-  flake,
-  username,
-  email,
+  inputs,
   config,
   pkgs,
   ...
@@ -93,7 +91,8 @@
   };
 
   programs.emacs = {
-      enable = true;
+    enable = true;
+    package = pkgs.emacs29;
   };
 
   programs.tmux = {
