@@ -56,8 +56,10 @@
   relativenumber on
   exrc on
   secure on
-  completeopt "menuone,noselect"
-  wildmode "lastused"
+  completeopt "menu,longest,preview"
+  wmnu on
+  wop "pum"
+  wildmode "list:longest"
   complete ".,w,k,kspell,b"
   foldopen "block,hor,jump,mark,percent,quickfix,search,tag"
   laststatus 3
@@ -66,4 +68,4 @@
   hlsearch off
   clipboard ""
   showtabline 0
-  cmdheight 0)
+  cmdheight 1)

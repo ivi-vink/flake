@@ -1,6 +1,4 @@
 (local cmp (require :cmp))
-(local compare (require :cmp.config.compare))
-(local always-first [:write :edit :split :quit :cfirst])
 
 (fn string-startswith? [str start]
   (= start (string.sub str 1 (string.len start))))
@@ -23,6 +21,12 @@
   (local before (word:sub col col))
   (local is_string (before:match "%s"))
   (and (not= col 0) (= is_string nil)))
+
+
+(fn edit? []
+  (local line (vim.fn.getcmdline))
+  (not= nil (line:match "ed?i?t? %.*")))
+
 
 (fn enum [types key]
   (. (. cmp types) key))
@@ -60,55 +64,52 @@
             :sources (cmp.config.sources [{:name :nvim_lsp}
                                           {:name :path}
                                           {:name :luasnip}])})
+   (cmp.setup.cmdline
+     ":"
+      {:completion {:completeopt "menu,menuone,noinsert"}
+       :mapping (cmp.mapping.preset.cmdline {
+                                             :<CR> (cmp.mapping
+                                                     (fn [fallback]
+                                                       (local entry (cmp.get_selected_entry))
+                                                       (if (or (= nil entry) (not (edit?)))
+                                                           (fallback)
+                                                           (do
+                                                             (cmp.confirm {:select true :behavior cmp.ConfirmBehavior.Replace})
+                                                             (if (entry.completion_item.label:match "%.*/$")
+                                                                 (do
+                                                                   (vim.defer_fn cmp.complete 10))
+                                                                 (do
+                                                                   (vim.schedule fallback))))))
+                                                     [:i :c])
+                                             :<BS> {:c (fn [fallback]
+                                                         (if (not (edit?))
+                                                             (fallback)
+                                                             (do
+                                                               (local line (vim.fn.getcmdline))
+                                                               (local key (vim.api.nvim_replace_termcodes "<C-w>" true false true))
+                                                               (if (= nil (line:match "%.*/$"))
+                                                                   (vim.api.nvim_feedkeys key :c false)
+                                                                   (do
+                                                                     (vim.api.nvim_feedkeys (.. key key) :c false)))
+                                                               (vim.defer_fn #(cmp.complete) 10))))}
+                                             :<C-w> {:c (fn [fallback]
+                                                          (fallback)
+                                                          (vim.defer_fn #(cmp.complete) 10))}
+                                             :<C-y> {:c (fn [fallback]
+                                                           (cmp.confirm {:select false})
+                                                           (vim.defer_fn #(cmp.complete) 10))}})
+       :sources (cmp.config.sources
+                   [{:name :path} {:name :cmdline}])}
+
+
+
     (if (not autocomplete) (tset cfg :completion {:autocomplete false}))
     ;; (print (vim.inspect cfg))
-    (cmp.setup cfg)
-    (cmp.setup.cmdline ["/" "?"]
-                       {:sources (cmp.config.sources [{:name :buffer}])
-                        :experimental {:ghost_text true}
-                        :mapping (cmp.mapping.preset.cmdline)})
-    (cmp.setup.cmdline ":"
-                       {:matching {:disallow_partial_fuzzy_matching true
-                                   :disallow_prefix_unmatching true}
-                        :sources (cmp.config.sources [{:name :path}]
-                                                     [{:name :cmdline
-                                                       :keyword_length 1}])
-                        :preselect cmp.PreselectMode.Item
-                        :sorting {:priority_weight 2
-                                  :comparators [(fn [e1 e2]
-                                                  (fn iter [[item & rest]]
-                                                    (if (or (not rest)
-                                                            (not item))
-                                                        false
-                                                        (= e1.completion_item.label
-                                                           item)
-                                                        true
-                                                        (iter rest)))
+    (cmp.setup cfg))))
 
-                                                  (iter always-first))
-                                                compare.offset
-                                                compare.exact
-                                                compare.score
-                                                compare.locality
-                                                compare.kind
-                                                compare.length
-                                                compare.order]}
-                        :mapping (cmp.mapping.preset.cmdline {:<CR> {:c (fn [fallback]
-                                                                          (if (not (cmp.confirm {:behavior (enum :ConfirmBehavior
-                                                                                                                 :Replace)
-                                                                                                 :select true}))
-                                                                              (fallback)
-                                                                              (vim.schedule fallback)))}})})))
+(let [map vim.keymap.set]
+  (map :n :<leader>xf (fn []
+                        (vim.api.nvim_feedkeys (.. ":e " (vim.fn.getcwd)) :c false)
+                        (vim.schedule #(vim.api.nvim_feedkeys "/" :c false)))))
 
-; {:name :cmdline_history
-;                                                        :keyword_pattern "^[ABCDEFHIJKLMNOPQRSTUVWXYZ].*"
-;                                                        :entry_filter (fn [entry
-;                                                                           ctx]
-;                                                                        (if (string-startswith-upper entry.completion_item.label)
-;                                                                            true
-;                                                                            false))
-;                                                        :max_item_count 1)})))
-;     disallow_fuzzy_matching = false,
-;     disallow_partial_matching = false,
-;     disallow_prefix_unmatching = false,)))
-(cmp-setup cmp true)
+(cmp-setup (require :cmp) true)
