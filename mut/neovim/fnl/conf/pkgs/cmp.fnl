@@ -64,15 +64,28 @@
             :sources (cmp.config.sources [{:name :nvim_lsp}
                                           {:name :path}
                                           {:name :luasnip}])})
+    ; todo sorting based on least recently used
    (cmp.setup.cmdline
      ":"
       {:completion {:completeopt "menu,menuone,noinsert"}
+       :matching {:disallow_fuzzy_matching false
+                  :disallow_fullfuzzy_matching false
+                  :disallow_partial_fuzzy_matching false
+                  :disallow_partial_matching false
+                  :disallow_prefix_unmatching false}
+
        :mapping (cmp.mapping.preset.cmdline {
+                                             :<M-CR> (cmp.mapping
+                                                       (fn []
+                                                         (cmp.confirm {:select true :behavior cmp.ConfirmBehavior.Replace})
+                                                         (vim.api.nvim_feedkeys " " :c false)
+                                                         (vim.defer_fn cmp.complete 10))
+                                                       [:i :c])
                                              :<CR> (cmp.mapping
                                                      (fn [fallback]
                                                        (local entry (cmp.get_selected_entry))
                                                        (if (or (= nil entry) (not (edit?)))
-                                                           (fallback)
+                                                           (vim.schedule fallback)
                                                            (do
                                                              (cmp.confirm {:select true :behavior cmp.ConfirmBehavior.Replace})
                                                              (if (entry.completion_item.label:match "%.*/$")
@@ -81,17 +94,17 @@
                                                                  (do
                                                                    (vim.schedule fallback))))))
                                                      [:i :c])
-                                             :<BS> {:c (fn [fallback]
-                                                         (if (not (edit?))
-                                                             (fallback)
-                                                             (do
-                                                               (local line (vim.fn.getcmdline))
-                                                               (local key (vim.api.nvim_replace_termcodes "<C-w>" true false true))
-                                                               (if (= nil (line:match "%.*/$"))
-                                                                   (vim.api.nvim_feedkeys key :c false)
-                                                                   (do
-                                                                     (vim.api.nvim_feedkeys (.. key key) :c false)))
-                                                               (vim.defer_fn #(cmp.complete) 10))))}
+                                             :<M-BS> {:c (fn [fallback]
+                                                           (if (not (edit?))
+                                                               (fallback)
+                                                               (do
+                                                                 (local line (vim.fn.getcmdline))
+                                                                 (local key (vim.api.nvim_replace_termcodes "<C-w>" true false true))
+                                                                 (if (= nil (line:match "%.*/$"))
+                                                                     (vim.api.nvim_feedkeys key :c false)
+                                                                     (do
+                                                                       (vim.api.nvim_feedkeys (.. key key) :c false)))
+                                                                 (vim.defer_fn #(cmp.complete) 10))))}
                                              :<C-w> {:c (fn [fallback]
                                                           (fallback)
                                                           (vim.defer_fn #(cmp.complete) 10))}
@@ -99,7 +112,7 @@
                                                            (cmp.confirm {:select false})
                                                            (vim.defer_fn #(cmp.complete) 10))}})
        :sources (cmp.config.sources
-                   [{:name :path} {:name :cmdline}])}
+                   [{:name :cmdline} {:name :path}])}
 
 
 

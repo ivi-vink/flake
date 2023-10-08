@@ -23,6 +23,8 @@
   dirvish_mode ":sort | sort ,^.*[^/]$, r")
 
 (settings
+  grepprg "rg --vimgrep"
+  grepformat "%f:%l:%c:%m"
   +shortmess "c"
   +diffopt vertical
   +isfname "@-@"

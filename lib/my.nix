@@ -4,7 +4,7 @@ lib: with lib; let
       config = {
         _module.freeformType = with types; attrs;
 
-        username = "mivi";
+        username = "ivi";
         githubUsername = "mvinkio";
         realName = "Mike Vink";
         domain = "vinkland.xyz";
