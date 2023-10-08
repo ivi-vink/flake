@@ -52,10 +52,8 @@
         vim-helm
 
         # external
-        git-worktree-nvim
         vim-dirvish
         vim-fugitive
-        vim-dispatch
         vim-oscyank
         venn-nvim
         gv-vim
@@ -66,13 +64,11 @@
         nvim-lspconfig
         null-ls-nvim
         lsp_signature-nvim
-        omnisharp-extended-lsp-nvim
         nvim-dap
         nvim-dap-ui
         luasnip
         vim-test
         vim-rest-console
-        harpoon
 
         # cmp
         nvim-cmp

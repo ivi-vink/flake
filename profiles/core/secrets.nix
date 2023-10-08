@@ -1,7 +1,7 @@
 {inputs,config,lib,pkgs,...}: with lib; {
   imports = [
     inputs.sops-nix.nixosModules.sops
-    (mkAliasOptionModule [ "secrets" ] [ "home-manager" "users" "mike" ])
+    (mkAliasOptionModule [ "secrets" ] [ "home-manager" "users" "mike" ]) # TODO: get username(s) from machine config
   ];
   sops = {
     gnupg = {
