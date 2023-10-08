@@ -35,11 +35,11 @@
         })
         ./machines/lemptop.nix
       ] ++ (attrValues
-        (attrsets.mergeAttrsList [
-          (modulesIn ./profiles/core)
-          (modulesIn ./profiles/station)
-          (modulesIn ./profiles/email)
-        ]));
+        (attrsets.mergeAttrsList (map modulesIn [
+          ./profiles/core
+          ./profiles/station
+          ./profiles/email
+        ])));
     };
 
     templates = {

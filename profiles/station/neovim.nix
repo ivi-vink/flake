@@ -48,10 +48,7 @@
         gruvbox-material
         kanagawa-nvim
         lsp_lines-nvim
-        heirline-nvim
         gitsigns-nvim
-        noice-nvim
-        nui-nvim
         vim-helm
 
         # external

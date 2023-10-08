@@ -25,7 +25,10 @@
   (map :n :<leader>q<BS> ":cclose<cr>")
   (map :n :<leader>ll ":lopen<cr>")
   (map :n :<leader>l<BS> ":lclose<cr>")
+  (map :n :<M-space> ":cprev<cr>")
   (map :n :<C-space> ":cnext<cr>")
+  (map :n :<C-x> ":Compile ")
+  (map :n :<C-e> ":Recompile<CR>")
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
@@ -36,6 +39,7 @@
   (map :n "`s" ":Ssh ")
   (map :n "<leader>;" ":silent grep ")
   (map :n :<leader>xb #(builtin.buffers { :sort_mru true :ignore_current_buffer true})))
+
 
 ;; I like to use the qf to run a lot of stuff that prints junk
 ;; Here I just check if ansi control stuff is printed and reparse the lines with efm
@@ -66,30 +70,43 @@
                               (prettify l))))
            (vim.fn.setqflist [] :a {: id : title : lines}))))
 
+(var last_job nil)
 (local job
        (fn [cmd]
          (local title (table.concat cmd " "))
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
-         (vim.fn.jobstart
-          cmd
-          {:on_stdout (fn [id data]
-                        (if data
-                            (add2qf data)))
-           :on_stderr (fn [id data]
-                        (if data
-                            (add2qf data)))
-           :on_exit (fn [id rc]
-                      (if (= rc 0)
-                          (vim.cmd ":cope")))})))
+         (set
+           last_job
+           {: cmd
+            :id (vim.fn.jobstart
+                 cmd
+                 {:on_stdout (fn [id data]
+                               (if data
+                                   (add2qf data)))
+                  :on_stderr (fn [id data]
+                               (if data
+                                   (add2qf data)))
+                  :on_exit (fn [id rc]
+                             (if (= rc 0)
+                                 (vim.cmd ":cope")))})})))
 
-(var last_job nil)
-(vim.api.nvim_create_user_command :Compile (fn [cmd]
-                                             (set last_job cmd.fargs)
-                                             (job cmd.fargs))
-                                  {:nargs :* :bang true})
-(vim.api.nvim_create_user_command :Recompile (fn []
-                                               (if (not= nil last_job)
-                                                   (job last_job)
-                                                   (vim.notify "nothing to recompile")))
-                                  {:bang true})
+(vim.api.nvim_create_user_command
+  :Compile
+  (fn [cmd]
+    (job cmd.fargs))
+  {:nargs :* :bang true :complete :shellcmd})
+(vim.api.nvim_create_user_command
+  :Recompile
+  (fn []
+    (if (not= nil last_job)
+        (job last_job)
+        (vim.notify "nothing to recompile")))
+  {:bang true})
+(vim.api.nvim_create_user_command
+  :Abort
+  (fn []
+    (if (not= nil last_job)
+        (vim.fn.jobstop last_job.id))
+    (vim.notify "killed job"))
+  {:bang true})
