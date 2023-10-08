@@ -63,23 +63,23 @@
                                (vim.schedule (fn []
                                                (local json
                                                       (vim.fn.json_decode shellhook-env))
-                                               ; (P json)
                                                (each [key value (pairs json)]
                                                  (set-env key value)))))))))
   (stdin:write (.. shellhook "jq -n 'env'\n\n"))
   (stdin:close))
 
 (fn handle-nix-print-dev-env [str]
-  (vim.schedule (fn []
-                  (local json (. (vim.fn.json_decode str) :variables))
-                  (-> (icollect [key {: type : value} (pairs json)]
-                        (do
-                          (if (and (exported? type) (not (ignored? key)))
-                              (set-env key value))
-                          (if (= key :shellHook)
-                              value)))
-                      (#(each [_ shellhook (ipairs $1)]
-                          (handle-shellhook shellhook)))))))
+  (vim.schedule
+    (fn []
+      (local json (. (vim.fn.json_decode str) :variables))
+      (-> (icollect [key {: type : value} (pairs json)]
+            (do
+              (if (and (exported? type) (not (ignored? key)))
+                  (set-env key value))
+              (if (= key :shellHook)
+                  value)))
+          (#(each [_ shellhook (ipairs $1)]
+              (handle-shellhook shellhook)))))))
 
 (fn nix-develop [fargs unload]
   (if unload
@@ -100,7 +100,8 @@
                    (fn [err data]
                      (assert (not err) err)
                      (if data
-                         (set nix-print-dev-env (.. nix-print-dev-env data))
+                         (do
+                           (set nix-print-dev-env (.. nix-print-dev-env data)))
                          (do
                            (vim.schedule #(vim.notify "nix-develop: stdout end"))
                            (if (not= nix-print-dev-env "")

@@ -17,5 +17,7 @@
                     :group "conf#events"})
 
 (event [:FileType] {:pattern [:dirvish]
-                    :callback #(vim.cmd "silent! unmap <buffer> <C-p>")
+                    :callback (fn []
+                                (vim.cmd "silent! unmap <buffer> <C-p>")
+                                (vim.cmd "set buflisted"))
                     :group "conf#events"})

@@ -6,6 +6,7 @@
 
 (require :conf.settings)
 (require :conf.pkgs)
+(require :conf.nix-develop)
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
