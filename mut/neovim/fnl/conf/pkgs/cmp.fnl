@@ -10,6 +10,15 @@
 (fn edit? [line]
   (not= nil (line:match "^ed?i?t? .*$")))
 
+(fn endswith? [line char]
+  (not= nil (line:match (.. ".*" char "$"))))
+
+(fn replace-tail [line]
+  (let [(result n) (line:gsub "(.*/)[^/]*/$" "%1")]
+    (if (not= nil n)
+        result
+        line)))
+
 (fn enum [types key]
   (. (. cmp types) key))
 
@@ -56,7 +65,29 @@
                            (cmp.close))
                        val)
        :completion {:completeopt "menu,menuone,noinsert"}
-       :mapping {:<CR> (cmp.mapping
+       :mapping {:<C-n> (cmp.mapping
+                          (fn [fallback]
+                            (if (cmp.visible)
+                                (cmp.select_next_item)
+                                (fallback)))
+                          [:i :c])
+                 :<C-p> (cmp.mapping
+                          (fn [fallback]
+                            (if (cmp.visible)
+                                (cmp.select_prev_item)
+                                (fallback)))
+                          [:i :c])
+                 :<BS> (cmp.mapping
+                         (fn [fallback]
+                           (local line (vim.fn.getcmdline))
+                           (if (not (endswith? line "/"))
+                               (fallback)
+                               (do
+                                 (vim.fn.setcmdline (replace-tail line))
+                                 (vim.fn.feedkeys (vim.api.nvim_replace_termcodes "<C-g><BS>" true false true) false)
+                                 (vim.schedule cmp.complete))))
+                         [:i :c])
+                 :<CR> (cmp.mapping
                          (fn [fallback]
                            (local entry (cmp.get_selected_entry))
                            (local line (vim.fn.getcmdline))
@@ -72,7 +103,7 @@
                                        (vim.schedule fallback))))))
                          [:i :c])}
        :sources (cmp.config.sources
-                   [{:name :cmdline} {:name :path}])}
+                   [{:name :cmdline :trigger_characters []} {:name :path}])}
 
 
 
@@ -82,7 +113,10 @@
 
 (let [map vim.keymap.set]
   (map :n :<leader>xf (fn []
-                        (vim.api.nvim_feedkeys (.. ":e " (vim.fn.getcwd)) :c false)
+                        (local fname (vim.fn.fnamemodify
+                                       (vim.fn.bufname (vim.api.nvim_get_current_buf))
+                                       ::p:h))
+                        (vim.api.nvim_feedkeys (.. ":e " fname) :c false)
                         (vim.defer_fn #(vim.api.nvim_feedkeys "/" :c false) 10))))
 
 (cmp-setup (require :cmp) true)

@@ -7,13 +7,11 @@
 (require :conf.settings)
 (require :conf.pkgs)
 
-;; (require :conf.lsp)
-;; (require :conf.events)
-;; (require :conf.filetype)
-;; (require :conf.newtab)
-(require :conf.nix-develop)
-
-;; (require :conf.diagnostic)
+(tset _G :P (lambda [...]
+              (let [inspected (icollect [_ v (ipairs [...])]
+                                (vim.inspect v))]
+                (each [_ printer (ipairs inspected)]
+                  (print printer)))))
 
 (local tel (require :telescope))
 (local themes (require :telescope.themes))
@@ -83,6 +81,7 @@
            :on_exit (fn [id rc]
                       (if (= rc 0)
                           (vim.cmd ":cope")))})))
+
 (var last_job nil)
 (vim.api.nvim_create_user_command :Compile (fn [cmd]
                                              (set last_job cmd.fargs)
@@ -93,10 +92,3 @@
                                                    (job last_job)
                                                    (vim.notify "nothing to recompile")))
                                   {:bang true})
-
-
-(tset _G :P (lambda [...]
-              (let [inspected (icollect [_ v (ipairs [...])]
-                                (vim.inspect v))]
-                (each [_ printer (ipairs inspected)]
-                  (print printer)))))

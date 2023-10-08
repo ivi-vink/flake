@@ -5,16 +5,10 @@
   ];
   sops = {
     gnupg = {
-      home = config.hm.programs.gpg.homedir;
       sshKeyPaths = [];
     };
     age.sshKeyPaths = [];
-
-    # Taken from: https://github.com/ncfavier/config/blob/main/modules/secrets.nix
-    # GPG running as root can't find my socket dir (https://github.com/NixOS/nixpkgs/issues/57779)
-    environment.SOPS_GPG_EXEC = pkgs.writeShellScript "gpg-mike" ''
-      exec ${pkgs.util-linux}/bin/runuser -u mike -- ${pkgs.gnupg}/bin/gpg "$@"
-    '';
+    age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
 
     secrets = mapAttrs' (name: _: let
       parts = splitString "." name;
@@ -33,7 +27,6 @@
 
   environment = {
     systemPackages = [ pkgs.sops ];
-    sessionVariables.SOPS_PGP_FP = "95B594256E6684F46B337254CE5CD59ACAB73E44";
   };
 
   hm = {
