@@ -55,7 +55,10 @@
           ])];
         })
         ./machines/wsl.nix
-      ];
+      ] ++ (attrValues
+        (attrsets.mergeAttrsList (map modulesIn [
+          ./profiles/core
+        ])));
     };
 
     templates = {
