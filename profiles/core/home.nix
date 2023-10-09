@@ -215,8 +215,5 @@
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
     };
-    programs.password-store = {
-      enable = true;
-    };
   };
 }
