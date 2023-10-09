@@ -5,8 +5,15 @@
         inputs.nixos-wsl.nixosModules.default
     ];
 
-    wsl.enable = true;
-    wsl.defaultUser = "mike";
+    environment.systemPackages = with pkgs; [
+      git
+    ];
+
+    wsl = {
+        enable = true;
+        defaultUser = "mike";
+        wslConf.generateResolveConf = false;
+    };
     system.stateVersion = "23.05";
     virtualisation.docker.enable = true;
 }

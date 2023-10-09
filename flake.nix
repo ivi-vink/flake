@@ -9,7 +9,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
-      url = "github:ivi-vink/NixOS-WSL";
+      url = "github:nix-community/NixOS-WSL";
     };
   };
 
@@ -55,10 +55,7 @@
           ])];
         })
         ./machines/wsl.nix
-      ] ++ (attrValues
-        (attrsets.mergeAttrsList (map modulesIn [
-          ./profiles/core
-        ])));
+      ];
     };
 
     templates = {
