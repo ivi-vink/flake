@@ -42,6 +42,24 @@
         ])));
     };
 
+    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+      inherit lib system;
+      specialArgs = {inherit inputs;};
+      modules = [
+        ({config, ... }: {
+          nixpkgs.overlays = with lib; [(composeManyExtensions [
+            (import ./overlays/vimPlugins.nix {inherit pkgs;})
+            (import ./overlays/suckless.nix {inherit pkgs; home = config.users.users.mike.home;})
+          ])];
+        })
+        ./machines/wsl.nix
+      ] ++ (attrValues
+        (attrsets.mergeAttrsList (map modulesIn [
+          ./profiles/core
+          ./profiles/station
+        ])));
+    };
+
     templates = {
       default = {
         path = ./templates/flake;

@@ -6,26 +6,14 @@
 }: let
   core-packages = with pkgs;
     [
-      # nixopsnixops
-      age
-      sops
-      # k8s and friends
       kubernetes-helm
       kubectl
       kind
       krew
-      jq
-      yq-go
       dasel
       initool
       python311Packages.editorconfig
       gnutls
-      # other stuff
-      coreutils
-      dnsutils
-      iputils
-      inetutils
-      usbutils
       gcc
       pkgsi686Linux.glibc
       gnumake
@@ -35,6 +23,8 @@
       calcurse
       profanity
       file
+      jq
+      yq-go
       lf
       ueberzug
       mypaint
@@ -45,12 +35,8 @@
       k9s
       powershell
       azure-cli
-      htop
       subversion
       ripgrep
-      gnused
-      gnugrep
-      curl
       inotify-tools
       alejandra
       statix

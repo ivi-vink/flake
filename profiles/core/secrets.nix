@@ -26,7 +26,10 @@
   };
 
   environment = {
-    systemPackages = [ pkgs.sops ];
+    systemPackages = [
+      pkgs.sops
+      pkgs.age
+    ];
   };
 
   hm = {
