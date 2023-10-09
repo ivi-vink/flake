@@ -10,17 +10,6 @@
                                                                   (vim.fn.getcwd))
                            :on_attach attach})
 
-(local pid (vim.fn.getpid))
-(lspconfig.omnisharp.setup {:cmd [:OmniSharp
-                                  :--languageserver
-                                  :--hostPID
-                                  (tostring pid)]
-                            :handlers {[:textDocument/definition] (. (require :omnisharp_extended)
-                                                                     :handler)}
-                            :root_dir (lspconfig.util.root_pattern :.git
-                                                                   (vim.fn.getcwd))
-                            :on_attach attach})
-
 (lspconfig.gopls.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                (vim.fn.getcwd))
                         :on_attach attach
