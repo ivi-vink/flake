@@ -59,7 +59,6 @@
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core
-          ./profiles/station
         ])));
     };
 
