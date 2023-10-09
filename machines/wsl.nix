@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 
 {
     imports = [
-        <nixos-wsl/modules>
+        inputs.nixos-wsl.nixosModules.default
     ];
 
     wsl.enable = true;
