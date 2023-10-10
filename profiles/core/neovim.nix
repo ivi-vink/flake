@@ -25,6 +25,11 @@
       };
     };
 
+    home.packages = with pkgs; [
+        neovide
+        ripgrep
+    ];
+
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-unwrapped;

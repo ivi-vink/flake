@@ -27,7 +27,7 @@
   (map :n :<leader>l<BS> ":lclose<cr>")
   (map :n :<M-space> ":cprev<cr>")
   (map :n :<C-space> ":cnext<cr>")
-  (map :n :<C-x> ":Compile ")
+  (map :n :<C-x> ":Compile<up><c-f>")
   (map :n :<C-e> ":Recompile<CR>")
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
@@ -76,10 +76,8 @@
          (local title (table.concat cmd " "))
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
-         (set
-           last_job
-           {: cmd
-            :id (vim.fn.jobstart
+         (local id
+            (vim.fn.jobstart
                  cmd
                  {:on_stdout (fn [id data]
                                (if data
@@ -89,7 +87,11 @@
                                    (add2qf data)))
                   :on_exit (fn [id rc]
                              (if (= rc 0)
-                                 (vim.cmd ":cope")))})})))
+                                 (vim.cmd ":cope")))}))
+         (set
+           last_job
+           {: cmd
+            : id})))
 
 (vim.api.nvim_create_user_command
   :Compile

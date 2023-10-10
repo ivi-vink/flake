@@ -44,7 +44,7 @@
   splitbelow on
   magic on
   showbreak "+++"
-  listchars {:eol "󰁂"}
+  ; listchars {:eol "󰁂"}
   list on
   autoread on
   autoindent on
