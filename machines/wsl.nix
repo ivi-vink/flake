@@ -108,12 +108,11 @@ in
         ''];
         EnvironmentFile = "/wsl/dockerd/environmentfile";
     };
-    networking.resolvconf.enable = false;
     # TODO: why does this not work with etc."resolv.conf"??
     environment.etc."/resolv.conf".source = "/wsl/etc/resolv.conf";
     environment.etc."profile.local".source = "/wsl/etc/profile";
     security.pki.certificateFiles = [
-        (/. + "/home/mike/pr-root.cer")
+        (/. + "/wsl/pr-root.cer")
     ];
   };
 }
