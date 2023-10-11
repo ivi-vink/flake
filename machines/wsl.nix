@@ -12,15 +12,31 @@ let
 
       wsl.enable = true;
       wsl.defaultUser = "nixos";
-      ${lib.optionalString (!cfg.nativeSystemd) "wsl.nativeSystemd = false;"}
+      environment.systemPackages = with pkgs; [
+        git
+      ];
 
-      # This value determines the NixOS release from which the default
-      # settings for stateful data, like file locations and database versions
-      # on your system were taken. It's perfectly fine and recommended to leave
-      # this value at the release version of the first install of this system.
-      # Before changing this value read the documentation for this option
-      # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-      system.stateVersion = "${config.system.nixos.release}"; # Did you read the comment?
+      system.stateVersion = "23.05";
+      virtualisation.docker = {
+          enable = true;
+          autoPrune = {
+              enable = true;
+              flags = ["-af"];
+          };
+      };
+      systemd.services.docker.serviceConfig = {
+          ExecStart = ["" $'$'
+              ${pkgs.docker}/bin/dockerd --config-file=/wsl/dockerd/daemon.json
+          $'$'];
+          EnvironmentFile = "/wsl/dockerd/environmentfile";
+      };
+      # TODO: why does this not work with just etc."resolv.conf"??
+      environment.etc."/resolv.conf".source = "/wsl/etc/resolv.conf";
+      environment.etc."profile.local".source = "/wsl/etc/profile";
+      security.pki.certificateFiles = [
+          (/. + "/wsl/pr-root.cer")
+      ];
+      system.stateVersion = "${config.system.nixos.release}";
     }
   '';
 in
