@@ -20,14 +20,26 @@
 (tel.setup
   {:defaults (vim.tbl_extend :force (themes.get_ivy) {})})
 
+(local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.6)))))
+
 (let [map vim.keymap.set]
-  (map :n :<leader>qf ":copen<cr>")
+  (map :v :y "<Plug>OSCYankVisual|gvy")
+  (map :n :<leader>qf cope)
   (map :n :<leader>q<BS> ":cclose<cr>")
   (map :n :<leader>ll ":lopen<cr>")
   (map :n :<leader>l<BS> ":lclose<cr>")
   (map :n :<M-space> ":cprev<cr>")
+  (map :n :<C-M-space> ":cprev<cr>")
   (map :n :<C-space> ":cnext<cr>")
-  (map :n :<C-x> ":Compile<up><c-f>")
+  (map :n :<C-x> #(do
+                    (vim.fn.setreg "/" "Compile")
+                    (vim.api.nvim_feedkeys
+                      (vim.api.nvim_replace_termcodes
+                        ":Compile<up><c-f>" true false true)
+                      :n false)
+                    (vim.schedule #(do
+                                     (map :n :/ "/Compile.* " {:buffer true})
+                                     (map :n :? "?Compile.* " {:buffer true})))))
   (map :n :<C-e> ":Recompile<CR>")
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
@@ -66,14 +78,15 @@
                                    (.. l word))))
 
            (local lines (icollect [_ l (ipairs lines)]
-                          (if l
+                          (if (not= l "")
                               (prettify l))))
-           (vim.fn.setqflist [] :a {: id : title : lines}))))
+           (vim.fn.setqflist [] :a {: id : title : lines})
+           (vim.cmd ":cbottom"))))
 
 (var last_job nil)
 (local job
        (fn [cmd]
-         (local title (table.concat cmd " "))
+         (local title cmd)
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
          (local id
@@ -86,24 +99,28 @@
                                (if data
                                    (add2qf data)))
                   :on_exit (fn [id rc]
-                             (if (= rc 0)
-                                 (vim.cmd ":cope")))}))
+                            (set last_job.finished true)
+                            (if (= rc 0)
+                                (cope)))}))
          (set
            last_job
            {: cmd
-            : id})))
+            : id
+            :finished false})))
 
 (vim.api.nvim_create_user_command
   :Compile
   (fn [cmd]
-    (job cmd.fargs))
+    (job cmd.args))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Recompile
   (fn []
-    (if (not= nil last_job)
-        (job last_job)
-        (vim.notify "nothing to recompile")))
+    (if (= nil last_job)
+        (vim.notify "nothing to recompile")
+        (if (not last_job.finished)
+            (vim.notify "Last job not finished")
+            (job last_job.cmd))))
   {:bang true})
 (vim.api.nvim_create_user_command
   :Abort
