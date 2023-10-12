@@ -21,7 +21,6 @@
   {:defaults (vim.tbl_extend :force (themes.get_ivy) {})})
 
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.6)))))
-
 (let [map vim.keymap.set]
   (map :v :y "<Plug>OSCYankVisual|gvy")
   (map :n :<leader>qf cope)
@@ -38,6 +37,7 @@
                         ":Compile<up><c-f>" true false true)
                       :n false)
                     (vim.schedule #(do
+                                     (vim.cmd "let v:searchforward = 0")
                                      (map :n :/ "/Compile.* " {:buffer true})
                                      (map :n :? "?Compile.* " {:buffer true})))))
   (map :n :<C-e> ":Recompile<CR>")
@@ -76,7 +76,6 @@
                                               _ word
                                               (ipairs [(fname e) "|" (pos e) "| " e.text])]
                                    (.. l word))))
-
            (local lines (icollect [_ l (ipairs lines)]
                           (if (not= l "")
                               (prettify l))))
@@ -100,8 +99,15 @@
                                    (add2qf data)))
                   :on_exit (fn [id rc]
                             (set last_job.finished true)
-                            (if (= rc 0)
-                                (cope)))}))
+                            (set winnr (vim.fn.winnr))
+                            (if (not= rc 0)
+                                (do
+                                  (cope)
+                                  (if (not= (vim.fn.winnr) winnr)
+                                      (do
+                                        (vim.notify "going back")
+                                        (vim.cmd "wincmd p"))))
+                                (vim.notify (.. "\"" cmd "\" succeeded!"))))}))
          (set
            last_job
            {: cmd

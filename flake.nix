@@ -54,7 +54,7 @@
             (import ./overlays/vimPlugins.nix {inherit pkgs;})
           ])];
         })
-        ./machines/wsl.nix
+        ./achines/wsl.nix
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core
