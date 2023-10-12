@@ -1,7 +1,6 @@
 (require :conf.pkgs.cmp)
 (require :conf.pkgs.lspconfig)
 (require :conf.pkgs.treesitter)
-(require :conf.pkgs.tree-sitter-context)
 (require :conf.pkgs.dap)
 (require :conf.pkgs.venn)
 (require :conf.pkgs.gitsigns)
