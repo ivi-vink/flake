@@ -83,9 +83,8 @@
                                         last-line (vim.api.nvim_buf_line_count 0)]
                                     (do
                                       (= lnum last-line))))
+           (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
            (vim.fn.setqflist [] :a {: id : title : lines})
-           (local is-qf? (= (vim.opt_local.buftype:get) "quickfix"))
-           (P [(not is-qf?) is-at-last-line])
            (if (or
                  (not is-qf?)
                  (and is-at-last-line is-qf?))
