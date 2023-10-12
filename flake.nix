@@ -48,8 +48,7 @@
     nixosConfigurations.core = extraModules: nixpkgs.lib.nixosSystem {
       inherit lib system;
       specialArgs = {inherit inputs;};
-      modules = [
-        extraModules
+      modules = extraModules ++ [
         ({config, ... }: {
           nixpkgs.overlays = with lib; [(composeManyExtensions [
             (import ./overlays/vimPlugins.nix {inherit pkgs;})
