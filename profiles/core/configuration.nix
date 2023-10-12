@@ -26,7 +26,7 @@
     curl
     pinentry-curses
     gnused
-    gnugrep
+    # gnugrep
     htop
     dnsutils
     iputils
