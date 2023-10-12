@@ -45,7 +45,7 @@
         ])));
     };
 
-    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.core = nixpkgs.lib.nixosSystem {
       inherit lib system;
       specialArgs = {inherit inputs;};
       modules = [
@@ -54,7 +54,6 @@
             (import ./overlays/vimPlugins.nix {inherit pkgs;})
           ])];
         })
-        ./achines/wsl.nix
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core

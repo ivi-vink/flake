@@ -52,7 +52,7 @@ in
         enable = true;
         defaultUser = "mike";
         wslConf.network = {
-            generateResolvConf = true;
+            generateResolvConf = false;
         };
     };
 
@@ -125,6 +125,8 @@ in
         EnvironmentFile = "/wsl/dockerd/environmentfile";
     };
     # TODO: why does this not work with etc."resolv.conf"??
+
+    networking.resolvconf.enable = false;
     environment.etc."/resolv.conf".source = "/wsl/etc/resolv.conf";
     environment.etc."profile.local".source = "/wsl/etc/profile";
     security.pki.certificateFiles = [
