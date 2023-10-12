@@ -37,7 +37,6 @@
       vimAlias = true;
       extraPackages = with pkgs; [
         bashInteractive
-        sumneko-lua-language-server
         pyright
         gopls
         fennel
@@ -48,7 +47,6 @@
       plugins = with pkgs.vimPlugins; [
         # highlighting
         nvim-treesitter.withAllGrammars
-        nvim-treesitter-context
         playground
         gruvbox-material
         kanagawa-nvim
