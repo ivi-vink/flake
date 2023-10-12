@@ -49,6 +49,7 @@
       inherit lib system;
       specialArgs = {inherit inputs;};
       modules = [
+        extraModules
         ({config, ... }: {
           nixpkgs.overlays = with lib; [(composeManyExtensions [
             (import ./overlays/vimPlugins.nix {inherit pkgs;})
@@ -57,7 +58,7 @@
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core
-        ]))) ++ extraModules;
+        ])));
     };
 
     templates = {
