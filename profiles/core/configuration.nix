@@ -23,6 +23,8 @@
     vim
     wget
     git
+    jq
+    yq-go
     curl
     pinentry-curses
     gnused

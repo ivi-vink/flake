@@ -51,6 +51,7 @@
             (import ./overlays/vimPlugins.nix {inherit pkgs;})
           ])];
         })
+        ./profiles/station/k8s.nix
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core

@@ -6,9 +6,6 @@
 }: let
   core-packages = with pkgs;
     [
-      kubernetes-helm
-      kubectl
-      kind
       krew
       dasel
       initool
@@ -23,8 +20,6 @@
       calcurse
       profanity
       file
-      jq
-      yq-go
       lf
       ueberzug
       mypaint
