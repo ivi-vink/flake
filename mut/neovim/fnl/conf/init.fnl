@@ -86,8 +86,8 @@
            (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
            (vim.fn.setqflist [] :a {: id : title : lines})
            (if (or
-                 (not is-qf?)
-                 (and is-at-last-line is-qf?))
+                 (not is-qf)
+                 (and is-at-last-line is-qf))
                (vim.cmd ":cbottom")))))
 
 (var last_job nil)
