@@ -2,6 +2,13 @@
 (local configs (require :lspconfig.configs))
 (local {: attach} (require :conf.lsp))
 
+(lspconfig.rust_analyzer.setup
+  {:root_dir
+   (lspconfig.util.root_pattern
+     :.git
+     (vim.fn.getcwd))
+   :on_attach attach})
+
 (lspconfig.pyright.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                  (vim.fn.getcwd))
                           :on_attach attach})

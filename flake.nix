@@ -42,6 +42,16 @@
         ])));
     };
 
+    nixosConfigurations.core = inputs: extraModules: nixpkgs.lib.nixosSystem {
+      inherit lib system;
+      specialArgs = {inherit inputs;};
+      modules = extraModules ++ [
+      ] ++ (attrValues
+        (attrsets.mergeAttrsList (map modulesIn [
+          ./profiles/core
+        ])));
+    };
+
     nixosModules.core = { ... }: {
         imports = [
           ({config, ... }: {

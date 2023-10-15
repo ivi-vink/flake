@@ -1,6 +1,7 @@
 {pkgs, home, ...}: (final: prev: {
     st = (prev.st.overrideAttrs (oldAttrs: rec {
       src = /. + home + "/flake/mut/st";
+      version = "0.1.0";
       buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
     }));
     dwm = (prev.dwm.overrideAttrs (oldAttrs: rec {
@@ -8,7 +9,7 @@
     }));
     dwmblocks =(prev.stdenv.mkDerivation rec {
       pname = "dwmblocks";
-      version = "1.0";
+      version = "1.1.2";
       src = /. + home + "/flake/mut/dwmblocks";
       buildInputs = [prev.xorg.libX11];
       installPhase = ''

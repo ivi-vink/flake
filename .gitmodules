@@ -1,9 +1,9 @@
 [submodule "mut/dwm"]
 	path = mut/dwm
-	url = https://github.com/mvinkio/dwm
+	url = git@github.com:ivi-vink/dwm.git
 [submodule "mut/st"]
 	path = mut/st
-	url = https://github.com/mvinkio/st
+	url = git@github.com:ivi-vink/st.git
 [submodule "mut/dwmblocks"]
 	path = mut/dwmblocks
-	url = https://github.com/mvinkio/dwmblocks
+	url = git@github.com:ivi-vink/dwmblocks.git
