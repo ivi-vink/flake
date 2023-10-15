@@ -55,7 +55,7 @@
     };
 
     home.sessionVariables = {
-      EDITOR = "kak";
+      EDITOR = "nvim";
       TERMINAL = "st";
     };
 
@@ -114,26 +114,6 @@
       bind-key -T copy-mode-vi V send -X select-line
       bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
       bind-key -T copy-mode-vi : command-prompt
-
-      bind-key -T window k select-pane -t '{up-of}'
-      bind-key -T window j select-pane -t '{down-of}'
-      bind-key -T window l select-pane -t '{right-of}'
-      bind-key -T window h select-pane -t '{left-of}'
-      bind-key -T window = select-layout even-vertical
-      bind-key -T window o kill-pane -a
-      bind-key -T window _ resize-pane -y 90%
-      bind-key -T window n run-shell '
-        window="$(tmux display -p "#{window_name}")"
-        if [[ "''${window##kakc@}" != "$window" ]]; then
-            tmux splitw "kak -c ''${window##kakc@}"
-        else
-            tmux splitw "kak -c ''${KAK_SERVER##kaks@}"
-        fi
-      '
-      bind -n C-space switch-client -T window
-
-      bind -n C-s run-shell tmux-normal-mode
-      bind -n C-q run-shell 'tmux-normal-mode --quit'
     '';
     };
 

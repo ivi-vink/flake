@@ -28,8 +28,8 @@
       Service = {
         Type = "oneshot";
         RemainAfterExit = "no";
-        ExecSearchPath = "${config.hm.home.profileDirectory}/bin:/run/current-system/sw/bin";
-        ExecStart = "${pkgs.coreutils}/bin/env mailsync";
+        ExecSearchPath = "${config.users.users.mike.home}/.local/bin:${config.hm.home.profileDirectory}/bin:/run/current-system/sw/bin";
+        ExecStart = "mailsync";
       };
     };
   };

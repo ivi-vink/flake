@@ -1,11 +1,12 @@
 {pkgs, home, ...}: (final: prev: {
     st = (prev.st.overrideAttrs (oldAttrs: rec {
       src = /. + home + "/flake/mut/st";
-      version = "0.1.0";
+      version = "0.2.0";
       buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
     }));
     dwm = (prev.dwm.overrideAttrs (oldAttrs: rec {
       src = /. + home + "/flake/mut/dwm";
+      version = "0.1.0";
     }));
     dwmblocks =(prev.stdenv.mkDerivation rec {
       pname = "dwmblocks";

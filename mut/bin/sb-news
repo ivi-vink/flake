@@ -3,7 +3,7 @@
 # Displays number of unread news items and an loading icon if updating.
 # When clicked, brings up `newsboat`.
 
-case $BUTTON in
+case $BLOCK_BUTTON in
         1) setsid "$TERMINAL" -e newsboat ;;
 	2) setsid -f newsup >/dev/null exit ;;
         3) notify-send "📰 News module" "\- Shows unread news items
