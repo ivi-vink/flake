@@ -4,6 +4,3 @@
 [submodule "mut/st"]
 	path = mut/st
 	url = git@github.com:ivi-vink/st.git
-[submodule "mut/dwmblocks"]
-	path = mut/dwmblocks
-	url = git@github.com:ivi-vink/dwmblocks.git
