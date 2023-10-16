@@ -62,15 +62,15 @@
         })
       (filterAttrs (_: machine: machine.isDeployed) ivi.machines);
 
-    devShells."${system}".default = pkgs.mkShell {
-        name = "deploy";
-        buildInputs = [
-            pkgs.bashInteractive
-            deploy-rs.packages."${system}".default
-        ];
-        shellHook = ''
-            export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
-        '';
+    devShells."${system}".hetzner = pkgs.mkShell {
+      name = "deploy";
+      buildInputs = [
+          pkgs.bashInteractive
+          deploy-rs.packages."${system}".default
+      ];
+      shellHook = ''
+          export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
+      '';
     };
 
     templates =

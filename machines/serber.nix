@@ -25,7 +25,7 @@
       credentialsFile = config.sops.secrets.porkbunCredentials.path;
     };
     certs = {
-        "vinkland.xyz" = { };
+      "vinkland.xyz" = { };
     };
   };
 }
