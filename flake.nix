@@ -46,6 +46,7 @@
       inherit lib system;
       specialArgs = {inherit inputs;};
       modules = extraModules ++ [
+        (import ./overlays/vimPlugins.nix {inherit pkgs;})
       ] ++ (attrValues
         (attrsets.mergeAttrsList (map modulesIn [
           ./profiles/core
