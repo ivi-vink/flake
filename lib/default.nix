@@ -1,4 +1,4 @@
-lib: prev: with lib; {
+self: lib: prev: with lib; {
   modulesIn = dir: pipe dir [
     builtins.readDir
     (mapAttrsToList (name: type:
@@ -17,5 +17,5 @@ lib: prev: with lib; {
   collectFlakeInputs = input:
     [ input ] ++ concatMap collectFlakeInputs (builtins.attrValues (input.inputs or {}));
 
-  my = import ./my.nix lib;
+  ivi = import ./ivi.nix self lib;
 }

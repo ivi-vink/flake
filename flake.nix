@@ -1,5 +1,5 @@
 {
-  description = "Home Manager configuration";
+  description = "Nixos, home-manager, and deploy-rs configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -8,6 +8,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs = inputs@{
@@ -15,74 +16,66 @@
     nixpkgs,
     home-manager,
     sops-nix,
+    deploy-rs,
     ...
   }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
-    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib);
+    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib self);
+
+    # Gets module from ./machines/ and uses the lib to define which other modules
+    # the machine needs.
+    mkSystem = name: machineModule: with lib;
+    let
+        machine = ivi.machines.${name};
+    in
+    lib.nixosSystem {
+      inherit lib system;
+      specialArgs = {inherit machine inputs;};
+      modules = with lib;
+        machine.modules
+        ++ [machineModule]
+        ++ [({ config, ... }: {
+             nixpkgs.overlays = with lib; [(composeManyExtensions [
+               (import ./overlays/vimPlugins.nix {inherit pkgs;})
+               (import ./overlays/suckless.nix {inherit pkgs; home = config.users.users.mike.home;})
+             ])];})
+           ];
+    };
   in with lib; {
     inherit lib;
+    nixosConfigurations = with lib;
+      mapAttrs
+          (hostname: machineConfig:
+              mkSystem
+                hostname
+                machineConfig)
+      (modulesIn ./machines);
 
-    nixosConfigurations.lemptop = nixpkgs.lib.nixosSystem {
-      inherit lib system;
-      specialArgs = {inherit inputs;};
-      modules = [
-        ({config, ... }: {
-          nixpkgs.overlays = with lib; [(composeManyExtensions [
-            (import ./overlays/vimPlugins.nix {inherit pkgs;})
-            (import ./overlays/suckless.nix {inherit pkgs; home = config.users.users.mike.home;})
-          ])];
+    deploy.nodes =
+      mapAttrs
+      (hostname: machine:
+        {
+          hostname = hostname + "." + ivi.domain;
+          sshUser = "root";
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname}
         })
-        ./machines/lemptop.nix
-      ] ++ (attrValues
-        (attrsets.mergeAttrsList (map modulesIn [
-          ./profiles/core
-          ./profiles/station
-          ./profiles/email
-        ])));
+      (filterAttrs (_: machine: machine.isDeployed) ivi.machines);
+
+    devShells."${system}".default = pkgs.mkShell {
+        name = "deploy";
+        buildInputs = [
+            pkgs.bashInteractive
+            deploy-rs.packages."${system}".default
+        ];
+        shellHook = ''
+            export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
+        '';
     };
 
-    nixosConfigurations.core = extraModules: nixpkgs.lib.nixosSystem {
-      inherit lib system;
-      specialArgs = {inherit inputs;};
-      modules = extraModules ++ [
-        ({config, ... }: {
-          nixpkgs.overlays = with lib; [(composeManyExtensions [
-            (import ./overlays/vimPlugins.nix {inherit pkgs;})
-          ])];
-        })
-      ] ++ (attrValues
-        (attrsets.mergeAttrsList (map modulesIn [
-          ./profiles/core
-        ])));
-    };
-
-    nixosModules.core = { ... }: {
-        imports = [
-          ({config, ... }: {
-            nixpkgs.overlays = with lib; [(composeManyExtensions [
-              (import ./overlays/vimPlugins.nix {inherit pkgs;})
-            ])];
-          })
-        ] ++ (attrValues
-        (attrsets.mergeAttrsList (map modulesIn [
-          ./profiles/core
-        ])));
-    };
-
-    templates = {
-      default = {
-        path = ./templates/flake;
-        description = "Python and go stuff";
-      };
-      ansible = {
-        path = ./templates/ansible;
-        description = "Ansible and shellhook to login to awx";
-      };
-      go = {
-        path = ./templates/go;
-        description = "Go, gotools, and gofumpt";
-      };
-    };
+    templates =
+      mapAttrs
+      (templateName: path: {inherit path;})
+      (modulesIn ./templates);
   };
 }

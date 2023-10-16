@@ -1,5 +1,5 @@
 {...}: {
-  programs.tiny = {
+  hm.programs.tiny = {
       enable = true;
       settings = {
           servers = [
@@ -8,15 +8,20 @@
               port = 6697;
               tls = true;
               realname = "Mike Vink";
-              nicks = [ "ivi" ];
+              nicks = [ "ivi-v" ];
+              join = ["#nixos"];
+              sasl = {
+                  username = "ivi-v";
+                  password.command = "pass show personal/liberachat";
+              };
             }
           ];
-      };
-      defaults = {
-        nicks = [ "ivi" ];
-        realname = "Mike Vink";
-        join = [];
-        tls = true;
+          defaults = {
+            nicks = [ "ivi-v" ];
+            realname = "Mike Vink";
+            join = [];
+            tls = true;
+          };
       };
   };
 }

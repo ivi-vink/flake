@@ -3,12 +3,6 @@
     nixpkgs.url = "nixpkgs";
     nix-filter.url = "github:numtide/nix-filter";
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs-terraform-providers-bin.url = "github:nix-community/nixpkgs-terraform-providers-bin";
-    nixpkgs-terraform-providers-bin.inputs.nixpkgs.follows = "nixpkgs";
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs = {
     self,

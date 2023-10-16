@@ -3,19 +3,25 @@
   pkgs,
   ...
 }: {
-  users.users.mike = {
+  imports = [ (mkAliasOptionModule [ "ivi" ] [ "users" "users" ivi.username ]) ];
+
+  time.timeZone = "Europe/Amsterdam";
+  users.users.${ivi.username} = {
+    uid = 1000;
     isNormalUser = true;
+    description = ivi.realName;
     extraGroups = ["wheel" "networkmanager" "docker" "transmission"];
+    openssh.authorizedKeys.keys = ivi.sshKeys;
   };
   security = {
-      sudo = {
-        wheelNeedsPassword = false;
-        extraConfig = ''
-          Defaults env_keep+="EDITOR"
-          Defaults env_keep+="SSH_CONNECTION SSH_CLIENT SSH_TTY"
-          Defaults env_keep+="http_proxy https_proxy"
-        '';
-      };
+    sudo = {
+      wheelNeedsPassword = false;
+      extraConfig = ''
+        Defaults env_keep+="EDITOR"
+        Defaults env_keep+="SSH_CONNECTION SSH_CLIENT SSH_TTY"
+        Defaults env_keep+="http_proxy https_proxy"
+      '';
+    };
   };
   environment.systemPackages = with pkgs; [
     man-pages
@@ -34,7 +40,6 @@
     inetutils
     usbutils
   ];
-
 
   nix.package = pkgs.nixUnstable;
   nix.extraOptions = ''
