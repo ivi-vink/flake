@@ -1,8 +1,9 @@
 {
   config,
   pkgs,
+  lib,
   ...
-}: {
+}: with lib; {
   imports = [ (mkAliasOptionModule [ "ivi" ] [ "users" "users" ivi.username ]) ];
 
   time.timeZone = "Europe/Amsterdam";

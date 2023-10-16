@@ -1,7 +1,7 @@
 {inputs, config, lib, ...}: with lib; {
   imports = [
     inputs.home-manager.nixosModules.default
-    (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" "mike" ])
+    (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" ivi.username ])
   ];
 
   system.extraDependencies = collectFlakeInputs inputs.home-manager;

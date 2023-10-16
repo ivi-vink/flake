@@ -49,7 +49,7 @@
       enable = true;
       matchBlocks = {
         "*" = {
-          identityFile = "${config.users.users.mike.home}/.ssh/id_ed25519";
+          identityFile = "${config.ivi.home}/.ssh/id_ed25519";
         };
       };
     };
@@ -60,8 +60,8 @@
     };
 
     home.sessionPath = [
-      "${config.users.users.mike.home}/.krew/bin"
-      "${config.users.users.mike.home}/.cargo/bin"
+      "${config.ivi.home}/.krew/bin"
+      "${config.ivi.home}/.cargo/bin"
       "${pkgs.ncurses}/bin"
     ];
 
@@ -142,9 +142,9 @@
         k             = "kubectl ";
         d             = "docker ";
         ls            = "ls --color=auto";
-        s             = "sudo nixos-rebuild switch --flake ${config.users.users.mike.home}/flake#";
+        s             = "sudo nixos-rebuild switch --flake ${config.ivi.home}/flake#";
         b             = "/run/current-system/bin/switch-to-configuration boot";
-        h             = "home-manager switch --flake ${config.users.users.mike.home}/flake --impure";
+        h             = "home-manager switch --flake ${config.ivi.home}/flake --impure";
         fa            = "azdo-switch-project";
         v             = "nvim";
         V             = "nvim -S .vimsession.vim";

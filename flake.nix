@@ -38,7 +38,7 @@
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
                (import ./overlays/vimPlugins.nix {inherit pkgs;})
-               (import ./overlays/suckless.nix {inherit pkgs; home = config.users.users.mike.home;})
+               (import ./overlays/suckless.nix {inherit pkgs; home = config.ivi.home;})
              ])];})
            ];
     };
@@ -58,7 +58,7 @@
         {
           hostname = hostname + "." + ivi.domain;
           sshUser = "root";
-          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname}
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
         })
       (filterAttrs (_: machine: machine.isDeployed) ivi.machines);
 

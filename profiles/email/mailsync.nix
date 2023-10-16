@@ -28,7 +28,7 @@
       Service = {
         Type = "oneshot";
         RemainAfterExit = "no";
-        ExecSearchPath = "${config.users.users.mike.home}/.local/bin:${config.hm.home.profileDirectory}/bin:/run/current-system/sw/bin";
+        ExecSearchPath = "${config.ivi.home}/.local/bin:${config.hm.home.profileDirectory}/bin:/run/current-system/sw/bin";
         ExecStart = "mailsync";
       };
     };

@@ -35,7 +35,7 @@ self: lib: with lib; let
                 };
                 isDeployed = mkOption {
                     description = "The machine is deployed with nixos";
-                    type = boolean;
+                    type = bool;
                     default = false;
                 };
             };

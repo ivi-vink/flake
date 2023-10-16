@@ -1,9 +1,9 @@
-{config, ...}: {
+{config, lib, ...}: with lib; {
   hm = {
     programs.git = {
       enable = true;
-      userName = "Mike Vink";
-      userEmail = "mike1994vink@gmail.com";
+      userName = ivi.realName;
+      userEmail = ivi.email;
       extraConfig = {
         worktree.guessRemote = true;
         mergetool.fugitive.cmd = "vim -f -c \"Gdiff\" \"$MERGED\"";
