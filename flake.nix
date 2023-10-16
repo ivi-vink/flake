@@ -42,7 +42,7 @@
         ])));
     };
 
-    nixosConfigurations.core = inputs: extraModules: nixpkgs.lib.nixosSystem {
+    nixosConfigurations.core = extraModules: nixpkgs.lib.nixosSystem {
       inherit lib system;
       specialArgs = {inherit inputs;};
       modules = extraModules ++ [
