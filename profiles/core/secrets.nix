@@ -1,4 +1,20 @@
-{machine,inputs,config,lib,pkgs,...}: with lib; {
+{machine,inputs,config,lib,pkgs,...}: with lib;
+let
+  getSecrets = dir:
+    mapAttrs' (name: _: let
+      parts = splitString "." name;
+      base = head parts;
+      format = if length parts > 1 then elemAt parts 1 else "binary";
+    in nameValuePair base {
+      sopsFile = "${dir}/${name}";
+      inherit format;
+      key = machine.hostname;
+    }) (if (filesystem.pathIsDirectory dir) then
+         (filterAttrs (n: v: v != "directory") (builtins.readDir dir))
+        else
+        {});
+in
+{
   imports = [
     inputs.sops-nix.nixosModules.sops
     (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ]) # TODO: get my username(s) from machine config
@@ -7,19 +23,11 @@
     age.sshKeyPaths = [];
     age.keyFile = mkIf (machine.hostname == "lemptop") "${config.hm.xdg.configHome}/sops/age/keys.txt";
 
-    secrets = mapAttrs' (name: _: let
-      parts = splitString "." name;
-      base = head parts;
-      format = if length parts > 1 then elemAt parts 1 else "binary";
-    in
-       {
-           name = base;
-           value = {
-               sopsFile = "${inputs.self}/secrets/${name}";
-               inherit format;
-               key = machine.hostname;
-           };
-    }) (builtins.readDir "${inputs.self}/secrets"); # keep it out of the store
+    secrets = attrsets.mergeAttrsList
+        [
+            (getSecrets "${inputs.self}/secrets")
+            (getSecrets "${inputs.self}/secrets/${machine.hostname}")
+        ];
   };
 
   environment = {
