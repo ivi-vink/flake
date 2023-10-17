@@ -36,6 +36,7 @@
     pinentry-curses
     gnused
     htop
+    pciutils
     dnsutils
     iputils
     inetutils

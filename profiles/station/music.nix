@@ -1,5 +1,6 @@
 { config, pkgs, lib, ... }: {
     secrets.mopidy.owner = lib.ivi.username;
+    hm.home.packages = [pkgs.mpc-cli];
     hm.services.mopidy = {
         enable = true;
         extensionPackages = with pkgs; [mopidy-spotify mopidy-mpd];

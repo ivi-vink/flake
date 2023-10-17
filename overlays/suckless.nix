@@ -10,7 +10,7 @@
     }));
     dwmblocks =(prev.stdenv.mkDerivation rec {
       pname = "dwmblocks";
-      version = "1.1.2";
+      version = "1.1.3";
       src = /. + home + "/flake/mut/dwmblocks";
       buildInputs = [prev.xorg.libX11];
       installPhase = ''

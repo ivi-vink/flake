@@ -50,7 +50,7 @@
   services.blueman.enable = true;
   hardware.keyboard.qmk.enable = true;
   hardware.system76.enableAll = true;
-  services.xserver.videoDrivers = [ "intel" ];
+  services.xserver.videoDrivers = [ "i915" ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
