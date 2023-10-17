@@ -20,9 +20,6 @@ in
     (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ]) # TODO: get my username(s) from machine config
   ];
   sops = {
-    age.sshKeyPaths = [];
-    age.keyFile = mkIf (machine.hostname == "lemptop") "${config.hm.xdg.configHome}/sops/age/keys.txt";
-
     secrets = attrsets.mergeAttrsList
         [
             (getSecrets "${inputs.self}/secrets")

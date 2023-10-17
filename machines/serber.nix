@@ -4,6 +4,8 @@
     ./networking.nix # generated at runtime by nixos-infect
   ];
 
+  sops.age.sshKeyPaths = [];
+
   system.stateVersion = "23.05";
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;

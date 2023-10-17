@@ -8,6 +8,8 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
+  sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
+
   documentation.dev.enable = true;
   networking.hostName = "lemptop";
   networking.networkmanager.enable = true;
