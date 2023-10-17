@@ -1,5 +1,6 @@
 keys:
   - &ivi age10q9wse8dh0749ffj576q775q496pycucxlla9rjdq5rd7f4csyhqqrmkk0
+  - &serber age1vvr5amtuf7cyhsmc8ge8ujlzpuwvwhleqafrjg2e8mcevnq2zs3qzzqq5m
 creation_rules:
   - path_regex: secrets/[^/]+\.?(yaml|json|env|ini)?$
     key_groups:
@@ -8,4 +9,9 @@ creation_rules:
   - path_regex: secrets/lemptop/[^/]+\.?(yaml|json|env|ini)?$
     key_groups:
     - age:
+      - *ivi
+  - path_regex: secrets/serber/[^/]+\.?(yaml|json|env|ini)?$
+    key_groups:
+    - age:
+      - *serber
       - *ivi
