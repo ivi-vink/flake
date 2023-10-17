@@ -1,7 +1,7 @@
 {machine,inputs,config,lib,pkgs,...}: with lib; {
   imports = [
     inputs.sops-nix.nixosModules.sops
-    (mkAliasOptionModule [ "secrets" ] [ "home-manager" "users" ivi.username ]) # TODO: get my username(s) from machine config
+    (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ]) # TODO: get my username(s) from machine config
   ];
   sops = {
     age.sshKeyPaths = [];

@@ -18,7 +18,8 @@
     sops-nix,
     deploy-rs,
     ...
-  }: let
+  }:
+  let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
     lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib self);
@@ -42,6 +43,7 @@
              ])];})
            ];
     };
+
   in with lib; {
     inherit lib;
     nixosConfigurations = with lib;
