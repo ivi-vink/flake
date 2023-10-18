@@ -1,4 +1,4 @@
-{ modulesPath, config, pkgs, sops, ... }: {
+{ modulesPath, config, pkgs, lib, ... }: with lib; {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
 
   networking = {
@@ -32,7 +32,7 @@
   boot.initrd.kernelModules = [ "nvme" ];
   fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };
 
-  sops.age.sshKeyPaths = [/etc/ssh/ssh_host_ed25519_key];
+  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
   system.stateVersion = "23.05";
   boot.tmp.cleanOnBoot = true;

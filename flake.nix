@@ -26,7 +26,7 @@
 
     # Gets module from ./machines/ and uses the lib to define which other modules
     # the machine needs.
-    mkSystem = name: machineModule: with lib;
+    mkSystem = name: machineConfig: with lib;
     let
         machine = ivi.machines.${name};
     in
@@ -35,7 +35,7 @@
       specialArgs = {inherit machine inputs;};
       modules = with lib;
         machine.modules
-        ++ [machineModule]
+        ++ [machineConfig]
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
                (import ./overlays/vimPlugins.nix {inherit pkgs;})
@@ -47,12 +47,7 @@
   in with lib; {
     inherit lib;
     nixosConfigurations = with lib;
-      mapAttrs
-          (hostname: machineConfig:
-              mkSystem
-                hostname
-                machineConfig)
-      (modulesIn ./machines);
+      mapAttrs mkSystem (modulesIn ./machines);
 
     deploy.nodes =
       mapAttrs

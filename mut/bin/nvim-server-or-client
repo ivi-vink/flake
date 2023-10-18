@@ -1,0 +1,7 @@
+#!/bin/sh
+if ! test -S /tmp/nvimsocket
+then
+    echo starting server
+    setsid nvim --listen /tmp/nvimsocket --headless &
+fi
+setsid nvim --server /tmp/nvimsocket --remote-ui
