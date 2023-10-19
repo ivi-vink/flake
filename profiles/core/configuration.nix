@@ -16,7 +16,7 @@
         openssh.authorizedKeys.keys = ivi.sshKeys;
       };
       root = {
-        passwordFile = secrets.password.path;
+        hashedPasswordFile = config.secrets.root.path;
         openssh.authorizedKeys.keys = config.ivi.openssh.authorizedKeys.keys;
       };
   };

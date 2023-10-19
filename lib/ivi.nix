@@ -55,7 +55,7 @@ self: lib: with lib; let
         githubUsername = "ivi-vink";
         realName = "Mike Vink";
         domain = "vinkland.xyz";
-        email = "mike1994vink@gmail.com";
+        email = "ivi@vinkland.xyz";
         sshKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMT59Kbv+rO0PvB1q5u3l9wdUgsKT0M8vQ7WHnjq+kYN ${ivi.email}"
           "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqsfYS7sOLfLWvGTmxT2QYGkbXJ5kREFl42n3jtte5sLps76KECgKqEjA4OLhNZ51lKFBDzcn1QOUl3RN4+qHsBtkr+02a7hhf1bBLeb1sx6+FVXdsarln5lUF/NMcpj6stUi8mqY4aQ21jQKxZsGip9fI8fx3HtXYCVhIarRbshQlwDqTplJBLDtrnmWTprxVnz1xSZRr3euXsIh1FFQZI6klPPBa6qFJtWWtGNBCRr8Sruo6I4on7QjNyW/s1OgiNAR0N2IO9wCdjlXrjNnFEAaMrpDpZde7eULbiFP2pHYVVy/InwNhhePYkeBh/4BzlaUZVv6gXsX7wOC5OyWaXbbMzWEopbnqeXXLwNyOZ88YpN/c+kZk2/1CHl+xmlVGAr9TnZ9VST5Y4ZAEqq8OKoP3ZcchAWxWjzTgPogSfiIAP/n5xrgB+8uRZb/gkN+I7RTQKGrS2Ex7gfkj39beDeevQj3XVQ1U2kp3n+jUBHItCCpZyHISgTYW2Ct6lrziJpD0kPlAOrN3BGQtkStHYK+4EE1PrrwWGkG7Ue+tlETe8FTg+AMv1VjLV9b3pHZJCrao5/cY2MxkfGzf4HTfeueqSLSsrYuiogHAPvvzfvOV5un+dWX8HyeBjmKTBwDBFuhdca/wzk0ArHSgEYUmh2NXj/G4gaSF3EX5ZSxmMQ== ${ivi.email}"
@@ -73,6 +73,7 @@ self: lib: with lib; let
             isDeployed = true;
             profiles = [
               "core"
+              "server"
             ];
           };
         };

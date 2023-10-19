@@ -6,6 +6,7 @@ creation_rules:
     key_groups:
     - age:
       - *ivi
+      - *serber
   - path_regex: secrets/lemptop/[^/]+\.?(yaml|json|env|ini)?$
     key_groups:
     - age:
