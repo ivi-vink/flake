@@ -52,12 +52,11 @@
 
     deploy.nodes =
       mapAttrs
-      (hostname: machine:
-        {
-          hostname = hostname + "." + ivi.domain;
-          sshUser = "root";
-          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
-        })
+      (hostname: machine: {
+        hostname = hostname + "." + ivi.domain;
+        sshUser = "root";
+        profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
+      })
       (filterAttrs (_: machine: machine.isDeployed) ivi.machines);
 
     devShells."${system}".hetzner = pkgs.mkShell {

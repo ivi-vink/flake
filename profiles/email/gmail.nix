@@ -75,14 +75,13 @@
           };
           neomutt = {
             enable = true;
-            sendMailCommand = "msmtp -a gmail";
+            sendMailCommand = "msmtp -a family";
             mailboxName = "=== family ===";
             extraConfig = ''
             set spoolfile='Inbox'
             unvirtual-mailboxes *
           '';
           };
-
           mbsync = {
             enable = true;
             create = "both"; remove = "both"; expunge = "both";
