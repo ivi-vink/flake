@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, lib, ... }: with lib; {
   security.acme = {
     acceptTerms = true;
     defaults = {

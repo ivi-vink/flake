@@ -9,8 +9,16 @@
     }));
   };
   config = {
-      services.nginx = {
-          enable = true;
+    services.nginx = {
+      enable = true;
+      enableReload = true;
+      recommendedTlsSettings = true;
+      recommendedProxySettings = true;
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+
+      virtualHosts."${ivi.domain}" = {
       };
+    };
   };
 }
