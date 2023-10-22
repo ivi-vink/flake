@@ -37,8 +37,8 @@
   system.stateVersion = "23.05";
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
-  networking.hostName = "vinkland";
-  networking.domain = "xyz";
+  networking.hostName = "vinkies";
+  networking.domain = "net";
   services.openssh.enable = true;
 
 }

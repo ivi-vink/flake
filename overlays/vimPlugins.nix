@@ -1,4 +1,3 @@
-
 {pkgs, ...}: (final: prev: {
   vimPlugins = let
     getVimPlugin = {

@@ -8,10 +8,14 @@ notmuch tag -new +inbox +unread -- tag:new
 
 # Gmail + mbsync = a lot of duplicates due to the archive
 notmuch tag -new -inbox +archive -- 'folder:/Archive/ -folder:/Inbox/ -folder:/\[Gmail\]/ -folder:/FarDrafts/ -folder:/Important/ -folder:/Sent/'
+notmuch tag --remove-all +sent -- folder:/Sent/
+notmuch tag --remove-all +drafts -- folder:/Drafts/
 
 # Tag messages with files that were moved to trash in neomutt
 notmuch tag --remove-all +trash -- folder:/Trash/
+
 # Same but with messages with files that were moved to spam
-notmuch tag --remove-all +spam -- folder:/Spam/
+notmuch tag --remove-all +spam -- folder:/Spam/ or folder:/Junk/
 # Remove files of messages that were tagged but still have files left behind in the mailbox, should be fine since gmail already keeps a duplicate in the Archive so the message will not be deleted only one file of the message
-notmuch search --output=files -- 'folder:/Inbox/ -tag:inbox' | grep Inbox | xargs >/dev/null 2>&1 rm
+# TODO(): make this work with non gmail emails too
+# notmuch search --output=files -- 'folder:/Inbox/ -tag:inbox' | grep Inbox | xargs >/dev/null 2>&1 rm

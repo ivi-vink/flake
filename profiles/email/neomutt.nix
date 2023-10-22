@@ -188,10 +188,9 @@
       macros = [
         { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
         { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
-        { map = ["index"]; key = "h"; action = "<mark-message>z<enter><change-folder>^<enter>'z"; }
         { map = ["index"]; key = "D"; action = "<delete-message>"; }
-        { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook &<enter>"; }
-        { map = ["index"]; key = "c"; action = "<change-vfolder>?"; }
+        { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
+        { map = ["index"]; key = "h"; action = "<change-vfolder>?h"; }
         { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
         { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
       ];
