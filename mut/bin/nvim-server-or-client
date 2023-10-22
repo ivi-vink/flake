@@ -1,7 +1,6 @@
 #!/bin/sh
-if ! test -S /tmp/nvimsocket
+if ! tmux has-session -t nvim
 then
-    echo starting server
-    setsid nvim --listen /tmp/nvimsocket --headless &
+    tmux new -s nvim -- $SHELL \; send nvim C-m
 fi
-setsid nvim --server /tmp/nvimsocket --remote-ui
+tmux attach -t nvim

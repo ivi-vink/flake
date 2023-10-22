@@ -190,7 +190,9 @@
         { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
         { map = ["index"]; key = "D"; action = "<delete-message>"; }
         { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
-        { map = ["index"]; key = "h"; action = "<change-vfolder>?h"; }
+        { map = ["index"]; key = "hi"; action = "<change-folder>~/.local/share/mail/ivi/Inbox<enter><change-vfolder>Inbox<enter>"; }
+        { map = ["index"]; key = "hg"; action = "<change-folder>~/.local/share/mail/gmail/Inbox<enter><change-vfolder>Inbox<enter>"; }
+        { map = ["index"]; key = "hf"; action = "<change-folder>~/.local/share/mail/family/Inbox<enter><change-vfolder>Inbox<enter>"; }
         { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
         { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
       ];

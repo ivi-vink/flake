@@ -97,6 +97,7 @@
       enable = true;
       extraConfig = ''
       set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
+      set -g status off
       set -s set-clipboard on
       setw -g mouse on
       set -g default-terminal "st-256color"
@@ -106,8 +107,6 @@
       # unbind C-b
       # set -g prefix C-space
       # bind C-space send-prefix
-
-      bind-key R source ${config.hm.xdg.configHome}/tmux/tmux.conf; display-message "sourced ${config.hm.xdg.configHome}/tmux/tmux.conf!"
 
       set-window-option -g mode-keys vi
       bind-key -T copy-mode-vi v send -X begin-selection
