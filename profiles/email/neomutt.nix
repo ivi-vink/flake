@@ -64,8 +64,6 @@
         set sidebar_next_new_wrap = yes
         set mail_check_stats
         set sidebar_format = '%D%?F? [%F]?%* %?N?%N/? %?S?%S?'
-        bind index,pager \Ck sidebar-prev
-        bind index,pager \Cj sidebar-next
         bind index,pager \Co sidebar-open
         bind index,pager \Cp sidebar-prev-new
         bind index,pager \Cn sidebar-next-new
@@ -147,7 +145,7 @@
         color body red default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
     '';
       binds = [
-        { map = ["index" "pager"]; key = "xl"; action = "modify-labels"; }
+        { map = ["index" "pager"]; key = "x"; action = "modify-labels"; }
         { map = ["index" "pager"]; key = "i"; action = "noop"; }
         { map = ["index" "pager"]; key = "g"; action = "noop"; }
         { map = ["index"]; key = "\\Cf"; action = "noop"; }
@@ -190,11 +188,14 @@
         { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
         { map = ["index"]; key = "D"; action = "<delete-message>"; }
         { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
-        { map = ["index"]; key = "xi"; action = "<change-folder>~/.local/share/mail/ivi/Inbox<enter><change-vfolder>Inbox<enter>"; }
-        { map = ["index"]; key = "xg"; action = "<change-folder>~/.local/share/mail/gmail/Inbox<enter><change-vfolder>Inbox<enter>"; }
-        { map = ["index"]; key = "xf"; action = "<change-folder>~/.local/share/mail/family/Inbox<enter><change-vfolder>Inbox<enter>"; }
+        { map = ["index"]; key = "hi"; action = "<change-folder>~/.local/share/mail/ivi/Inbox<enter><change-vfolder>Inbox<enter>"; }
+        { map = ["index"]; key = "hg"; action = "<change-folder>~/.local/share/mail/gmail/Inbox<enter><change-vfolder>Inbox<enter>"; }
+        { map = ["index"]; key = "hf"; action = "<change-folder>~/.local/share/mail/family/Inbox<enter><change-vfolder>Inbox<enter>"; }
         { map = ["index"]; key = "\\\\"; action = "<vfolder-from-query>"; }
         { map = ["browser"]; key = "h"; action = "<change-dir><kill-line>..<enter>"; }
+        { map = ["index"]; key = "\\Ck"; action = "<sidebar-prev><sidebar-open>"; }
+        { map = ["index"]; key = "\\Cj"; action = "<sidebar-next><sidebar-open>"; }
+        { map = ["index"]; key = "c"; action = "<change-folder>?/"; }
       ];
     };
   };
