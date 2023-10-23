@@ -3,14 +3,13 @@
   config,
   pkgs,
   ...
-}: let
-  core-packages = with pkgs;
-    [
+}: {
+  hm = {
+    home.packages = with pkgs; [
       krew
       dasel
       initool
       python311Packages.editorconfig
-      gnutls
       gcc
       pkgsi686Linux.glibc
       gnumake
@@ -20,7 +19,6 @@
       calcurse
       profanity
       file
-      lf
       ueberzug
       mypaint
       lynx
@@ -30,39 +28,27 @@
       k9s
       powershell
       azure-cli
-      subversion
-      ripgrep
       inotify-tools
       alejandra
       statix
       fzf
       github-cli
       lazygit
-      fd
       argocd
-      parallel
       bc
       sxiv
       nushell
       sent
+      (nerdfonts.override {fonts = ["FiraCode"];})
+      noto-fonts
+      noto-fonts-emoji
+      docker
+      k9s
+      dmenu
+      librewolf
+      firefox-wayland
+      xclip
+      libreoffice
     ];
-  mike-extra-packages = with pkgs; [
-    (nerdfonts.override {fonts = ["FiraCode"];})
-    noto-fonts
-    noto-fonts-emoji
-    docker
-    k9s
-    dmenu
-    librewolf
-    firefox-wayland
-    xclip
-    libreoffice
-  ];
-in {
-  hm = {
-    home.packages =
-      core-packages
-      ++
-      mike-extra-packages;
   };
 }

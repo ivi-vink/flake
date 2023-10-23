@@ -4,7 +4,8 @@ notmuch tag -new +unread +jobs -- 'tag:new and (from:jobs-listings* or from:jobs
 notmuch tag -new +unread +houses -- 'tag:new and (from:"'$MAKELAAR'" or thread:{'$MAKELAAR'})'
 notmuch tag -new +unread +dev -- 'tag:new and (from:/.*github.com/ or thread:{from:/.*github.com/})'
 
-notmuch tag +inbox +unread -- tag:new
+# New needs to be removed, otherwise it will re add inbox unread
+notmuch tag -new +inbox +unread -- tag:new
 
 # Gmail + mbsync = a lot of duplicates due to the archive
 notmuch tag -new -inbox +archive -- 'folder:/Archive/ -folder:/Inbox/ -folder:/\[Gmail\]/ -folder:/FarDrafts/ -folder:/Important/ -folder:/Sent/'
@@ -19,3 +20,6 @@ notmuch tag --remove-all +spam -- folder:/Spam/ or folder:/Junk/
 # Remove files of messages that were tagged but still have files left behind in the mailbox, should be fine since gmail already keeps a duplicate in the Archive so the message will not be deleted only one file of the message
 # TODO(): make this work with non gmail emails too
 # notmuch search --output=files -- 'folder:/Inbox/ -tag:inbox' | grep Inbox | xargs >/dev/null 2>&1 rm
+
+# update dwmblocks mail module
+pkill -RTMIN+12 dwmblocks

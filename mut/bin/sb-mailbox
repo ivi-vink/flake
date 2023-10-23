@@ -13,7 +13,9 @@ case $BLOCK_BUTTON in
 	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-unread="$(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/[Ii][Nn][Bb][Oo][Xx]/new/* -type f | wc -l 2>/dev/null)"
+# NOTE(): can't figure out why this one doesn't work, emails don't end up in new folder always
+# unread="$(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/[Ii][Nn][Bb][Oo][Xx]/new/* -type f | wc -l 2>/dev/null)"
+unread="$(notmuch search tag:inbox and tag:unread | wc -l 2>/dev/null)"
 
 pidof mbsync >/dev/null 2>&1 && icon="🔃"
 

@@ -36,12 +36,18 @@
     vim
     wget
     git
+    subversion
+    htop
     jq
     yq-go
     curl
+    fd
+    lf
+    ripgrep
+    parallel
     pinentry-curses
     gnused
-    htop
+    gnutls
     pciutils
     dnsutils
     iputils
