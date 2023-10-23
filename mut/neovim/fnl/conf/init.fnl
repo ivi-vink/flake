@@ -18,8 +18,14 @@
 (local tel (require :telescope))
 (local themes (require :telescope.themes))
 (local builtin (require :telescope.builtin))
+(local actions (require :telescope.actions))
 (tel.setup
-  {:defaults (vim.tbl_extend :force (themes.get_ivy) {})})
+  {:defaults
+   (vim.tbl_extend
+     :force
+     (themes.get_ivy)
+     {:mappings
+      {:i {"<C-a>" actions.select_all}}})})
 
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.6)))))
 (let [map vim.keymap.set]
