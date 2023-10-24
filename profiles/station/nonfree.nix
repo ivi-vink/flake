@@ -1,11 +1,12 @@
 {config, pkgs, lib, ...}: {
-    hm.home.packages = [
-        (pkgs.discord.override {
+    hm.home.packages = with pkgs; [
+        (discord.override {
           withVencord = true;
         })
-        pkgs.slack
-        pkgs.discord-ptb
-        pkgs.discord-canary
+        slack
+        discord-ptb
+        discord-canary
+        citrix_workspace
     ];
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (lib.getName pkg) [
@@ -14,5 +15,6 @@
           "discord-ptb"
           "discord-canary"
           "slack"
+          "citrix-workspace"
         ];
 }

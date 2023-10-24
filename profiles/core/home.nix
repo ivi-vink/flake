@@ -16,9 +16,7 @@
         enable = true;
         defaultApplications = {
           "text/x-shellscript"        =  ["text.desktop"];
-          "x-scheme-handler/magnet"   =  ["torrent.desktop"];
           "application/x-bittorrent"  =  ["torrent.desktop"];
-          "x-scheme-handler/mailto"   =  ["mail.desktop"];
           "text/plain"                =  ["text.desktop"];
           "application/postscript"    =  ["pdf.desktop"];
           "application/pdf"           =  ["pdf.desktop"];
@@ -30,6 +28,10 @@
           "video/mp4"                 =  ["video.desktop"];
           "x-scheme-handler/lbry"     =  ["lbry.desktop"];
           "inode/directory"           =  ["file.desktop"];
+          "application/x-ica"         =  ["wfica.desktop"];
+          "x-scheme-handler/magnet"   =  ["torrent.desktop"];
+          "x-scheme-handler/mailto"   =  ["mail.desktop"];
+          "x-scheme-handler/msteams"  =  ["teams.desktop"];
         };
       };
       mime.enable = true;

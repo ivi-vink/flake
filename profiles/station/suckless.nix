@@ -22,6 +22,7 @@ in {
       activeOpacity = 0.99;
       inactiveOpacity = 0.7;
       opacityRules = [
+        "100:class_g = 'Wfica'"
         "100:class_g = 'dwm'"
         "100:name *= 'Firefox'"
         "100:name *= 'mpv'"

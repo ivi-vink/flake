@@ -6,7 +6,7 @@
     }));
     dwm = (prev.dwm.overrideAttrs (oldAttrs: rec {
       src = /. + home + "/flake/mut/dwm";
-      version = "0.1.2";
+      version = "0.1.3";
     }));
     dwmblocks =(prev.stdenv.mkDerivation rec {
       pname = "dwmblocks";
