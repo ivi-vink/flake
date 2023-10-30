@@ -50,7 +50,7 @@
                       :<C-f> (cmp.mapping.scroll_docs 4)
                       :<C-j> (cmp.mapping.complete)
                       :<CR> (cmp.mapping.confirm {:behavior (enum :ConfirmBehavior
-                                                                  :Replace)
+                                                                  :Insert)
                                                   :select true})}
             :sources (cmp.config.sources [{:name :nvim_lsp}
                                           {:name :path}

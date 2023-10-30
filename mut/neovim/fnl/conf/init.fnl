@@ -27,7 +27,7 @@
      {:mappings
       {:i {"<C-a>" actions.select_all}}})})
 
-(local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.6)))))
+(local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
 (let [map vim.keymap.set]
   (map :v :y "<Plug>OSCYankVisual|gvy")
   (map :n :<leader>qf cope)
@@ -121,7 +121,7 @@
                                   (if (not= (vim.fn.winnr) winnr)
                                       (do
                                         (vim.notify "going back")
-                                        (vim.cmd "wincmd p"))))
+                                        (vim.cmd "wincmd p | cbot"))))
                                 (vim.notify (.. "\"" cmd "\" succeeded!"))))}))
          (set
            last_job
