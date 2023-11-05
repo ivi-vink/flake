@@ -3,7 +3,10 @@
 (local {: attach} (require :conf.lsp))
 
 (lspconfig.rust_analyzer.setup
-  {:root_dir
+  {:settings
+   {:rust-analyzer
+    {:cargo {:features [:ssr]}}}
+   :root_dir
    (lspconfig.util.root_pattern
      :.git
      (vim.fn.getcwd))
