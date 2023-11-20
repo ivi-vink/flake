@@ -3,9 +3,10 @@
   config,
   pkgs,
   suckless,
+  lib,
   ...
-}: let
-in {
+}: with lib; {
+  nixpkgs.overlays = [(import ./overlays/suckless.nix {inherit pkgs; home = config.ivi.home;})];
   hm = {
     xsession = {
       enable = true;
