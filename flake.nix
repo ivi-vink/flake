@@ -50,11 +50,6 @@
     nixosConfigurations = with lib;
       mapAttrs mkSystem (modulesIn ./machines);
 
-    nixosConfigurations.wsl = modules:
-        nixosSystem "wsl" ({...}: {
-          imports = modules;
-        });
-
     deploy.nodes =
       mapAttrs
       (hostname: machine: {
