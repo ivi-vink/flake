@@ -52,7 +52,7 @@
           windows = modules:
             nixosSystem "wsl" ({...}: {
               imports = modules;
-            })
+            });
       };
 
     deploy.nodes =
