@@ -50,7 +50,7 @@
     nixosConfigurations = with lib;
       mapAttrs mkSystem (modulesIn ./machines);
 
-    nixosConfigurations.wsl = modules:
+    nixosConfigurations.windows = modules:
         nixosSystem "wsl" ({...}: {
           imports = modules;
         });
