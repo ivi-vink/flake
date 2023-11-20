@@ -23,7 +23,7 @@
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
-    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib self);
+    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
 
     # Gets module from ./machines/ and uses the lib to define which other modules
     # the machine needs.
@@ -31,7 +31,7 @@
     let
         machine = ivi.machines.${name};
     in
-    lib.nixosSystem {
+    nixosSystem {
       inherit lib system;
       specialArgs = {inherit machine inputs;};
       modules = with lib;
@@ -49,6 +49,11 @@
     inherit lib;
     nixosConfigurations = with lib;
       mapAttrs mkSystem (modulesIn ./machines);
+
+    nixosConfigurations.wsl = modules:
+        nixosSystem "wsl" ({...}: {
+          imports = modules;
+        });
 
     deploy.nodes =
       mapAttrs

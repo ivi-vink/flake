@@ -69,6 +69,11 @@ self: lib: with lib; let
               "email"
             ];
           };
+          wsl = {
+            profiles = [
+              "core"
+            ];
+          };
           serber = {
             isDeployed = true;
             profiles = [
