@@ -48,7 +48,7 @@
   in with lib; {
     inherit lib;
     nixosConfigurations = with lib;
-      mapAttrs mkSystem (modulesIn ./machines) // {
+      (mapAttrs mkSystem (modulesIn ./machines)) // {
           windows = modules:
             nixosSystem "wsl" ({...}: {
               imports = modules;
