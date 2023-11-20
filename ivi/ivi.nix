@@ -64,6 +64,7 @@ self: lib: with lib; let
         machines = {
           lemptop = {
             secrets = true;
+            addroot = true;
             profiles = [
               "core"
               "station"
@@ -71,6 +72,7 @@ self: lib: with lib; let
             ];
           };
           wsl = {
+            addroot = false;
             secrets = false;
             profiles = [
               "core"
@@ -78,6 +80,7 @@ self: lib: with lib; let
           };
           serber = {
             secrets = true;
+            addroot = true;
             isDeployed = true;
             profiles = [
               "core"

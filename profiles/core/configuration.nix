@@ -1,4 +1,5 @@
 {
+  machine,
   config,
   pkgs,
   lib,
@@ -15,7 +16,7 @@
         extraGroups = ["wheel" "networkmanager" "docker" "transmission"];
         openssh.authorizedKeys.keys = ivi.sshKeys;
       };
-      root = {
+      root = mkIf machine.addroot {
         hashedPasswordFile = config.secrets.root.path;
         openssh.authorizedKeys.keys = config.ivi.openssh.authorizedKeys.keys;
       };
