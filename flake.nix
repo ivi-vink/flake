@@ -48,12 +48,12 @@
   in with lib; {
     inherit lib;
     nixosConfigurations = with lib;
-      mapAttrs mkSystem (modulesIn ./machines);
-
-    nixosConfigurations.windows = modules:
-        nixosSystem "wsl" ({...}: {
-          imports = modules;
-        });
+      mapAttrs mkSystem (modulesIn ./machines) // {
+          windows = modules:
+            nixosSystem "wsl" ({...}: {
+              imports = modules;
+            })
+      };
 
     deploy.nodes =
       mapAttrs
