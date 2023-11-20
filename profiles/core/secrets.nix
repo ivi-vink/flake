@@ -19,22 +19,24 @@ in
     inputs.sops-nix.nixosModules.sops
     (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ]) # TODO: get my username(s) from machine config
   ];
-  sops = {
-    secrets = attrsets.mergeAttrsList
-        [
-            (getSecrets "${inputs.self}/secrets")
-            (getSecrets "${inputs.self}/secrets/${machine.hostname}")
+  config = mkIf machine.secrets {
+      sops = {
+        secrets = attrsets.mergeAttrsList
+            [
+                (getSecrets "${inputs.self}/secrets")
+                (getSecrets "${inputs.self}/secrets/${machine.hostname}")
+            ];
+      };
+
+      environment = {
+        systemPackages = [
+          pkgs.sops
+          pkgs.age
         ];
-  };
+      };
 
-  environment = {
-    systemPackages = [
-      pkgs.sops
-      pkgs.age
-    ];
-  };
-
-  hm = {
-    programs.password-store.enable = true;
+      hm = {
+        programs.password-store.enable = true;
+      };
   };
 }
