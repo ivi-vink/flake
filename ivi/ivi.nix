@@ -71,7 +71,7 @@ self: lib: with lib; let
             ];
           };
           wsl = {
-            secrets = true;
+            secrets = false;
             profiles = [
               "core"
             ];
