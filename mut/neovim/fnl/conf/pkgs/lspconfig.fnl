@@ -14,7 +14,8 @@
 
 (lspconfig.pyright.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                  (vim.fn.getcwd))
-                          :on_attach attach})
+                          :on_attach attach
+                          :settings {:venvPath (.. (vim.fn.getcwd) :.venv)}})
 
 (lspconfig.tsserver.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                   (vim.fn.getcwd))

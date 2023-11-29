@@ -53,9 +53,6 @@
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
   (map :n :<c-p> ":Telescope find_files<cr>" {:noremap true})
-  (map :n "`<Backspace>" ":FocusDispatch ")
-  (map :n "`k" ":K9s ")
-  (map :n "`s" ":Ssh ")
   (map :n "<leader>;" ":silent grep ")
   (map :n :<leader>xb #(builtin.buffers { :sort_mru true :ignore_current_buffer true})))
 

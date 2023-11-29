@@ -106,9 +106,9 @@
       set -ga terminal-overrides ",xterm-256color:Tc"
       set-option -g focus-events on
       set-option -sg escape-time 10
-      # unbind C-b
-      # set -g prefix C-space
-      # bind C-space send-prefix
+      unbind M-x
+      set -g prefix M-x
+      bind M-x send-prefix
 
       set-window-option -g mode-keys vi
       bind-key -T copy-mode-vi v send -X begin-selection
