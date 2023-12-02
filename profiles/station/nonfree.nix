@@ -16,5 +16,15 @@
           "discord-canary"
           "slack"
           "citrix-workspace"
+        "steam"
+        "steam-original"
+        "steam-run"
         ];
+
+    programs.steam = {
+        enable = true;
+        remotePlay.openFirewall = true;
+        dedicatedServer.openFirewall = true;
+    };
+    hardware.opengl.driSupport32Bit = true;
 }

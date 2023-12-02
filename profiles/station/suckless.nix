@@ -28,6 +28,8 @@
         "100:name *= 'Firefox'"
         "100:name *= 'mpv'"
         "100:name *= 'LibreWolf'"
+        "100:name *= 'Steam'"
+        "100:name *= 'Risk of Rain'"
       ];
       settings = {
         inactive-opacity-override = false;

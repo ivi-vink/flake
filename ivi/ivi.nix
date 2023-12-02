@@ -87,6 +87,12 @@ self: lib: with lib; let
               "server"
             ];
           };
+          cal = {
+            isDeployed = true;
+            profiles = [
+              "core"
+            ];
+          };
         };
       };
     }

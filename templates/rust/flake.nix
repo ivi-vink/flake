@@ -24,14 +24,6 @@
             inputsFrom = [
               config.treefmt.build.devShell
             ];
-            shellHook = ''
-              # For rust-analyzer 'hover' tooltips to work.
-              export RUST_SRC_PATH=${pkgs.rustPlatform.rustLibSrc}
-
-              echo
-              echo "🍎🍎 Run 'just <recipe>' to get started"
-              just
-            '';
             buildInputs = nonRustDeps;
             nativeBuildInputs = with pkgs; [
               just

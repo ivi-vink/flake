@@ -23,23 +23,24 @@
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
-    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
+    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./lib self);
 
     # Gets module from ./machines/ and uses the lib to define which other modules
     # the machine needs.
-    mkSystem = name: machineConfig: with lib;
-    let
-        machine = ivi.machines.${name};
-    in
-    nixosSystem {
+    # let
+    #     machine = ivi.machines.${name};
+    # in
+    mkSystem = machine: machineConfig: with lib;
+    lib.nixosSystem {
       inherit lib system;
       specialArgs = {inherit machine inputs;};
       modules = with lib;
         machine.modules
-        ++ [machineConfig]
+        ++ machineConfig
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
                (import ./overlays/vimPlugins.nix {inherit pkgs;})
+               (import ./overlays/suckless.nix {inherit pkgs; home = config.ivi.home;})
              ])];})
            ];
     };
@@ -47,12 +48,11 @@
   in with lib; {
     inherit lib;
     nixosConfigurations = with lib;
-      (mapAttrs mkSystem (modulesIn ./machines)) // {
-          windows = modules:
-            mkSystem "wsl" ({...}: {
-              imports = modules;
-            });
-      };
+      mapAttrs
+        (hostname: cfg:
+            mkSystem ivi.machines.${hostname} [cfg])
+        (modulesIn ./machines)
+      // { iso = (mkSystem { modules = [./iso.nix]; } []); };
 
     deploy.nodes =
       mapAttrs
@@ -76,7 +76,7 @@
 
     templates =
       mapAttrs
-      (templateName: path: {inherit path;})
-      (modulesIn ./templates);
+      (name: type: {path = ./templates + "/${name}";})
+      (builtins.readDir ./templates);
   };
 }
