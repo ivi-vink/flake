@@ -90,11 +90,6 @@
     '';
     };
 
-    programs.emacs = {
-      enable = true;
-      package = pkgs.emacs29;
-    };
-
     programs.tmux = {
       enable = true;
       extraConfig = ''

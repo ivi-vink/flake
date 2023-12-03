@@ -49,7 +49,10 @@
         (hostname: cfg:
             mkSystem ivi.machines.${hostname} [cfg])
         (modulesIn ./machines)
-      // { iso = (mkSystem { modules = [./iso.nix]; } []); };
+      // {
+           windows = windowsModules: (mkSystem { modules = (attrValues (modulesIn ./profiles/core)) ++ windowsModules; } []);
+           iso = (mkSystem { modules = [./iso.nix]; } []);
+         };
 
     deploy.nodes =
       mapAttrs
