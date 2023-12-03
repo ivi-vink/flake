@@ -50,7 +50,7 @@
             mkSystem ivi.machines.${hostname} [cfg])
         (modulesIn ./machines)
       // {
-           windows = windowsModules: (mkSystem { modules = (attrValues (modulesIn ./profiles/core)) ++ windowsModules; } []);
+           windows = windowsModules: (mkSystem { secrets = false; addroot = false; modules = (attrValues (modulesIn ./profiles/core)) ++ windowsModules; } []);
            iso = (mkSystem { modules = [./iso.nix]; } []);
          };
 
