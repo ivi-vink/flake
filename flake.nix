@@ -37,7 +37,6 @@
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
                (import ./overlays/vimPlugins.nix {inherit pkgs;})
-               (import ./overlays/suckless.nix {inherit pkgs; home = config.ivi.home;})
              ])];})
            ];
     };
