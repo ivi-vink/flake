@@ -5,7 +5,9 @@
 (lspconfig.rust_analyzer.setup
   {:settings
    {:rust-analyzer
-    {:cargo {:features [:ssr]}}}
+    {:cargo {:buildScripts {:enable true}}
+     :procMacro {:enable true :attributes {:enable true}}
+     :inlayHints {:enable true}}}
    :root_dir
    (lspconfig.util.root_pattern
      :.git

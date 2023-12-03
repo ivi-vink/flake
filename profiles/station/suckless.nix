@@ -1,12 +1,12 @@
 {
-  flake,
+  self,
   config,
   pkgs,
   suckless,
   lib,
   ...
 }: with lib; {
-  nixpkgs.overlays = [(import ./overlays/suckless.nix {inherit pkgs; home = config.ivi.home;})];
+  nixpkgs.overlays = [(import (self + "/overlays/suckless.nix") {inherit pkgs; home = config.ivi.home;})];
   hm = {
     xsession = {
       enable = true;
