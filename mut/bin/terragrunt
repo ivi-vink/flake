@@ -80,7 +80,12 @@ do
     esac
 done
 
-ENVIRONMENTS="$REPO/environments"
+ENVIRONMENTS=""
+if [ -z $ENV -a -z $MODULE ]; then
+    ENVIRONMENTS="$REPO"
+else
+    ENVIRONMENTS="$REPO/environments"
+fi
 WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
 
 # TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
