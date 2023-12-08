@@ -81,6 +81,8 @@
         vim-racket
         nvim-parinfer
         hotpot-nvim
+
+        oil-nvim
       ];
     };
   };
