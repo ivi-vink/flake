@@ -50,7 +50,7 @@
         vim-helm
 
         # external
-        vim-dirvish
+        oil-nvim
         vim-fugitive
         vim-oscyank
         venn-nvim
@@ -81,8 +81,6 @@
         vim-racket
         nvim-parinfer
         hotpot-nvim
-
-        oil-nvim
       ];
     };
   };

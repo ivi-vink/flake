@@ -29,6 +29,7 @@
 
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
 (let [map vim.keymap.set]
+  (map :n :- ::Oil<cr>)
   (map :v :y "<Plug>OSCYankVisual|gvy")
   (map :n :<leader>qf cope)
   (map :n :<leader>q<BS> ":cclose<cr>")
