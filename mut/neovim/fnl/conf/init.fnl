@@ -47,7 +47,7 @@
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
-  (map :n :<c-p> ":Telescope find_files<cr>" {:noremap true})
+  (map :n :<c-p> #(fzf.file))
   (map :n "<leader>;" ":silent grep ")
   (map :n :<leader>xb #(fzf.buffers
                          {:keymap {:fzf {"ctrl-a" "select-all"
