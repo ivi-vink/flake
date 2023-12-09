@@ -39,6 +39,8 @@
         fnlfmt
         alejandra
         statix
+        fzf
+        bat
       ];
       plugins = with pkgs.vimPlugins; [
         # highlighting
@@ -58,8 +60,7 @@
         gv-vim
 
         # Coding
-        plenary-nvim
-        telescope-nvim
+        fzf-lua
         nvim-lspconfig
         null-ls-nvim
         lsp_signature-nvim

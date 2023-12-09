@@ -31,7 +31,6 @@
       inotify-tools
       alejandra
       statix
-      fzf
       github-cli
       lazygit
       argocd

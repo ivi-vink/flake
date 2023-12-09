@@ -1,6 +1,5 @@
 (local lspconfig (require :lspconfig))
 (local configs (require :lspconfig.configs))
-(local {: attach} (require :conf.lsp))
 
 (lspconfig.rust_analyzer.setup
   {:settings
@@ -11,32 +10,37 @@
    :root_dir
    (lspconfig.util.root_pattern
      :.git
+     (vim.fn.getcwd))})
+
+(lspconfig.pyright.setup
+  {:root_dir
+   (lspconfig.util.root_pattern
+     :.git
      (vim.fn.getcwd))
-   :on_attach attach})
+   :settings
+   {:venvPath (.. (vim.fn.getcwd) :.venv)}})
 
-(lspconfig.pyright.setup {:root_dir (lspconfig.util.root_pattern :.git
-                                                                 (vim.fn.getcwd))
-                          :on_attach attach
-                          :settings {:venvPath (.. (vim.fn.getcwd) :.venv)}})
+(lspconfig.tsserver.setup
+  {:root_dir
+   (lspconfig.util.root_pattern
+     :.git
+     (vim.fn.getcwd))})
 
-(lspconfig.tsserver.setup {:root_dir (lspconfig.util.root_pattern :.git
-                                                                  (vim.fn.getcwd))
-                           :on_attach attach})
+(lspconfig.gopls.setup
+  {:root_dir (lspconfig.util.root_pattern :.git
+                                          (vim.fn.getcwd))
+   :settings {:gopls {:codelenses {:test true :bench true}
+                      ;;  Show a code lens toggling the display of gc's choices.}
+                      :buildFlags [:-tags=all]}}})
 
-(lspconfig.gopls.setup {:root_dir (lspconfig.util.root_pattern :.git
-                                                               (vim.fn.getcwd))
-                        :on_attach attach
-                        :settings {:gopls {:codelenses {:test true :bench true}
-                                           ;;  Show a code lens toggling the display of gc's choices.}
-                                           :buildFlags [:-tags=all]}}})
-
-(lspconfig.ansiblels.setup {:ansible {:ansible {:path :ansible}
-                                      :executionEnvironment {:enabled false}
-                                      :python {:interpreterPath :python}
-                                      :validation {:enabled true
-                                                   :lint {:enabled false
-                                                          :arguments " --profile=production --write=all "
-                                                          :path :ansible-lint}}}})
+(lspconfig.ansiblels.setup
+  {:ansible {:ansible {:path :ansible}
+             :executionEnvironment {:enabled false}
+             :python {:interpreterPath :python}
+             :validation {:enabled true
+                          :lint {:enabled false
+                                 :arguments " --profile=production --write=all "
+                                 :path :ansible-lint}}}})
 
 ;; (tset configs :fennel_language_server
 ;;       {:default_config {;; replace it with true path

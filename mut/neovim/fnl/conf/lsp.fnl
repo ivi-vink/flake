@@ -1,4 +1,4 @@
-(fn map-to-capabilities [{: client : buf} format]
+(fn map-to-capabilities [{: client : buf}]
   (fn bo [name value]
     (vim.api.nvim_buf_set_option buf name value))
 
@@ -19,21 +19,21 @@
       :referencesProvider (bm :n :<leader>gg (lspdo :references))
       :documentSymbolProvider (bm :n :<leader>gds (lspdo :workspace_symbol))
       :codeActionProvider (bm :n :<leader>ga (lspdo :code_action))
-      :codeLensProvider (bm :n :<leader>gl
-                            (lambda []
-                              (vim.lsp.codelens.run)))
+      :codeLensProvider (bm :n :<leader>gl #(vim.lsp.codelens.run))
       :hoverProvider (bo :keywordprg ":LspHover")
-      :documentFormattingProvider (if format
-                                      ((fn []
-                                         (bo :formatexpr
-                                             "v:lua.vim.lsp.format()")
-                                         (bm :n :<leader>gq
-                                             #(vim.lsp.buf.format {:async true})))))))
+      :inlayHintProvider (do
+                          (vim.lsp.inlay_hint.enable buf true)
+                          (bm :n :<leader>gh #(vim.lsp.inlay_hint.enable 0 (not (vim.lsp.inlay_hint.is_enabled 0)))))
+     :documentFormattingProvider (do
+                                    (bo :formatexpr
+                                        "v:lua.vim.lsp.format()")
+                                    (bm :n :<leader>gq
+                                        #(vim.lsp.buf.format {:async true})))))
 
-  (each [cpb enabled? (pairs client.server_capabilities)]
-    (if enabled?
-        (use cpb)))
-  {: client : buf})
+ (each [cpb enabled? (pairs client.server_capabilities)]
+   (if enabled?
+       (use cpb)))
+ {: client : buf})
 
 (fn register-handlers [{: client : buf}]
   (tset (. client :handlers) :textDocument/publishDiagnostics
@@ -57,19 +57,19 @@
 (fn events [{: client : buf}]
   (match client.server_capabilities
     {:documentFormattingProvider true}
-    (let [format-events-group (vim.api.nvim_create_augroup :format-events
-                                                           {:clear true})]
-      (vim.api.nvim_create_autocmd [:BufWritePre]
-                                   {:group format-events-group
-                                    :callback (lambda []
-                                                (if format-on-save
-                                                    (vim.lsp.buf.format)))
-                                    :buffer buf}))))
+    (vim.api.nvim_create_autocmd
+     :BufWritePre
+     {:group
+      (vim.api.nvim_create_augroup :format-events {:clear true})
+      :buffer buf
+      :callback #(if format-on-save (vim.lsp.buf.format))})))
 
-(fn attach [client buf format]
+(fn attach [ev]
+  (local client (vim.lsp.get_client_by_id ev.data.client_id))
+  (local buf ev.buf)
   (-> {: client : buf}
       (register-handlers)
-      (map-to-capabilities format)
+      (map-to-capabilities)
       (events)))
 
 {: attach}

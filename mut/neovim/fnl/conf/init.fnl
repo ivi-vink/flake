@@ -8,6 +8,7 @@
 (require :conf.pkgs)
 (require :conf.nix-develop)
 (require :conf.diagnostic)
+(require :conf.events)
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
@@ -15,17 +16,9 @@
                 (each [_ printer (ipairs inspected)]
                   (print printer)))))
 
-(local tel (require :telescope))
-(local themes (require :telescope.themes))
-(local builtin (require :telescope.builtin))
-(local actions (require :telescope.actions))
-(tel.setup
-  {:defaults
-   (vim.tbl_extend
-     :force
-     (themes.get_ivy)
-     {:mappings
-      {:i {"<C-a>" actions.select_all}}})})
+(local fzf (require :fzf-lua))
+(local action (require :fzf-lua.actions))
+(fzf.setup [:max-perf])
 
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
 (let [map vim.keymap.set]
@@ -38,16 +31,17 @@
   (map :n :<M-space> ":cprev<cr>")
   (map :n :<C-M-space> ":cprev<cr>")
   (map :n :<C-space> ":cnext<cr>")
-  (map :n :<C-x> #(do
-                    (vim.fn.setreg "/" "Compile")
-                    (vim.api.nvim_feedkeys
-                      (vim.api.nvim_replace_termcodes
-                        ":Compile<up><c-f>" true false true)
-                      :n false)
-                    (vim.schedule #(do
-                                     (vim.cmd "let v:searchforward = 0")
-                                     (map :n :/ "/Compile.* " {:buffer true})
-                                     (map :n :? "?Compile.* " {:buffer true})))))
+  (map :n :<C-x>
+       #(do
+          (vim.fn.setreg "/" "Compile")
+          (vim.api.nvim_feedkeys
+            (vim.api.nvim_replace_termcodes
+              ":Compile<up><c-f>" true false true)
+            :n false)
+          (vim.schedule #(do
+                           (vim.cmd "let v:searchforward = 0")
+                           (map :n :/ "/Compile.* " {:buffer true})
+                           (map :n :? "?Compile.* " {:buffer true})))))
   (map :n :<C-e> ":Recompile<CR>")
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
@@ -55,8 +49,19 @@
   (map :n "]x" ":lnext<cr>")
   (map :n :<c-p> ":Telescope find_files<cr>" {:noremap true})
   (map :n "<leader>;" ":silent grep ")
-  (map :n :<leader>xb #(builtin.buffers { :sort_mru true :ignore_current_buffer true})))
+  (map :n :<leader>xb #(fzf.buffers
+                         {:keymap {:fzf {"ctrl-a" "select-all"
+                                         "alt-a" "deselect-all"}}
+                          :actions {:default {:fn action.buf_edit_or_qf}}}))
+  (map :n :<leader>x<cr> #(vim.cmd "b #")))
 
+
+(vim.api.nvim_create_user_command
+  :NixEdit
+  (fn [{: args}]
+    (local f (io.popen (.. "nix eval --raw " vim.env.HOME "/flake#nixosConfigurations." (vim.fn.hostname) ".pkgs." args)))
+    (vim.cmd (.. "e " (f:read))))
+  {:nargs 1})
 
 ;; I like to use the qf to run a lot of stuff that prints junk
 ;; Here I just check if ansi control stuff is printed and reparse the lines with efm

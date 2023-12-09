@@ -1,23 +1,36 @@
-(vim.api.nvim_create_augroup "conf#events" {:clear true})
+(local lspconfig (require :lspconfig))
+(local configs (require :lspconfig.configs))
+(local {: attach} (require :conf.lsp))
+
 (local event vim.api.nvim_create_autocmd)
 
-(event [:BufReadPost] {:pattern ["*"]
-                       :callback (fn []
-                                   (local pattern "'\\s\\+$'")
-                                   (vim.cmd (.. "syn match TrailingWhitespace "
-                                                pattern))
-                                   (vim.cmd "hi link TrailingWhitespace IncSearch"))
-                       :group "conf#events"})
+(vim.api.nvim_create_augroup "conf#events" {:clear true})
 
-(local vimenter-cwd (vim.fn.getcwd))
-(event [:VimLeave] {:pattern ["*"]
-                    :callback (fn []
-                                (vim.cmd (.. "mksession! " vimenter-cwd
-                                             :/.vimsession.vim)))
-                    :group "conf#events"})
+(event
+  :LspAttach
+  {:group "conf#events"
+   :pattern ["*"]
+   :callback attach})
 
-(event [:FileType] {:pattern [:dirvish]
-                    :callback (fn []
-                                (vim.cmd "silent! unmap <buffer> <C-p>")
-                                (vim.cmd "set buflisted"))
-                    :group "conf#events"})
+(event
+  :BufReadPost
+  {:pattern ["*"]
+   :callback (fn []
+               (local pattern "'\\s\\+$'")
+               (vim.cmd (.. "syn match TrailingWhitespace "
+                            pattern))
+               (vim.cmd "hi link TrailingWhitespace IncSearch"))
+   :group "conf#events"})
+
+(local session-file (.. vim.env.HOME "/.vimsession.vim"))
+(event
+  :VimLeave
+  {:group "conf#events"
+   :pattern ["*"]
+   :callback #(vim.cmd (.. "mksession! " session-file))})
+(event
+  :VimEnter
+  {:group "conf#events"
+   :pattern ["*"]
+   :callback #(if (= 1 (vim.fn.filereadable session-file))
+                  (vim.schedule #(vim.cmd (.. "source " session-file))))})
