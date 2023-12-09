@@ -21,8 +21,10 @@
 (fzf.setup [:max-perf])
 
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
+(local oil (require :oil.actions))
 (let [map vim.keymap.set]
   (map :n :- ::Oil<cr>)
+  (map :n :_ #(oil.open_cwd.callback))
   (map :v :y "<Plug>OSCYankVisual|gvy")
   (map :n :<leader>qf cope)
   (map :n :<leader>q<BS> ":cclose<cr>")
@@ -47,7 +49,8 @@
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
-  (map :n :<c-p> #(fzf.file))
+  (map :n :<c-p> #(fzf.files))
+  (map :n :<leader>xp #(fzf.files))
   (map :n "<leader>;" ":silent grep ")
   (map :n :<leader>xb #(fzf.buffers
                          {:keymap {:fzf {"ctrl-a" "select-all"
