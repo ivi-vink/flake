@@ -37,11 +37,12 @@
 
 (fn register-handlers [{: client : buf}]
   (tset (. client :handlers) :textDocument/publishDiagnostics
-        (vim.lsp.with (fn [_ result ctx config]
-                        (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
-                                                                   config)
-                        (vim.diagnostic.setloclist {:open false}))
-          {:virtual_text true
+        (vim.lsp.with
+          (fn [_ result ctx config]
+            (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
+                                                       config)
+            (vim.diagnostic.setloclist {:open false}))
+          {:virtual_text false
            :underline true
            :update_in_insert false
            :severity_sort true}))
