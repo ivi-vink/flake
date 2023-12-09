@@ -6,12 +6,10 @@
 }: {
   hm = {
     fonts.fontconfig.enable = true;
-    home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
+    # https://github.com/nix-community/home-manager/issues/4692
+    # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
     xdg = {
       enable = true;
-      configFile = with config.lib.meta; {
-        "emacs/init.el".source = mkMutableSymlink /mut/emacs/init.el;
-      };
       mimeApps = {
         enable = true;
         defaultApplications = {
