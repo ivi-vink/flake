@@ -33,4 +33,11 @@
   {:group "conf#events"
    :pattern ["*"]
    :callback #(if (= 1 (vim.fn.filereadable session-file))
-                  (vim.schedule #(vim.cmd (.. "source " session-file))))})
+                  (do
+                    (local start-with-arg (>= 1 (vim.fn.argc)))
+                    (local file (vim.fn.argv 0))
+                    (local cwd (vim.fn.getcwd))
+                    (vim.schedule #(vim.cmd (.. "source " session-file)))
+                    (if start-with-arg (vim.schedule #(do
+                                                        (vim.cmd (.. "cd " cwd))
+                                                        (vim.cmd (.. "e " file)))))))})

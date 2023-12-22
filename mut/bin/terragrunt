@@ -1,35 +1,18 @@
 #!/bin/sh
 TERRAGRUNT_ARGS=()
-CONTEXT=""
-ENV=""
-MODULE=""
-FULL=0
 while [[ $# -gt 0 ]]; do
     case $1 in
         -full)
             FULL=1
             shift
             ;;
-        -m|--module-path)
-            MODULE="$2"
+        -p|--path)
+            path="$2"
             shift
             shift
             ;;
-        -m=*|--module-path=*)
-            MODULE="${1#*=}"
-            shift
-            ;;
-        -e|--env)
-            ABS_ENV="$2"
-            CONTEXT=${ABS_ENV%/*}
-            ENV=${ABS_ENV#*/}
-            shift
-            shift
-            ;;
-        -e=*|--env=*)
-            ABS_ENV="${1#*=}"
-            CONTEXT=${ABS_ENV%/*}
-            ENV=${ABS_ENV#*/}
+        -p=*|--path=*)
+            path="${1#*=}"
             shift
             ;;
         *|-*)
@@ -80,18 +63,14 @@ do
     esac
 done
 
-ENVIRONMENTS=""
-if [ -z $ENV -a -z $MODULE ]; then
-    ENVIRONMENTS="$REPO"
-else
-    ENVIRONMENTS="$REPO/environments"
-fi
-WORKDIR="$ENVIRONMENTS/$ENV/$MODULE"
+WORKDIR="$REPO/$path"
 
-# TODO(mike): how to do concise mode  | grep -E '(^.*[#~+-] .*|^[[:punct:]]|Plan)'
-# TODO(mike): check expiry of azure directory
-if [[ $FULL -eq 0 ]]; then
-    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi | grep --line-buffered -E '(^ .*[#~+-] .*|^[[:punct:]]|^Plan.*|^\S.*)'
-else
-    docker run --rm -i $TTY $VARIABLES -v $HOME/.terragrunt-cache:/tmp -v $HOME/.azure:/root/.azure -v $HOME/.netrc:/root/.netrc $TERRAGRUNT_EXTRA_MOUNTS -v ${REPO}:${REPO} -w ${WORKDIR} $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi
-fi
+docker run --rm -i $TTY \
+    $VARIABLES \
+    -v $HOME/.terragrunt-cache:/tmp \
+    -v $HOME/.azure:/root/.azure \
+    -v $HOME/.netrc:/root/.netrc \
+    $TERRAGRUNT_EXTRA_MOUNTS \
+    -v ${REPO}:${REPO} \
+    -w ${WORKDIR} \
+    $TERRAGRUNT_CONTAINER terragrunt ${TERRAGRUNT_ARGS[@]} | filter-ansi
