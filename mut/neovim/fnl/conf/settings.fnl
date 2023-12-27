@@ -18,6 +18,8 @@
   loaded_tutor false
   loaded_zipPlugin false
 
+  zoxide_use_select true
+  zoxide_hook "pwd"
   mapleader " "
   maplocalleader " "
   dirvish_mode ":sort | sort ,^.*[^/]$, r")

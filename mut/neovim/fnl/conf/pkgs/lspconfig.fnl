@@ -2,7 +2,8 @@
 (local configs (require :lspconfig.configs))
 
 (lspconfig.rust_analyzer.setup
-  {:settings
+  {:autostart false
+   :settings
    {:rust-analyzer
     {:cargo {:buildScripts {:enable true}}
      :procMacro {:enable true :attributes {:enable true}}

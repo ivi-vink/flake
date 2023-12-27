@@ -52,6 +52,7 @@
     iputils
     inetutils
     usbutils
+    zoxide
   ];
 
   nix.package = pkgs.nixUnstable;

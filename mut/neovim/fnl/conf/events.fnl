@@ -12,6 +12,19 @@
    :pattern ["*"]
    :callback attach})
 
+(local oil (require :oil))
+(event
+  :User
+  {:group "conf#events"
+   :pattern ["ZoxideDirChanged"]
+   :callback #(vim.schedule #(oil.open (vim.fn.getcwd)))})
+
+(event
+  :BufWritePost
+  {:group "conf#events"
+   :pattern ["*.rs"]
+   :callback #(vim.cmd (.. "Compile! rustfmt " (vim.fn.expand "%")))})
+
 (event
   :BufReadPost
   {:pattern ["*"]

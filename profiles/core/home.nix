@@ -124,6 +124,7 @@
       [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
       # source some workspace specific stuff
       [[ -f ~/env.sh ]] && . ~/env.sh
+      eval "$(zoxide init bash)"
       export COLORTERM=truecolor
       export GPG_TTY="$(tty)"
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)

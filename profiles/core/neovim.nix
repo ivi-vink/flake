@@ -58,6 +58,7 @@
         vim-oscyank
         venn-nvim
         gv-vim
+        zoxide-vim
 
         # Coding
         fzf-lua
