@@ -99,14 +99,15 @@
                       (and is-at-last-line is-qf))
                     (vim.cmd ":cbottom")))))))
 
-(var last_job nil)
+(var last_job_state nil)
+(var last_job_thunk nil)
 (local qfjob
        (fn [cmd stdin]
          (local title (table.concat cmd " "))
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
          (set
-           last_job
+           last_job_state
            (vim.system
                 cmd
                 {: stdin
@@ -133,34 +134,39 @@
 (vim.api.nvim_create_user_command
   :Compile
   (fn [cmd]
-    (qfjob cmd.fargs nil))
+    (local thunk #(qfjob cmd.fargs nil))
+    (set last_job_thunk thunk)
+    (thunk))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Sh
   (fn [cmd]
-    (qfjob [:sh :-c cmd.args] nil))
+    (local thunk #(qfjob [:sh :-c cmd.args] nil))
+    (set last_job_thunk thunk)
+    (thunk))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Recompile
   (fn []
-    (if (= nil last_job)
+    (if (= nil last_job_state)
         (vim.notify "nothing to recompile")
-        (if (not (last_job:is_closing))
+        (if (not (last_job_state:is_closing))
             (vim.notify "Last job not finished")
-            (qfjob last_job._state.cmd))))
+            (last_job_thunk))))
   {:bang true})
 (vim.api.nvim_create_user_command
   :Stop
   (fn []
-    (if (not= nil last_job)
-        (last_job:kill))
+    (if (not= nil last_job_state)
+        (last_job_state:kill))
     (vim.notify "stopped job"))
   {:bang true})
 (vim.api.nvim_create_user_command
   :Args
   (fn [obj]
     (if (not= 0 (length obj.fargs))
-      (qfjob
-        [:sh :-c obj.args]
-        (vim.fn.argv))))
+        (do
+          (local thunk #(qfjob [:sh :-c obj.args] (vim.fn.argv)))
+          (set last_job_thunk thunk)
+          (thunk))))
   {:nargs :* :bang true :complete :shellcmd})

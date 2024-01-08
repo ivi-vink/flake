@@ -28,12 +28,18 @@
     "."  "actions.open_cmdline"
     "gx"  {:callback (fn []
                        (local file (oil.get_cursor_entry))
-                       (vim.cmd (.. :argadd " " file.name))
-                       (vim.cmd :args))}
+                       (local dir (oil.get_current_dir))
+                       (if (and dir file)
+                           (do
+                            (vim.cmd (.. :argadd " " dir file.name)
+                             (vim.cmd :args)))))}
     "gX"  {:callback (fn []
                        (local file (oil.get_cursor_entry))
-                       (vim.cmd (.. :argdel " " file.name))
-                       (vim.cmd :args))}
+                       (local dir (oil.get_current_dir))
+                       (if (and dir file)
+                           (do
+                            (vim.cmd (.. :argdel " " dir file.name)
+                             (vim.cmd :args)))))}
     "gc"  {:callback (fn []
                        (vim.cmd "argdel *")
                        (vim.cmd "args"))}
