@@ -53,6 +53,7 @@
     inetutils
     usbutils
     zoxide
+    binwalk
   ];
 
   nix.package = pkgs.nixUnstable;

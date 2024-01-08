@@ -1,4 +1,4 @@
-{config, lib, ...}: with lib; {
+{lib, ...}: with lib; {
   hm = {
     programs.git = {
       enable = true;

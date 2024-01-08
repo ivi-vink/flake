@@ -32,7 +32,9 @@
 (event
   :BufWritePost
   {:group "conf#events"
-   :callback #(do (local lint (require :lint)) (lint.try_lint) (vim.diagnostic.setloclist))})
+   :callback #(do (local lint (require :lint))
+                  (lint.try_lint)
+                  (vim.schedule #(vim.diagnostic.setloclist)))})
 
 
 (local session-file (.. vim.env.HOME "/.vimsession.vim"))

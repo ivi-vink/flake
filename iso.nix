@@ -3,9 +3,7 @@
         "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
         ./profiles/core/configuration.nix
         ./profiles/core/hm.nix
-        ./profiles/core/home.nix
         ./profiles/core/git.nix
-        ./profiles/core/meta.nix
         ./profiles/core/neovim.nix
     ];
     options = {
@@ -17,5 +15,6 @@
             warn-dirty = false;
         };
         services.getty.autologinUser = mkForce ivi.username;
+        hm.xdg.configFile."nvim".source = ./mut/neovim;
     };
 }

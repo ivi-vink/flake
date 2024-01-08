@@ -87,7 +87,7 @@ self: lib: with lib; let
               "server"
             ];
           };
-          cal = {
+          kubo = {
             isDeployed = true;
             profiles = [
               "core"

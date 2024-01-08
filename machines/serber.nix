@@ -1,4 +1,4 @@
-{ modulesPath, config, pkgs, lib, ... }: with lib; {
+{ modulesPath, lib, ... }: {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
 
   networking = {
