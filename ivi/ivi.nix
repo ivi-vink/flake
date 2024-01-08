@@ -93,7 +93,6 @@ self: lib: with lib; let
             addroot = true;
             profiles = [
               "core"
-              "homeserver"
             ];
           };
         };
