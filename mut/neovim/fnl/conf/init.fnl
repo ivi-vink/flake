@@ -101,7 +101,7 @@
 
 (var last_job nil)
 (local qfjob
-       (fn [cmd]
+       (fn [cmd stdin]
          (local title (table.concat cmd " "))
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
@@ -109,7 +109,8 @@
            last_job
            (vim.system
                 cmd
-                {:stdout (fn [err data]
+                {: stdin
+                 :stdout (fn [err data]
                            (if data
                                (add2qf (string.gmatch data "[^\n]+"))))
                  :stderr (fn [err data]
@@ -132,21 +133,21 @@
 (vim.api.nvim_create_user_command
   :Compile
   (fn [cmd]
-    (qfjob cmd.fargs))
+    (qfjob cmd.fargs nil))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Sh
   (fn [cmd]
-    (qfjob [:sh :-c cmd.args]))
+    (qfjob [:sh :-c cmd.args] nil))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Recompile
   (fn []
     (if (= nil last_job)
         (vim.notify "nothing to recompile")
-        (if (not last_job.finished)
+        (if (not (last_job:is_closing))
             (vim.notify "Last job not finished")
-            (qfjob last_job.cmd))))
+            (qfjob last_job._state.cmd))))
   {:bang true})
 (vim.api.nvim_create_user_command
   :Stop
@@ -159,8 +160,7 @@
   :Args
   (fn [obj]
     (if (not= 0 (length obj.fargs))
-      (vim.system
+      (qfjob
         [:sh :-c obj.args]
-        {:stdin (vim.fn.argv)}
-        (fn [job] (vim.schedule #(if (not= job.code 0) (vim.notify (.. "Args " obj.args " failed"))))))))
+        (vim.fn.argv))))
   {:nargs :* :bang true :complete :shellcmd})
