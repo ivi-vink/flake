@@ -1,0 +1,11 @@
+#!/bin/sh
+PIPE=/tmp/window-fifo
+STDIN="$(cat -)"
+rm $PIPE
+mkfifo $PIPE
+echo "$STDIN" | tee $PIPE >/dev/null &
+if command -v st >/dev/null; then
+    st -e sh -c "<$PIPE ${*}" &
+else
+    tmux splitw sh -c "<$PIPE ${*}" &
+fi

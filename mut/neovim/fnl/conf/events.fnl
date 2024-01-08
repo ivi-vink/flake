@@ -20,12 +20,6 @@
    :callback #(vim.schedule #(oil.open (vim.fn.getcwd)))})
 
 (event
-  :BufWritePost
-  {:group "conf#events"
-   :pattern ["*.rs"]
-   :callback #(vim.cmd (.. "Compile! rustfmt " (vim.fn.expand "%")))})
-
-(event
   :BufReadPost
   {:pattern ["*"]
    :callback (fn []
@@ -34,6 +28,12 @@
                             pattern))
                (vim.cmd "hi link TrailingWhitespace IncSearch"))
    :group "conf#events"})
+
+(event
+  :BufWritePost
+  {:group "conf#events"
+   :callback #(do (local lint (require :lint)) (lint.try_lint) (vim.diagnostic.setloclist))})
+
 
 (local session-file (.. vim.env.HOME "/.vimsession.vim"))
 (event

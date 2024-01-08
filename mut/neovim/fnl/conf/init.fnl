@@ -30,12 +30,12 @@
   (map :n :<leader>q<BS> ":cclose<cr>")
   (map :n :<leader>ll ":lopen<cr>")
   (map :n :<leader>l<BS> ":lclose<cr>")
-  (map :n :<M-space> ":cprev<cr>")
-  (map :n :<C-M-space> ":cprev<cr>")
-  (map :n :<C-space> ":cnext<cr>")
+  (map :n "<M-h>" cope)
+  (map :n "<M-j>" ":cnext<cr>")
+  (map :n "<M-k>" ":cprev<cr>")
+  (map :n :<M-l> ":Recompile<CR>")
   (map :n :<C-x>
        #(do
-          (vim.fn.setreg "/" "Compile")
           (vim.api.nvim_feedkeys
             (vim.api.nvim_replace_termcodes
               ":Compile<up><c-f>" true false true)
@@ -44,7 +44,6 @@
                            (vim.cmd "let v:searchforward = 0")
                            (map :n :/ "/Compile.* " {:buffer true})
                            (map :n :? "?Compile.* " {:buffer true})))))
-  (map :n :<C-e> ":Recompile<CR>")
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
@@ -52,6 +51,8 @@
   (map :n :<c-p> #(fzf.files))
   (map :n :<leader>xp #(fzf.files))
   (map :n "<leader>;" ":silent grep ")
+  (map :n "<leader>'" ":silent args `fd `<left>")
+  (map :n :<leader>xa #(fzf.args))
   (map :n :<leader>xb #(fzf.buffers
                          {:keymap {:fzf {"ctrl-a" "select-all"
                                          "alt-a" "deselect-all"}}
@@ -71,10 +72,6 @@
 (local qf
        (fn [{: id : title}]
          (fn [lines]
-           (local fname (fn [e]
-                          (if (not= 0 e.bufnr)
-                              (vim.fn.bufname (. e :bufnr))
-                              "")))
            (local s (fn [line pattern]
                       (let [(result n) (line:gsub pattern "")]
                          (match n
@@ -82,63 +79,65 @@
                            _ result))))
            (local prettify #(-> $1
                                 (s "%c+%[[0-9:;<=>?]*[!\"#$%%&'()*+,-./]*[@A-Z%[%]^_`a-z{|}~]*;?[A-Z]?")))
-           (local pos (fn [e] (if (not= 0 e.lnum)
-                                  (.. e.lnum " col " e.col)
-                                  "")))
-           (local format (fn [e] (accumulate [l ""
-                                              _ word
-                                              (ipairs [(fname e) "|" (pos e) "| " e.text])]
-                                   (.. l word))))
-           (local lines (icollect [_ l (ipairs lines)]
-                          (if (not= l "")
-                              (prettify l))))
-           (local is-at-last-line (let [[n lnum & rest] (vim.fn.getcurpos)
-                                        last-line (vim.api.nvim_buf_line_count 0)]
-                                    (do
-                                      (= lnum last-line))))
-           (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
-           (vim.fn.setqflist [] :a {: id : title : lines})
-           (if (or
-                 (not is-qf)
-                 (and is-at-last-line is-qf))
-               (vim.cmd ":cbottom")))))
+           (vim.schedule
+             #(do
+                (vim.fn.setqflist
+                  [] :a
+                  {: id : title
+                   :lines
+                   (icollect [l lines]
+                     (do
+                       (if (not= l "")
+                           (prettify l))))})
+                (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
+                (local is-at-last-line (let [[row col] (vim.api.nvim_win_get_cursor 0)
+                                             last-line (vim.api.nvim_buf_line_count 0)]
+                                         (do
+                                           (= row last-line))))
+                (if (or
+                      (not is-qf)
+                      (and is-at-last-line is-qf))
+                    (vim.cmd ":cbottom")))))))
 
 (var last_job nil)
-(local job
+(local qfjob
        (fn [cmd]
-         (local title cmd)
+         (local title (table.concat cmd " "))
          (vim.fn.setqflist [] " " {: title})
          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
-         (local id
-            (vim.fn.jobstart
-                 cmd
-                 {:on_stdout (fn [id data]
-                               (if data
-                                   (add2qf data)))
-                  :on_stderr (fn [id data]
-                               (if data
-                                   (add2qf data)))
-                  :on_exit (fn [id rc]
-                            (set last_job.finished true)
-                            (set winnr (vim.fn.winnr))
-                            (if (not= rc 0)
-                                (do
-                                  (cope)
-                                  (if (not= (vim.fn.winnr) winnr)
-                                      (do
-                                        (vim.notify "going back")
-                                        (vim.cmd "wincmd p | cbot"))))
-                                (vim.notify (.. "\"" cmd "\" succeeded!"))))}))
          (set
            last_job
-           {: cmd
-            : id
-            :finished false})))
+           (vim.system
+                cmd
+                {:stdout (fn [err data]
+                           (if data
+                               (add2qf (string.gmatch data "[^\n]+"))))
+                 :stderr (fn [err data]
+                           (if data
+                               (add2qf (string.gmatch data "[^\n]+"))))}
+                (fn [obj]
+                 (vim.schedule
+                   #(do
+                      (set winnr (vim.fn.winnr))
+                      (if (not= obj.code 0)
+                          (do
+                            (cope)
+                            (if (not= (vim.fn.winnr) winnr)
+                                (do
+                                  (vim.notify (.. title " failed, going back"))
+                                  (vim.cmd "wincmd p | cbot"))
+                                (vim.notify (.. title "failed, going back"))))
+                          (vim.notify (.. "\"" title "\" succeeded!"))))))))))
 
 (vim.api.nvim_create_user_command
   :Compile
   (fn [cmd]
-    (job cmd.args))
+    (qfjob cmd.fargs))
+  {:nargs :* :bang true :complete :shellcmd})
+(vim.api.nvim_create_user_command
+  :Sh
+  (fn [cmd]
+    (qfjob [:sh :-c cmd.args]))
   {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Recompile
@@ -147,12 +146,21 @@
         (vim.notify "nothing to recompile")
         (if (not last_job.finished)
             (vim.notify "Last job not finished")
-            (job last_job.cmd))))
+            (qfjob last_job.cmd))))
   {:bang true})
 (vim.api.nvim_create_user_command
-  :Abort
+  :Stop
   (fn []
     (if (not= nil last_job)
-        (vim.fn.jobstop last_job.id))
-    (vim.notify "killed job"))
+        (last_job:kill))
+    (vim.notify "stopped job"))
   {:bang true})
+(vim.api.nvim_create_user_command
+  :Args
+  (fn [obj]
+    (if (not= 0 (length obj.fargs))
+      (vim.system
+        [:sh :-c obj.args]
+        {:stdin (vim.fn.argv)}
+        (fn [job] (vim.schedule #(if (not= job.code 0) (vim.notify (.. "Args " obj.args " failed"))))))))
+  {:nargs :* :bang true :complete :shellcmd})

@@ -1,6 +1,4 @@
 {
-  inputs,
-  config,
   pkgs,
   ...
 }: {
@@ -41,6 +39,8 @@
         statix
         fzf
         bat
+        nil
+        shellcheck
       ];
       plugins = with pkgs.vimPlugins; [
         # highlighting
@@ -69,7 +69,7 @@
         nvim-dap-ui
         luasnip
         vim-test
-        vim-rest-console
+        nvim-lint
 
         # cmp
         nvim-cmp
