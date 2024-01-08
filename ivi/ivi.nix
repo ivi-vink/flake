@@ -87,10 +87,11 @@ self: lib: with lib; let
               "server"
             ];
           };
-          kubo = {
+          pump = {
             isDeployed = true;
             profiles = [
               "core"
+              "homeserver"
             ];
           };
         };

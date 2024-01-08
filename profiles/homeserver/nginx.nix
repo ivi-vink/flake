@@ -4,7 +4,6 @@
     type = types.attrsOf (types.submodule ({ name, ... }: {
       config = mkIf (name != "default") {
         forceSSL = mkDefault true;
-        enableACME = mkDefault true;
       };
     }));
   };
@@ -16,9 +15,6 @@
       recommendedProxySettings = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
-
-      virtualHosts."${ivi.domain}" = {
-      };
     };
     networking.firewall.allowedTCPPorts = [ 80 443 ];
   };
