@@ -89,6 +89,8 @@ self: lib: with lib; let
           };
           pump = {
             isDeployed = true;
+            secrets = true;
+            addroot = true;
             profiles = [
               "core"
               "homeserver"
