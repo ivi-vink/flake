@@ -9,6 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     deploy-rs.url = "github:serokell/deploy-rs";
+    dns = {
+      url = "github:kirelagin/dns.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-23.05";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
@@ -63,7 +67,7 @@
         sshUser = "root";
         profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
       })
-      (filterAttrs (_: machine: machine.isDeployed) ivi.machines);
+      (filterAttrs (_: machine: machine.isServer) ivi.machines);
 
     devShells."${system}".hetzner = pkgs.mkShell {
       name = "deploy";

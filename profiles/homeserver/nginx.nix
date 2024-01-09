@@ -4,8 +4,8 @@
     type = types.attrsOf (types.submodule ({ name, ... }: {
       config = mkIf (name != "default") {
         forceSSL = mkDefault true;
-        sslCertificateKey = "/var/lib/acme/vinkies.net/key.pem";
-        sslCertificate = "/var/lib/acme/vinkies.net/fullchain.pem";
+        sslCertificateKey = "/var/lib/acme/${ivi.domain}/key.pem";
+        sslCertificate = "/var/lib/acme/${ivi.domain}/fullchain.pem";
       };
     }));
   };
@@ -17,19 +17,10 @@
       recommendedProxySettings = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
-      virtualHosts."cal.${ivi.domain}"  = {
-          locations."/" = {
-            proxyPass = "http://127.0.0.1:5232";
-          };
-      };
     };
     systemd.services.nginx.serviceConfig = {
       SupplementaryGroups = [ "acme" ];
     };
     networking.firewall.allowedTCPPorts = [ 80 443 ];
-    services.radicale = {
-        enable = true;
-        settings.server.hosts = [ "0.0.0.0:5232" ];
-    };
   };
 }

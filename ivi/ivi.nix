@@ -33,10 +33,40 @@ self: lib: with lib; let
                     type = listOf str;
                     default = [];
                 };
-                isDeployed = mkOption {
-                    description = "The machine is deployed with nixos";
+                isStation = mkOption {
+                    description = "The machine is a desktop station";
                     type = bool;
                     default = false;
+                };
+                isServer = mkOption {
+                    description = "The machine is a server";
+                    type = bool;
+                    default = false;
+                };
+                isFake = mkOption {
+                    description = "The machine is a fake machine";
+                    type = bool;
+                    default = false;
+                };
+                tailnet = mkOption {
+                  type = with types; attrsOf (submodule ({ name, config, ... }: {
+                    freeformType = attrs;
+                    ipv4 = mkOption {
+                        description = "The machine's tailnet IPv4 address";
+                        type = str;
+                        default = null;
+                    };
+                    ipv6 = mkOption {
+                        description = "The machine's tailnet IPv6 address";
+                        type = str;
+                        default = null;
+                    };
+                    nodeKey = mkOption {
+                        description = "The machine's tailnet public key";
+                        type = str;
+                        default = null;
+                    };
+                  }));
                 };
             };
             config = {
@@ -62,39 +92,58 @@ self: lib: with lib; let
         ];
 
         machines = {
+          wsl = {
+            isFake = true;
+            profiles = [
+              "core"
+            ];
+          };
+          persephone = {
+            isFake = true;
+            tailnet = {
+              ipv4 = "100.72.127.82";
+              ipv6 = "fd7a:115c:a1e0::9c08:7f52";
+              nodeKey = "nodekey:2ffbb54277ba6c29337807b74f69438eba4d3802bffbe9c7df4093139c087f51";
+            };
+          };
+          bellerophone = {
+            isFake = true;
+            tailnet = {
+              ipv4 = "100.64.230.78";
+              ipv6 = "fd7a:115c:a1e0::1c0:e64e";
+              nodeKey = "nodekey:3e76e1ec73bc5dcf358948ddc03aefcc349f59fdeeae513e55bd637e01c0e64d";
+            };
+          };
           lemptop = {
-            secrets = true;
-            addroot = true;
+            isStation = true;
             profiles = [
               "core"
               "station"
               "email"
             ];
           };
-          wsl = {
-            addroot = false;
-            secrets = false;
-            profiles = [
-              "core"
-            ];
-          };
           serber = {
-            secrets = true;
-            addroot = true;
-            isDeployed = true;
+            isServer = true;
             profiles = [
               "core"
               "server"
             ];
+            ipv4 = [ "65.108.155.179" ];
+            ipv6 = [ "2a01:4f9:c010:d2b5::1" ];
           };
           pump = {
-            isDeployed = true;
-            secrets = true;
-            addroot = true;
+            isServer = true;
             profiles = [
               "core"
               "homeserver"
             ];
+            ipv4 = [ "192.168.2.13" ];
+            ipv6 = [ "2a02:a46b:ee73:1:c240:4bcb:9fc3:71ab" ];
+            tailnet = {
+              ipv4 = "100.90.145.95";
+              ipv6 = "fd7a:115c:a1e0::e2da:915f";
+              nodeKey = "nodekey:dcd737aab30c21eb4f44a40193f3b16a8535ffe2fb5008904b39bb54e2da915e";
+            };
           };
         };
       };

@@ -7,9 +7,9 @@
       dnsProvider = "porkbun";
       environmentFile = config.secrets.porkbun.path;
     };
-    certs."vinkies.net" = {
+    certs."${ivi.domain}" = {
       # NOTE(ivi): use dns wildcard certs for local services
-      domain = "*.vinkies.net";
+      domain = "*.${ivi.domain}";
     };
   };
 }

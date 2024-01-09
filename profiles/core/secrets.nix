@@ -1,4 +1,4 @@
-{machine,inputs,config,lib,pkgs,...}: with lib;
+{machine,inputs,lib,pkgs,...}: with lib;
 let
   getSecrets = dir:
     mapAttrs' (name: _: let
@@ -19,7 +19,7 @@ in
     inputs.sops-nix.nixosModules.sops
     (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ]) # TODO: get my username(s) from machine config
   ];
-  config = mkIf machine.secrets {
+  config = mkIf (!machine.isFake) {
       sops = {
         secrets = attrsets.mergeAttrsList
             [

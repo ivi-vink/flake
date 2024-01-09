@@ -6,6 +6,12 @@
 }: with lib; {
   imports = [ (mkAliasOptionModule [ "ivi" ] [ "users" "users" ivi.username ]) ];
 
+  services.resolved.fallbackDns = [
+      "1.1.1.1#one.one.one.one"
+      "1.0.0.1#one.one.one.one"
+      "2606:4700:4700::1111#one.one.one.one"
+      "2606:4700:4700::1001#one.one.one.one"
+  ];
   time.timeZone = "Europe/Amsterdam";
   users.users = {
       ${ivi.username} = {

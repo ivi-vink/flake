@@ -7,6 +7,7 @@
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
+  networking.nameservers = ["192.168.2.13"];
 
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
 
