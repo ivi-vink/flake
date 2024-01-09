@@ -89,10 +89,11 @@ self: lib: with lib; let
           };
           pump = {
             isDeployed = true;
-            secrets = false;
+            secrets = true;
             addroot = true;
             profiles = [
               "core"
+              "homeserver"
             ];
           };
         };
