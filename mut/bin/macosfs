@@ -1,0 +1,2 @@
+#!/bin/sh
+TERM=xterm-256color nix-shell -p sshfs --run "sshfs -o IdentityFile=$HOME/.ssh/macos $1 mike@192.168.122.75:$2"

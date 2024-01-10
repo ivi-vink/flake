@@ -60,6 +60,7 @@
     usbutils
     zoxide
     binwalk
+    unzip
   ];
 
   nix.package = pkgs.nixUnstable;

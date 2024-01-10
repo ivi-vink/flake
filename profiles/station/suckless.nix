@@ -30,6 +30,7 @@
         "100:name *= 'LibreWolf'"
         "100:name *= 'Steam'"
         "100:name *= 'Risk of Rain'"
+        "100:name *= 'KVM'"
       ];
       settings = {
         inactive-opacity-override = false;
