@@ -56,7 +56,11 @@
             mkSystem ivi.machines.${hostname} [cfg])
         (modulesIn ./machines)
       // {
-           windows = windowsModules: (mkSystem { secrets = false; addroot = false; modules = (attrValues (modulesIn ./profiles/core)) ++ windowsModules; } []);
+           windows = windowsModules:
+             let
+               wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl ++ windowsModules};
+             in
+               (mkSystem wsl []);
            iso = (mkSystem { modules = [./iso.nix]; } []);
          };
 
