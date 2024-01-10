@@ -2,7 +2,6 @@
   self,
   config,
   pkgs,
-  suckless,
   lib,
   ...
 }: with lib; {
