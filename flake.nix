@@ -58,7 +58,7 @@
       // {
            windows = windowsModules:
              let
-               wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl ++ windowsModules;};
+               wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
              in
                (mkSystem wsl []);
            iso = (mkSystem { modules = [./iso.nix]; } []);
