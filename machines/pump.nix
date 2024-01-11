@@ -7,7 +7,10 @@
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
-  services.openssh.enable = true;
+  services.openssh = {
+      enable = true;
+      settings.X11Forwarding = true;
+  };
   sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   networking.hostName = "pump";
   networking.domain = "vinkies.net";

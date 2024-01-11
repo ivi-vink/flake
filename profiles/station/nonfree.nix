@@ -16,9 +16,9 @@
           "discord-canary"
           "slack"
           "citrix-workspace"
-        "steam"
-        "steam-original"
-        "steam-run"
+          "steam"
+          "steam-original"
+          "steam-run"
         ];
 
     programs.steam = {
