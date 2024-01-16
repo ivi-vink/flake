@@ -54,8 +54,7 @@
   (map :n "<leader>'" ":silent args `fd `<left>")
   (map :n :<leader>xa #(fzf.args))
   (map :n :<leader>xb #(fzf.buffers
-                         {:keymap {:fzf {"ctrl-a" "select-all"
-                                         "alt-a" "deselect-all"}}
+                         {:keymap {:fzf {"alt-a" "toggle-all"}}
                           :actions {:default {:fn action.buf_edit_or_qf}}}))
   (map :n :<leader>x<cr> #(vim.cmd "b #")))
 
