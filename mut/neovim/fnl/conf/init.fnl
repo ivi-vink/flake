@@ -81,6 +81,11 @@
                                 (s "%c+%[[0-9:;<=>?]*[!\"#$%%&'()*+,-./]*[@A-Z%[%]^_`a-z{|}~]*;?[A-Z]?")))
            (vim.schedule
              #(do
+                (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
+                (local is-at-last-line (let [[row col] (vim.api.nvim_win_get_cursor 0)
+                                             last-line (vim.api.nvim_buf_line_count 0)]
+                                         (do
+                                           (= row last-line))))
                 (vim.fn.setqflist
                   [] :a
                   {: id : title
@@ -89,11 +94,6 @@
                      (do
                        (if (not= l "")
                            (prettify l))))})
-                (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
-                (local is-at-last-line (let [[row col] (vim.api.nvim_win_get_cursor 0)
-                                             last-line (vim.api.nvim_buf_line_count 0)]
-                                         (do
-                                           (= row last-line))))
                 (if (or
                       (not is-qf)
                       (and is-at-last-line is-qf))
@@ -151,8 +151,10 @@
   :Stop
   (fn []
     (if (not= nil last_job_state)
-        (last_job_state:kill))
-    (vim.notify "stopped job"))
+        (do
+          (last_job_state:kill)
+          (vim.notify "killed job"))
+        (vim.notify "nothing to do")))
   {:bang true})
 (vim.api.nvim_create_user_command
   :Args
