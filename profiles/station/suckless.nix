@@ -47,7 +47,7 @@
           offset = "0x19";
           padding = 2;
           horizontal_padding = 2;
-          transparency = 25;
+          transparency = 0;
           font = "Monospace 12";
           format = "<b>%s</b>\\n%b";
         };
