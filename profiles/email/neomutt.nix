@@ -35,7 +35,7 @@
         set date_format="%y/%m/%d %I:%M%p"
         set index_format="%2C %Z %?X?A& ? %D %-15.15F %s (%-4.4c)"
         set smtp_authenticators = 'gssapi:login'
-        set query_command = "abook --mutt-query '%s'"
+        set query_command = "echo %s | xargs khard email --parsable --"
         set rfc2047_parameters = yes
         set sleep_time = 0		# Pause 0 seconds for informational messages
         set markers = no		# Disables the `+` displayed at line wraps
@@ -179,8 +179,10 @@
         { map = ["pager"]; key = "\031"; action = "previous-line"; }
         { map = ["pager"]; key = "\005"; action = "next-line"; }
         { map = ["editor"]; key = "<Tab>"; action = "complete-query"; }
+        { map = ["editor"]; key = "\\Ct"; action = "complete"; }
       ];
       macros = [
+        { map = ["index" "pager"]; key = ","; action = "<pipe-message>khard add-email<return>"; }
         { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
         { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
         { map = ["index"]; key = "D"; action = "<delete-message>"; }
