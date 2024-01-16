@@ -34,7 +34,7 @@
   {:group "conf#events"
    :callback #(do (local lint (require :lint))
                   (lint.try_lint)
-                  (vim.schedule #(vim.diagnostic.setloclist)))})
+                  (vim.schedule #(vim.diagnostic.setloclist {:open false})))})
 
 
 (local session-file (.. vim.env.HOME "/.vimsession.vim"))

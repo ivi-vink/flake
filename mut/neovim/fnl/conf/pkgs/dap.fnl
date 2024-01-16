@@ -3,6 +3,7 @@
 (local configurations (. dap :configurations))
 
 (local dapui (require :dapui))
+(local dap-py (require :dap-python))
 
 (tset adapters :delve
       {:type :server
@@ -41,6 +42,7 @@
         :program "${fileDirname}"}])
 
 (dapui.setup {:expand_lines false})
+(dap-py.setup)
 
 (vim.keymap.set :n :si (lambda []
                          (dapui.toggle {:reset true})) {:silent true})
