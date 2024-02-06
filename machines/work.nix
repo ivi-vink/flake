@@ -1,10 +1,10 @@
-{ self, pkgs, ... }: {
+{ self, pkgs, lib, ... }: with lib; {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages =
-    [ pkgs.vim
-      pkgs.podman
+    [ pkgs.podman
       pkgs.qemu
+      pkgs.kitty
     ];
 
   services.tailscale.enable = true;
@@ -31,4 +31,6 @@
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
+  users.users.${ivi.username}.shell = pkgs.bashInteractive;
+  environment.shells = [pkgs.bashInteractive];
 }
