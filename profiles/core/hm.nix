@@ -1,10 +1,8 @@
 {inputs, config, lib, ...}: with lib; {
   imports = [
-    inputs.home-manager.nixosModules.default
+    inputs.home-manager.darwinModules.default
     (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" ivi.username ])
   ];
-
-  system.extraDependencies = collectFlakeInputs inputs.home-manager;
 
   home-manager = {
     useGlobalPkgs = true;
@@ -14,7 +12,7 @@
   };
 
   hm = {
-    home.stateVersion = config.system.stateVersion;
+    home.stateVersion = "24.05";
     home.enableNixpkgsReleaseCheck = false;
 
     systemd.user.startServices = "sd-switch";

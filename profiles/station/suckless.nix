@@ -8,7 +8,7 @@
   nixpkgs.overlays = [(import (self + "/overlays/suckless.nix") {inherit pkgs; home = config.ivi.home;})];
   hm = {
     xsession = {
-      enable = true;
+      enable = false;
       initExtra = ''
       ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
       ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
@@ -18,7 +18,7 @@
     '';
     };
     services.picom = {
-      enable = true;
+      enable = false;
       activeOpacity = 0.99;
       inactiveOpacity = 0.7;
       opacityRules = [
@@ -37,7 +37,7 @@
       };
     };
     services.dunst = {
-      enable = true;
+      enable = false;
       settings = {
         global = {
           monitor = 0;
@@ -70,9 +70,9 @@
       };
     };
     home.packages = with pkgs; [
-      st
-      dwm
-      dwmblocks
+      # st
+      # dwm
+      # dwmblocks
       libnotify
     ];
   };

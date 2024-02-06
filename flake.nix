@@ -16,6 +16,9 @@
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-23.05";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{
@@ -63,6 +66,26 @@
                (mkSystem wsl []);
            iso = (mkSystem { modules = [./iso.nix]; } []);
          };
+
+    darwinConfigurations."work" = let
+        machine = ivi.machines."work";
+        system = "aarch64-darwin";
+        pkgs = import nixpkgs {inherit system;};
+        lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
+      in
+        inputs.nix-darwin.lib.darwinSystem
+      {
+        inherit lib system;
+        specialArgs = {inherit self machine inputs;};
+        modules = [
+                    ./machines/work.nix
+                  ] ++ (attrValues (modulesIn ./profiles/core)) ++ (attrValues (modulesIn ./profiles/station))
+        ++ [({ config, ... }: {
+             nixpkgs.overlays = with lib; [(composeManyExtensions [
+               (import ./overlays/vimPlugins.nix {inherit pkgs;})
+               inputs.neovim-nightly-overlay.overlay
+             ])];})
+           ]; };
 
     deploy.nodes =
       mapAttrs

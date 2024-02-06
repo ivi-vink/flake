@@ -1,13 +1,11 @@
 
 {
-  flake,
-  config,
   pkgs,
   ...
 }: {
   hm = {
     programs.mpv = {
-        enable = true;
+        enable = false;
         scripts = [
             (with pkgs; stdenv.mkDerivation rec {
                pname = "mpv-sockets";

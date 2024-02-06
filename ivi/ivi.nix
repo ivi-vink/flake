@@ -48,6 +48,11 @@ self: lib: with lib; let
                     type = bool;
                     default = false;
                 };
+                isDarwin = mkOption {
+                    description = "The machine is a fake machine";
+                    type = bool;
+                    default = false;
+                };
                 tailnet = mkOption {
                   type = with types; attrsOf (submodule ({ name, config, ... }: {
                     freeformType = attrs;
@@ -92,6 +97,13 @@ self: lib: with lib; let
         ];
 
         machines = {
+          work = {
+            isFake = true;
+            isDarwin = true;
+            profiles = [
+              "core"
+            ];
+          };
           wsl = {
             isFake = true;
             profiles = [

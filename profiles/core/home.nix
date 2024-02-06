@@ -4,44 +4,15 @@
   ...
 }: {
   hm = {
+    home.packages = with pkgs; [
+      github-cli
+    ];
     fonts.fontconfig.enable = true;
     # https://github.com/nix-community/home-manager/issues/4692
     # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
     xdg = {
       enable = true;
-      mimeApps = {
-        enable = true;
-        defaultApplications = {
-          "text/x-shellscript"        =  ["text.desktop"];
-          "application/x-bittorrent"  =  ["torrent.desktop"];
-          "text/plain"                =  ["text.desktop"];
-          "application/postscript"    =  ["pdf.desktop"];
-          "application/pdf"           =  ["pdf.desktop"];
-          "image/png"                 =  ["img.desktop"];
-          "image/jpeg"                =  ["img.desktop"];
-          "image/gif"                 =  ["img.desktop"];
-          "application/rss+xml"       =  ["rss.desktop"];
-          "video/x-matroska"          =  ["video.desktop"];
-          "video/mp4"                 =  ["video.desktop"];
-          "x-scheme-handler/lbry"     =  ["lbry.desktop"];
-          "inode/directory"           =  ["file.desktop"];
-          "application/x-ica"         =  ["wfica.desktop"];
-          "x-scheme-handler/magnet"   =  ["torrent.desktop"];
-          "x-scheme-handler/mailto"   =  ["mail.desktop"];
-          "x-scheme-handler/msteams"  =  ["teams.desktop"];
-        };
-      };
-      mime.enable = true;
-      desktopEntries = {
-        text= { type = "Application"; name = "Text editor"; exec = "${pkgs.st}/bin/st -e kak %u"; };
-        file = { type = "Application"; name = "File Manager"; exec = "${pkgs.st}/bin/st -e lfub %u"; };
-        torrent = { type = "Application"; name = "Torrent"; exec = "${pkgs.coreutils}/bin/env transadd %U"; };
-        img = { type = "Application"; name = "Image Viewer"; exec = "${pkgs.sxiv}/bin/sxiv -a %u"; };
-        video = { type = "Application"; name = "Video Viewer"; exec = "${pkgs.mpv}/bin/mpv -quiet %f"; };
-        mail = { type = "Application"; name = "Mail"; exec = "${pkgs.st}/bin/st -e neomutt %u"; };
-        pdf = { type = "Application"; name = "PDF reader"; exec = "${pkgs.zathura}/bin/zathura %u"; };
-        rss = { type = "Application"; name = "RSS feed addition"; exec = "${pkgs.coreutils}/bin/env rssadd %u"; };
-      };
+      mime.enable = false;
     };
 
     programs.ssh = {
@@ -184,7 +155,7 @@
       };
     };
     services.gpg-agent = {
-      enable = true;
+      enable = false;
       enableSshSupport = true;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
