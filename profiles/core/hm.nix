@@ -1,6 +1,5 @@
-{inputs, config, lib, ...}: with lib; {
+{inputs, lib, pkgs, ...}: with lib; {
   imports = [
-    inputs.home-manager.darwinModules.default
     (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" ivi.username ])
   ];
 
@@ -12,7 +11,7 @@
   };
 
   hm = {
-    home.stateVersion = "24.05";
+    home.stateVersion = if pkgs.stdenv.isDarwin then "24.05" else config.system.stateVersion;
     home.enableNixpkgsReleaseCheck = false;
 
     systemd.user.startServices = "sd-switch";

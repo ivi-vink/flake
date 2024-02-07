@@ -5,9 +5,9 @@
 }: {
   hm = {
     programs.mpv = {
-        enable = false;
+        enable = !pkgs.stdenv.isDarwin;
         scripts = [
-            (with pkgs; stdenv.mkDerivation rec {
+            (with pkgs; stdenv.mkDerivation {
                pname = "mpv-sockets";
                version = "1.0";
 

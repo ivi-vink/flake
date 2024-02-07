@@ -1,21 +1,22 @@
 { config, pkgs, lib, ... }: {
+    # TODO: what about secrets on nix-darwin...
     # secrets.mopidy.owner = lib.ivi.username;
-    # hm.home.packages = [pkgs.mpc-cli];
-    # hm.services.mopidy = {
-    #     enable = true;
-    #     extensionPackages = with pkgs; [mopidy-spotify mopidy-mpd];
-    #     settings = {
-    #       mpd = {
-    #     enabled = true;
-    #     hostname = "127.0.0.1";
-    #     port = 6600;
-    #     max_connections = 20;
-    #     connection_timeout = 60;
-    #     };};
-    #     extraConfigFiles = [
-    #       config.secrets.mopidy.path
-    #     ];
-    # };
+    hm.home.packages = [pkgs.mpc-cli];
+    hm.services.mopidy = {
+        enable = !pkgs.stdenv.isDarwin;
+        extensionPackages = with pkgs; [mopidy-spotify mopidy-mpd];
+        settings = {
+          mpd = {
+        enabled = true;
+        hostname = "127.0.0.1";
+        port = 6600;
+        max_connections = 20;
+        connection_timeout = 60;
+        };};
+        extraConfigFiles = [
+          config.secrets.mopidy.path
+        ];
+    };
     hm.programs.ncmpcpp = {
         enable = true;
         bindings = [

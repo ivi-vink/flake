@@ -1,4 +1,4 @@
-{pkgs, lib, ...}: {
+{pkgs, lib, ...}: with lib; {
     hm.home.packages = with pkgs; [
         teams
         discord
@@ -18,10 +18,12 @@
           "steam-run"
         ];
 
-    # programs.steam = {
-    #     enable = true;
-    #     remotePlay.openFirewall = true;
-    #     dedicatedServer.openFirewall = true;
-    # };
-    # hardware.opengl.driSupport32Bit = true;
+    programs = optionalAttrs (!pkgs.stdenv.isDarwin) {
+      steam = {
+        enable = true;
+        remotePlay.openFirewall = true;
+        dedicatedServer.openFirewall = true;
+      };
+      hardware.opengl.driSupport32Bit = true;
+    };
 }

@@ -42,6 +42,7 @@
       specialArgs = {inherit self machine inputs;};
       modules = with lib;
         machine.modules
+        ++ inputs.home-manager.nixosModules.default
         ++ machineConfig
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
@@ -79,6 +80,7 @@
         specialArgs = {inherit self machine inputs;};
         modules = [
                     ./machines/work.nix
+                    inputs.home-manager.darwinModules.default
                   ] ++ (attrValues (modulesIn ./profiles/core)) ++ (attrValues (modulesIn ./profiles/station))
         ++ [({ config, ... }: {
              nixpkgs.overlays = with lib; [(composeManyExtensions [
