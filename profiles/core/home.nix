@@ -11,8 +11,8 @@
     # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
     xdg = {
       enable = true;
-      mime.enable = !pkgs.stdenv.isDarwin;
-      mimeApps = optionalAttrs (!pkgs.stdenv.isDarwin) {
+      mime.enable = !machine.isDarwin;
+      mimeApps = optionalAttrs (!machine.isDarwin) {
         enable = true;
         defaultApplications = {
           "text/x-shellscript"        =  ["text.desktop"];
@@ -34,7 +34,7 @@
           "x-scheme-handler/msteams"  =  ["teams.desktop"];
         };
       };
-      desktopEntries = optionalAttrs (!pkgs.stdenv.isDarwin) {
+      desktopEntries = optionalAttrs (!machine.isDarwin) {
         text= { type = "Application"; name = "Text editor"; exec = "${pkgs.st}/bin/st -e kak %u"; };
         file = { type = "Application"; name = "File Manager"; exec = "${pkgs.st}/bin/st -e lfub %u"; };
         torrent = { type = "Application"; name = "Torrent"; exec = "${pkgs.coreutils}/bin/env transadd %U"; };
@@ -115,8 +115,10 @@
     programs.bash = {
       enable = true;
       bashrcExtra = ''
-      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/ivi/.bash_profile
-      eval "$(/opt/homebrew/bin/brew shellenv)"
+      ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
+      ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
+      ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
+      ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
       export PATH=$PATH:$HOME/.local/bin
       [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
       unset LD_PRELOAD
@@ -125,27 +127,19 @@
       fi
       # include nix.sh if it exists
       [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
-      # source some workspace specific stuff
-      [[ -f ~/env.sh ]] && . ~/env.sh
-      eval "$(zoxide init bash)"
       export COLORTERM=truecolor
       export GPG_TTY="$(tty)"
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
       gpgconf --launch gpg-agent
     '';
       shellAliases = {
-        e             = "kakup ";
-        es            = "kakup -f";
-        k9s           = "k9s";
+        k9s           = "k9s ";
         k             = "kubectl ";
         d             = "docker ";
         ls            = "ls --color=auto";
-        s             = "sudo nixos-rebuild switch --flake ${config.ivi.home}/flake#";
+        s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
         b             = "/run/current-system/bin/switch-to-configuration boot";
-        h             = "home-manager switch --flake ${config.ivi.home}/flake --impure";
-        fa            = "azdo-switch-project";
         v             = "nvim";
-        V             = "nvim -S .vimsession.vim";
         M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
         m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
         mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";

@@ -34,7 +34,7 @@
   (map :n "<M-j>" ":cnext<cr>")
   (map :n "<M-k>" ":cprev<cr>")
   (map :n :<M-l> ":Recompile<CR>")
-  (map :n :<C-x>
+  (map :n :<C-s>
        #(do
           (vim.api.nvim_feedkeys
             (vim.api.nvim_replace_termcodes
@@ -42,8 +42,18 @@
             :n false)
           (vim.schedule #(do
                            (vim.cmd "let v:searchforward = 0")
-                           (map :n :/ "/Sh.* " {:buffer true})
-                           (map :n :? "?Sh.* " {:buffer true})))))
+                           (map :n :/ "/Sh.*" {:buffer true})
+                           (map :n :? "?Sh.*" {:buffer true})))))
+  (map :n :<C-x>
+       #(do
+          (vim.api.nvim_feedkeys
+            (vim.api.nvim_replace_termcodes
+              ":Compile<up><c-f>" true false true)
+            :n false)
+          (vim.schedule #(do
+                           (vim.cmd "let v:searchforward = 0")
+                           (map :n :/ "/Compile.*" {:buffer true})
+                           (map :n :? "?Compile.*" {:buffer true})))))
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
@@ -130,6 +140,13 @@
                                 (vim.notify (.. title "failed, going back"))))
                           (vim.notify (.. "\"" title "\" succeeded!"))))))))))
 
+(vim.api.nvim_create_user_command
+  :Compile
+  (fn [cmd]
+    (local thunk #(qfjob cmd.fargs nil))
+    (set last_job_thunk thunk)
+    (thunk))
+  {:nargs :* :bang true :complete :shellcmd})
 (vim.api.nvim_create_user_command
   :Sh
   (fn [cmd]
