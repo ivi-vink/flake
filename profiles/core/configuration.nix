@@ -6,7 +6,7 @@
 }: with lib; {
   imports = [ (mkAliasOptionModule [ "ivi" ] [ "users" "users" ivi.username ]) ];
 
-  services = optionalAttrs (builtins.hasAttr "resolved" config.services) {
+  services = {
     resolved.fallbackDns = [
       "1.1.1.1#one.one.one.one"
       "1.0.0.1#one.one.one.one"
@@ -14,7 +14,7 @@
       "2606:4700:4700::1001#one.one.one.one"
     ];
   };
-  security = optionalAttrs (builtins.hasAttr "sudo" config.security) {
+  security = {
     sudo = {
       wheelNeedsPassword = false;
       extraConfig = ''
@@ -28,11 +28,9 @@
   time.timeZone = "Europe/Amsterdam";
   users.users = {
       ${ivi.username} = {
-        home = mkIf pkgs.stdenv.isDarwin "/Users/ivi";
         uid = 1000;
         description = ivi.realName;
         openssh.authorizedKeys.keys = ivi.sshKeys;
-      } // optionalAttrs (!pkgs.stdenv.isDarwin) {
         extraGroups = ["wheel" "networkmanager" "docker" "transmission"];
         isNormalUser = true;
       };
@@ -62,7 +60,14 @@
     zoxide
     binwalk
     unzip
+    gcc
+    gnumake
+    file
+    pstree
+    bc
   ] ++ optionals (!pkgs.stdenv.isDarwin) [
+    pkgsi686Linux.glibc
+    gdb
     pciutils
     dnsutils
     iputils

@@ -7,7 +7,7 @@
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (lib.getName pkg) [
           # Add additional package names here
-          "teams-1.6.00.4464"
+          "teams"
           "discord"
           "discord-ptb"
           "discord-canary"
@@ -18,7 +18,7 @@
           "steam-run"
         ];
 
-    programs = optionalAttrs (!pkgs.stdenv.isDarwin) {
+    programs = {
       steam = {
         enable = true;
         remotePlay.openFirewall = true;

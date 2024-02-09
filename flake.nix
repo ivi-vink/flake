@@ -21,97 +21,107 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{
+  outputs = inputs @ {
     self,
     nixpkgs,
     home-manager,
     sops-nix,
     deploy-rs,
     ...
-  }:
-  let
+  }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
     lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
 
     # Gets module from ./machines/ and uses the lib to define which other modules
     # the machine needs.
-    mkSystem = machine: machineConfig: with lib;
-    lib.nixosSystem {
-      inherit lib system;
-      specialArgs = {inherit self machine inputs;};
-      modules = with lib;
-        machine.modules
-        ++ inputs.home-manager.nixosModules.default
-        ++ machineConfig
-        ++ [({ config, ... }: {
-             nixpkgs.overlays = with lib; [(composeManyExtensions [
-               (import ./overlays/vimPlugins.nix {inherit pkgs;})
-               inputs.neovim-nightly-overlay.overlay
-             ])];})
-           ];
-    };
-
-  in with lib; {
-    inherit lib;
-    nixosConfigurations = with lib;
-      mapAttrs
+    mkSystem = machine: machineConfig:
+      with lib;
+        lib.nixosSystem {
+          inherit lib system;
+          specialArgs = {inherit self machine inputs;};
+          modules = with lib;
+            machine.modules
+            ++ inputs.home-manager.nixosModules.default
+            ++ machineConfig
+            ++ [
+              ({config, ...}: {
+                nixpkgs.overlays = with lib; [
+                  (composeManyExtensions [
+                    (import ./overlays/vimPlugins.nix {inherit pkgs;})
+                    inputs.neovim-nightly-overlay.overlay
+                  ])
+                ];
+              })
+            ];
+        };
+  in
+    with lib; {
+      inherit lib;
+      nixosConfigurations = with lib;
+        mapAttrs
         (hostname: cfg:
-            mkSystem ivi.machines.${hostname} [cfg])
+          mkSystem ivi.machines.${hostname} [cfg])
         (modulesIn ./machines)
-      // {
-           windows = windowsModules:
-             let
-               wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
-             in
-               (mkSystem wsl []);
-           iso = (mkSystem { modules = [./iso.nix]; } []);
-         };
+        // {
+          windows = windowsModules: let
+            wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
+          in (mkSystem wsl []);
+          iso = mkSystem {modules = [./iso.nix];} [];
+        };
 
-    darwinConfigurations."work" = let
+      darwinConfigurations."work" = let
         machine = ivi.machines."work";
         system = "aarch64-darwin";
         pkgs = import nixpkgs {inherit system;};
         lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
       in
         inputs.nix-darwin.lib.darwinSystem
-      {
-        inherit lib system;
-        specialArgs = {inherit self machine inputs;};
-        modules = [
-                    ./machines/work.nix
-                    inputs.home-manager.darwinModules.default
-                  ] ++ (attrValues (modulesIn ./profiles/core)) ++ (attrValues (modulesIn ./profiles/station))
-        ++ [({ config, ... }: {
-             nixpkgs.overlays = with lib; [(composeManyExtensions [
-               (import ./overlays/vimPlugins.nix {inherit pkgs;})
-               inputs.neovim-nightly-overlay.overlay
-             ])];})
-           ]; };
+        {
+          inherit lib system;
+          specialArgs = {inherit self machine inputs;};
+          modules =
+            [
+              ./machines/work.nix
+              inputs.home-manager.darwinModules.default
+            ]
+            ++ (attrValues (modulesIn ./profiles/core))
+            ++ (attrValues (modulesIn ./profiles/station))
+            ++ [
+              ({config, ...}: {
+                nixpkgs.overlays = with lib; [
+                  (composeManyExtensions [
+                    (import ./overlays/vimPlugins.nix {inherit pkgs;})
+                    inputs.neovim-nightly-overlay.overlay
+                  ])
+                ];
+              })
+            ];
+        };
 
-    deploy.nodes =
-      mapAttrs
-      (hostname: machine: {
-        hostname = hostname + "." + ivi.domain;
-        sshUser = "root";
-        profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
-      })
-      (filterAttrs (_: machine: machine.isServer) ivi.machines);
+      deploy.nodes =
+        mapAttrs
+        (hostname: machine: {
+          hostname = hostname + "." + ivi.domain;
+          sshUser = "root";
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
+        })
+        (filterAttrs (_: machine: machine.isServer) ivi.machines);
 
-    devShells."${system}".hetzner = pkgs.mkShell {
-      name = "deploy";
-      buildInputs = [
+      devShells."${system}".hetzner = pkgs.mkShell {
+        name = "deploy";
+        buildInputs = [
           pkgs.bashInteractive
           deploy-rs.packages."${system}".default
-      ];
-      shellHook = ''
+        ];
+        shellHook = ''
           export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
-      '';
-    };
+        '';
+      };
 
-    templates =
-      mapAttrs
-      (name: type: {path = ./templates + "/${name}";})
-      (builtins.readDir ./templates);
-  };
+      templates =
+        mapAttrs
+        (name: type: {path = ./templates + "/${name}";})
+        (builtins.readDir ./templates);
+    };
 }

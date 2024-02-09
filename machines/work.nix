@@ -1,36 +1,72 @@
-{ self, pkgs, lib, ... }: with lib; {
-  # List packages installed in system profile. To search by name, run:
-  # $ nix-env -qaP | grep wget
-  environment.systemPackages =
-    [ pkgs.podman
-      pkgs.qemu
-      pkgs.kitty
-    ];
+{ self, config, pkgs, lib, ... }: with lib; {
+  options = {
+    virtualisation = mkSinkUndeclaredOptions {};
+    programs = {
+      virt-manager = mkSinkUndeclaredOptions {};
+      steam = mkSinkUndeclaredOptions {};
+      hardware = mkSinkUndeclaredOptions {};
+    };
+    services = {
+      resolved = mkSinkUndeclaredOptions {};
+      openssh.enable = mkOption {
+        type = types.bool;
+        default = false;
+      };
+    };
+    security = {
+      sudo = mkSinkUndeclaredOptions {};
+    };
+    users.users = mkOption {
+      type = types.attrsOf (types.submodule ({...}: {
+        options = {
+          extraGroups = mkSinkUndeclaredOptions {};
+          isNormalUser = mkSinkUndeclaredOptions {};
+        };
+        config = {
+          home = "/Users/${ivi.username}";
+        };
+      }));
+    };
+  };
+  config = {
+    # List packages installed in system profile. To search by name, run:
+    # $ nix-env -qaP | grep wget
+    environment.systemPackages =
+      [ pkgs.qemu
+        pkgs.kitty
+      ];
 
-  services.tailscale.enable = true;
+    sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
+    homebrew = {
+      enable = true;
+      masApps = {
+        tailscale = 1475387142;
+      };
+    };
 
-  # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
-  # nix.package = pkgs.nix;
+    # Auto upgrade nix package and the daemon service.
+    services.nix-daemon.enable = true;
+    # nix.package = pkgs.nix;
 
-  # Necessary for using flakes on this system.
-  nix.settings.experimental-features = "nix-command flakes";
+    # Necessary for using flakes on this system.
+    nix.settings.experimental-features = "nix-command flakes";
 
-  nix.extraOptions = ''extra-platforms = x86_64-darwin aarch64-darwin '';
+    nix.extraOptions = ''extra-platforms = x86_64-darwin aarch64-darwin '';
 
-  # Create /etc/zshrc that loads the nix-darwin environment.
-  programs.zsh.enable = true;  # default shell on catalina
-  # programs.fish.enable = true;
+    # Create /etc/zshrc that loads the nix-darwin environment.
+    programs.zsh.enable = true;  # default shell on catalina
+    # programs.fish.enable = true;
 
-  # Set Git commit hash for darwin-version.
-  system.configurationRevision = self.rev or self.dirtyRev or null;
+    # Set Git commit hash for darwin-version.
+    system.configurationRevision = self.rev or self.dirtyRev or null;
 
-  # Used for backwards compatibility, please read the changelog before changing.
-  # $ darwin-rebuild changelog
-  system.stateVersion = 4;
+    # Used for backwards compatibility, please read the changelog before changing.
+    # $ darwin-rebuild changelog
+    system.stateVersion = 4;
 
-  # The platform the configuration will be used on.
-  nixpkgs.hostPlatform = "aarch64-darwin";
-  users.users.${ivi.username}.shell = pkgs.bashInteractive;
-  environment.shells = [pkgs.bashInteractive];
+    # The platform the configuration will be used on.
+    nixpkgs.hostPlatform = "aarch64-darwin";
+    users.users.${ivi.username}.shell = pkgs.bashInteractive;
+    environment.shells = [pkgs.bashInteractive];
+  };
 }

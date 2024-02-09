@@ -1,35 +1,29 @@
 {
+  machine,
   pkgs,
   lib,
   ...
 }: with lib; {
   hm = {
     home.packages = with pkgs; [
-      (nerdfonts.override {fonts = ["FiraCode"];})
-      noto-fonts
-      noto-fonts-emoji
-      k9s
-      krew
-      dasel
+      (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];})
       python311Packages.editorconfig
-      gcc
-      gnumake
       calcurse
-      file
-      ueberzug
-      pstree
-      pywal
       bashInteractive
       powershell
+
+      k9s
+      krew
       azure-cli
-      alejandra
-      statix
       github-cli
-      lazygit
       argocd
-      bc
-      nushell
-    ] ++ optionals (!pkgs.stdenv.isDarwin) [
+      (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
+        gke-gcloud-auth-plugin
+      ]))
+    ] ++ optionals (!machine.isDarwin) [
+      pywal
+      dasel
+      ueberzug
       inotify-tools
       raylib
       maim
@@ -39,8 +33,6 @@
       sxiv
       sent
       initool
-      pkgsi686Linux.glibc
-      gdb
       dmenu
       librewolf
       firefox-wayland

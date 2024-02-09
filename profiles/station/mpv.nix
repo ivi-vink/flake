@@ -1,11 +1,12 @@
-
 {
+  machine,
   pkgs,
+  lib,
   ...
-}: {
+}: lib.mkIf (!machine.isDarwin) {
   hm = {
     programs.mpv = {
-        enable = !pkgs.stdenv.isDarwin;
+        enable = true;
         scripts = [
             (with pkgs; stdenv.mkDerivation {
                pname = "mpv-sockets";

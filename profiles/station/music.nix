@@ -1,9 +1,9 @@
-{ config, pkgs, lib, ... }: {
+{ machine, config, pkgs, lib, ... }: with lib; mkIf (!machine.isDarwin) {
     # TODO: what about secrets on nix-darwin...
     # secrets.mopidy.owner = lib.ivi.username;
     hm.home.packages = [pkgs.mpc-cli];
     hm.services.mopidy = {
-        enable = !pkgs.stdenv.isDarwin;
+        enable = true;
         extensionPackages = with pkgs; [mopidy-spotify mopidy-mpd];
         settings = {
           mpd = {

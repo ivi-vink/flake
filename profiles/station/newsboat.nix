@@ -4,6 +4,7 @@
       enable = true;
       autoReload = true;
       urls = [
+        {url = "https://nginx.org/index.rss";}
         {url = "https://github.com/neovim/neovim/releases.atom";}
         {url = "https://github.com/rancher/rancher/releases.atom";}
         {url = "https://github.com/istio/istio/releases.atom";}

@@ -117,6 +117,8 @@
     programs.bash = {
       enable = true;
       bashrcExtra = ''
+      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/ivi/.bash_profile
+      eval "$(/opt/homebrew/bin/brew shellenv)"
       export PATH=$PATH:$HOME/.local/bin
       [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
       unset LD_PRELOAD

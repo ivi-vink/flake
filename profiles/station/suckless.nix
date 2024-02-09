@@ -3,12 +3,13 @@
   config,
   pkgs,
   lib,
+  machine,
   ...
-}: with lib; {
+}: with lib; mkIf (!machine.isDarwin) {
   nixpkgs.overlays = [(import (self + "/overlays/suckless.nix") {inherit pkgs; home = config.ivi.home;})];
   hm = {
     xsession = {
-      enable = !pkgs.stdenv.isDarwin;
+      enable = true;
       initExtra = ''
       ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
       ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
@@ -18,7 +19,7 @@
     '';
     };
     services.picom = {
-      enable = !pkgs.stdenv.isDarwin;
+      enable = true;
       activeOpacity = 0.99;
       inactiveOpacity = 0.7;
       opacityRules = [
@@ -37,7 +38,7 @@
       };
     };
     services.dunst = {
-      enable = !pkgs.stdenv.isDarwin;
+      enable = true;
       settings = {
         global = {
           monitor = 0;
@@ -71,7 +72,6 @@
     };
     home.packages = with pkgs; [
       libnotify
-    ] ++ optionals (!pkgs.stdenv.isDarwin) [
       st
       dwm
       dwmblocks

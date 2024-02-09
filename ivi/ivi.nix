@@ -98,7 +98,6 @@ self: lib: with lib; let
 
         machines = {
           work = {
-            isFake = true;
             isDarwin = true;
             profiles = [
               "core"
