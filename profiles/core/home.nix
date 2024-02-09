@@ -1,13 +1,11 @@
- {
+{
+  machine,
   lib,
   config,
   pkgs,
   ...
 }: with lib; {
   hm = {
-    home.packages = with pkgs; [
-      github-cli
-    ];
     fonts.fontconfig.enable = true;
     # https://github.com/nix-community/home-manager/issues/4692
     # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
@@ -190,7 +188,7 @@
       };
     };
     services.gpg-agent = {
-      enable = !pkgs.stdenv.isDarwin;
+      enable = !machine.isDarwin;
       enableSshSupport = true;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
