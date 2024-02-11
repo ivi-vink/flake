@@ -129,8 +129,14 @@
       [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
       export COLORTERM=truecolor
       export GPG_TTY="$(tty)"
-      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
       gpgconf --launch gpg-agent
+
+      if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+        eval `ssh-agent`
+        ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+      fi
+      export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+      ssh-add -l > /dev/null || ssh-add
     '';
       shellAliases = {
         k9s           = "k9s ";
@@ -183,7 +189,7 @@
     };
     services.gpg-agent = {
       enable = !machine.isDarwin;
-      enableSshSupport = true;
+      enableSshSupport = false;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
       pinentryFlavor = "gtk2";
