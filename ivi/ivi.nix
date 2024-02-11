@@ -128,7 +128,7 @@ self: lib: with lib; let
             ];
             syncthing = {
               enable = true;
-              id = "";
+              id = "45TTOOY-YAJCVGX-GGM2Z2M-2YUYDOR-GGFPHFH-TOCCBGQ-A4A2NUB-GEKLGQQ";
             };
           };
           work = {
