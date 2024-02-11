@@ -50,7 +50,7 @@
       enable = true;
       matchBlocks = {
         "*" = {
-          identityFile = "${config.ivi.home}/.ssh/id_ed25519";
+          identityFile = "${config.ivi.home}/.ssh/id_ed25519_sk";
         };
       };
     };
