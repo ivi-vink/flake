@@ -130,9 +130,13 @@ self: lib: with lib; let
           bellerophone = {
             isFake = true;
             tailnet = {
-              ipv4 = "100.64.230.78";
-              ipv6 = "fd7a:115c:a1e0::1c0:e64e";
-              nodeKey = "nodekey:3e76e1ec73bc5dcf358948ddc03aefcc349f59fdeeae513e55bd637e01c0e64d";
+              ipv4 = "100.123.235.65";
+              ipv6 = "fd7a:115c:a1e0::bafb:eb41";
+              nodeKey = "nodekey:e2a9f948a1252a4b1f1932bb99e73981fa0b7173825b54ba968f9cc0bafbeb40";
+            };
+            syncthing = {
+              enable = true;
+              id = "75U7B2F-SZOJRY2-UKAADJD-NI3R5SJ-K4J35IN-D2NJJFJ-JG5TCJA-AUERDAA";
             };
           };
           serber = {
