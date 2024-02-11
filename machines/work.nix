@@ -4,8 +4,8 @@
     programs = {
       virt-manager = mkSinkUndeclaredOptions {};
       steam = mkSinkUndeclaredOptions {};
-      hardware = mkSinkUndeclaredOptions {};
     };
+    hardware = mkSinkUndeclaredOptions {};
     services = {
       resolved = mkSinkUndeclaredOptions {};
       openssh.enable = mkOption {
@@ -47,6 +47,24 @@
         tailscale = 1475387142;
       };
     };
+    services.syncthing = {
+      cert = builtins.toFile "syncthing-cert" ''
+        -----BEGIN CERTIFICATE-----
+        MIICHDCCAaKgAwIBAgIICf/IfhEqojIwCgYIKoZIzj0EAwIwSjESMBAGA1UEChMJ
+        U3luY3RoaW5nMSAwHgYDVQQLExdBdXRvbWF0aWNhbGx5IEdlbmVyYXRlZDESMBAG
+        A1UEAxMJc3luY3RoaW5nMB4XDTI0MDIwOTAwMDAwMFoXDTQ0MDIwNDAwMDAwMFow
+        SjESMBAGA1UEChMJU3luY3RoaW5nMSAwHgYDVQQLExdBdXRvbWF0aWNhbGx5IEdl
+        bmVyYXRlZDESMBAGA1UEAxMJc3luY3RoaW5nMHYwEAYHKoZIzj0CAQYFK4EEACID
+        YgAEB3N4kE5gTlpCt8W/ocQQbDZMvIzmNghcl0tsc+EVPXCTnpinIB48jOxGNkPr
+        rm0o3EEPrI8O+cJqSydeyeSVMKYCjNswP6LiYNWaWua+SXjz25FurJxV21LXYMhc
+        1egPo1UwUzAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsG
+        AQUFBwMCMAwGA1UdEwEB/wQCMAAwFAYDVR0RBA0wC4IJc3luY3RoaW5nMAoGCCqG
+        SM49BAMCA2gAMGUCMEOYa4HZKLy4WimWlAIpXU/joYvpIPS3dJP50VQIkKFj/eL8
+        p8+rG7+7P03W7J4E6AIxANp5CxwCtTlh1a1+8Kdvfc7ZvFuMwPlM3d8EFk9y9aRZ
+        jurkqKKyl7EUOk0ufvUaQQ==
+        -----END CERTIFICATE-----
+      '';
+    };
 
     # Auto upgrade nix package and the daemon service.
     services.nix-daemon.enable = true;
@@ -66,7 +84,9 @@
 
     # The platform the configuration will be used on.
     nixpkgs.hostPlatform = "aarch64-darwin";
-    users.users.${ivi.username}.shell = pkgs.bashInteractive;
+    users.users.${ivi.username} = {
+      shell = pkgs.bashInteractive;
+    };
     environment.shells = [pkgs.bashInteractive];
   };
 }

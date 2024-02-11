@@ -1,8 +1,10 @@
-{config, lib,...}: with lib; {
+{machine, config, lib,...}: with lib; let
+    group = if machine.isDarwin then (builtins.toString config.ivi.gid) else config.ivi.group;
+in {
   services.syncthing = {
     enable = true;
     user = ivi.username;
-    inherit (config.ivi) group;
+    inherit group;
     dataDir = config.ivi.home;
     overrideDevices = true;
     overrideFolders = true;

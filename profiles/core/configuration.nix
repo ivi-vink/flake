@@ -29,7 +29,7 @@
   time.timeZone = "Europe/Amsterdam";
   users.users = {
       ${ivi.username} = {
-        uid = 1000;
+        uid = mkIf (!machine.isDarwin) 1000;
         description = ivi.realName;
         openssh.authorizedKeys.keys = ivi.sshKeys;
         extraGroups = ["wheel" "networkmanager" "docker" "transmission"];
