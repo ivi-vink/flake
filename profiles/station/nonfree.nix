@@ -1,6 +1,5 @@
 {pkgs, lib, ...}: with lib; {
     hm.home.packages = with pkgs; [
-        teams
         discord
         slack
     ];
@@ -24,6 +23,6 @@
         remotePlay.openFirewall = true;
         dedicatedServer.openFirewall = true;
       };
-      hardware.opengl.driSupport32Bit = true;
     };
+    hardware.opengl.driSupport32Bit = true;
 }

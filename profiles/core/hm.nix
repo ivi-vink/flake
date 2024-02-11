@@ -1,4 +1,4 @@
-{inputs, lib, pkgs, ...}: with lib; {
+{inputs, config, lib, pkgs, ...}: with lib; {
   imports = [
     (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" ivi.username ])
   ];

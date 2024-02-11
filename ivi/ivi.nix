@@ -54,24 +54,40 @@ self: lib: with lib; let
                     default = false;
                 };
                 tailnet = mkOption {
+                  default = {};
                   type = with types; attrsOf (submodule ({ name, config, ... }: {
-                    freeformType = attrs;
-                    ipv4 = mkOption {
-                        description = "The machine's tailnet IPv4 address";
-                        type = str;
-                        default = null;
-                    };
-                    ipv6 = mkOption {
-                        description = "The machine's tailnet IPv6 address";
-                        type = str;
-                        default = null;
-                    };
-                    nodeKey = mkOption {
-                        description = "The machine's tailnet public key";
-                        type = str;
-                        default = null;
+                    options = {
+                      ipv4 = mkOption {
+                          description = "The machine's tailnet IPv4 address";
+                          type = str;
+                          default = null;
+                      };
+                      ipv6 = mkOption {
+                          description = "The machine's tailnet IPv6 address";
+                          type = str;
+                          default = null;
+                      };
+                      nodeKey = mkOption {
+                          description = "The machine's tailnet public key";
+                          type = str;
+                          default = null;
+                      };
                     };
                   }));
+                };
+                syncthing = mkOption {
+                  default = {};
+                  type = with types; submodule {
+                    freeformType = attrs;
+                    options = {
+                      id = mkOption {
+                          description = "The machine's syncting public id";
+                          type = str;
+                          default = "";
+                      };
+                      enable = mkEnableOption "Add to syncthing cluster";
+                    };
+                  };
                 };
             };
             config = {
@@ -147,7 +163,7 @@ self: lib: with lib; let
             ];
             syncthing = {
               enable = true;
-              id = "45TTOOY-YAJCVGX-GGM2Z2M-2YUYDOR-GGFPHFH-TOCCBGQ-A4A2NUB-GEKLGQQ";
+              id = "TGRWV6Z-5CJ4KRI-4VDTIUE-UA5LQYS-3ARZGNK-KL7HGXP-352PB5Q-ADTV6Q2";
             };
           };
           pump = {

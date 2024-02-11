@@ -20,7 +20,7 @@
       (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
         gke-gcloud-auth-plugin
       ]))
-    ] ++ optionals (!machine.isDarwin) [
+    ] ++ (optionals (!machine.isDarwin) [
       pywal
       dasel
       ueberzug
@@ -38,6 +38,6 @@
       firefox-wayland
       libreoffice
       xclip
-    ];
+    ]);
   };
 }

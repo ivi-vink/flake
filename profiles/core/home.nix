@@ -35,7 +35,7 @@
         };
       };
       desktopEntries = with pkgs; optionalAttrs (!machine.isDarwin) {
-        text= { type = "Application"; name = "Text editor"; exec = "${st}/bin/st -e kak %u"; };
+        text = { type = "Application"; name = "Text editor"; exec = "${st}/bin/st -e kak %u"; };
         file = { type = "Application"; name = "File Manager"; exec = "${st}/bin/st -e lfub %u"; };
         torrent = { type = "Application"; name = "Torrent"; exec = "${coreutils}/bin/env transadd %U"; };
         img = { type = "Application"; name = "Image Viewer"; exec = "${sxiv}/bin/sxiv -a %u"; };
@@ -186,6 +186,7 @@
       enableSshSupport = true;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
+      pinentryFlavor = "gtk2";
     };
   };
 }

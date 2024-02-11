@@ -66,7 +66,7 @@
     file
     pstree
     bc
-  ] ++ optionals (!machine.isDarwin) [
+  ] ++ (optionals (!machine.isDarwin) [
     pkgsi686Linux.glibc
     gdb
     pciutils
@@ -74,7 +74,7 @@
     iputils
     inetutils
     usbutils
-  ];
+  ]);
 
   nix.package = pkgs.nixUnstable;
   nix.extraOptions = ''

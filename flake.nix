@@ -42,7 +42,7 @@
           specialArgs = {inherit self machine inputs;};
           modules = with lib;
             machine.modules
-            ++ inputs.home-manager.nixosModules.default
+            ++ [inputs.home-manager.nixosModules.default]
             ++ machineConfig
             ++ [
               ({config, ...}: {
