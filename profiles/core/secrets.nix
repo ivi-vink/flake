@@ -39,7 +39,7 @@ in
         programs.password-store = {
           enable = true;
           settings = {
-            PASSWORD_STORE_DIR = "${config.synced.password-store.path}/password-store";
+            PASSWORD_STORE_DIR = config.synced.password-store.path;
           };
         };
       };

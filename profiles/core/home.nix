@@ -122,11 +122,8 @@
       export PATH=$PATH:$HOME/.local/bin
       [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
       unset LD_PRELOAD
-      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-      fi
       # include nix.sh if it exists
-      [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
+
       export COLORTERM=truecolor
       export GPG_TTY="$(tty)"
       gpgconf --launch gpg-agent
