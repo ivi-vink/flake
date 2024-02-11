@@ -34,6 +34,7 @@
     environment.systemPackages =
       [ pkgs.qemu
         pkgs.kitty
+        pkgs.openssh
       ];
 
     networking.hostName = "work";
