@@ -119,17 +119,14 @@ self: lib: with lib; let
               nodeKey = "nodekey:3e76e1ec73bc5dcf358948ddc03aefcc349f59fdeeae513e55bd637e01c0e64d";
             };
           };
-          lemptop = {
-            isStation = true;
+          serber = {
+            isServer = true;
             profiles = [
               "core"
-              "station"
-              "email"
+              "server"
             ];
-            syncthing = {
-              enable = true;
-              id = "45TTOOY-YAJCVGX-GGM2Z2M-2YUYDOR-GGFPHFH-TOCCBGQ-A4A2NUB-GEKLGQQ";
-            };
+            ipv4 = [ "65.108.155.179" ];
+            ipv6 = [ "2a01:4f9:c010:d2b5::1" ];
           };
           work = {
             isDarwin = true;
@@ -141,14 +138,17 @@ self: lib: with lib; let
               id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
             };
           };
-          serber = {
-            isServer = true;
+          lemptop = {
+            isStation = true;
             profiles = [
               "core"
-              "server"
+              "station"
+              "email"
             ];
-            ipv4 = [ "65.108.155.179" ];
-            ipv6 = [ "2a01:4f9:c010:d2b5::1" ];
+            syncthing = {
+              enable = true;
+              id = "45TTOOY-YAJCVGX-GGM2Z2M-2YUYDOR-GGFPHFH-TOCCBGQ-A4A2NUB-GEKLGQQ";
+            };
           };
           pump = {
             isServer = true;
@@ -162,6 +162,10 @@ self: lib: with lib; let
               ipv4 = "100.90.145.95";
               ipv6 = "fd7a:115c:a1e0::e2da:915f";
               nodeKey = "nodekey:dcd737aab30c21eb4f44a40193f3b16a8535ffe2fb5008904b39bb54e2da915e";
+            };
+            syncthing = {
+              enable = true;
+              id = "7USTCMT-QZTLGPL-5FCRKJW-BZUGMOS-H7D2TTK-F4COYPG-5D7VUO2-QFME2AS";
             };
           };
         };

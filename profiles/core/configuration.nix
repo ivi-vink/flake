@@ -1,4 +1,5 @@
 {
+  machine,
   config,
   pkgs,
   lib,
@@ -65,7 +66,7 @@
     file
     pstree
     bc
-  ] ++ optionals (!pkgs.stdenv.isDarwin) [
+  ] ++ optionals (!machine.isDarwin) [
     pkgsi686Linux.glibc
     gdb
     pciutils
