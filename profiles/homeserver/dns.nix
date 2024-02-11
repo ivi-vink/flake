@@ -40,6 +40,7 @@
     zones = with dns.combinators; let
       here = {
         A = map a ivi.machines.serber.ipv4;
+        AAAA = map a ivi.machines.serber.ipv6;
       };
     in {
       ${ivi.domain}.data = dns.toString ivi.domain (here // {
