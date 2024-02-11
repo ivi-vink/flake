@@ -1,6 +1,10 @@
 {machine, config, lib,...}: with lib; let
     group = if machine.isDarwin then (builtins.toString config.ivi.gid) else config.ivi.group;
 in {
+  imports = [
+    (mkAliasOptionModule [ "synced" ] [ "services" "syncthing" "settings" "folders" ])
+  ];
+
   services.syncthing = {
     enable = true;
     user = ivi.username;
@@ -45,6 +49,11 @@ in {
         };
         pictures = {
           path = "${config.ivi.home}/sync/pictures";
+          devices = allNames;
+          versioning = trashcan;
+        };
+        password-store = {
+          path = "${config.ivi.home}/sync/password-store";
           devices = allNames;
           versioning = trashcan;
         };

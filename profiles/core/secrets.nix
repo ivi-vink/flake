@@ -1,4 +1,4 @@
-{machine,inputs,lib,pkgs,...}: with lib;
+{machine,inputs,config,lib,pkgs,...}: with lib;
 let
   getSecrets = dir:
     mapAttrs' (name: _: let
@@ -36,7 +36,12 @@ in
       };
 
       hm = {
-        programs.password-store.enable = true;
+        programs.password-store = {
+          enable = true;
+          settings = {
+            PASSWORD_STORE_DIR = "${config.synced.password-store.path}/password-store";
+          };
+        };
       };
   };
 }

@@ -136,7 +136,7 @@
         ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
       fi
       export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-      ssh-add -l > /dev/null || ssh-add
+      ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
     '';
       shellAliases = {
         k9s           = "k9s ";
