@@ -1,7 +1,5 @@
-. <(pass show personal/notmuch)
 notmuch new --quiet
 notmuch tag -new +unread +jobs -- 'tag:new and (from:jobs-listings* or from:jobs-noreply*)'
-notmuch tag -new +unread +houses -- 'tag:new and (from:"'$MAKELAAR'" or thread:{'$MAKELAAR'})'
 notmuch tag -new +unread +dev -- 'tag:new and (from:/.*github.com/ or thread:{from:/.*github.com/})'
 
 # New needs to be removed, otherwise it will re add inbox unread

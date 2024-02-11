@@ -20,9 +20,29 @@
 (local action (require :fzf-lua.actions))
 (fzf.setup [:max-perf])
 
+(local
+  draw
+  (fn [toggle]
+    (if
+      toggle
+      (do
+        (vim.cmd "set virtualedit=all")
+        (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
+        (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
+        (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
+        (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
+      (do
+        (vim.cmd "set virtualedit=")
+        (vim.keymap.del "n" "J")
+        (vim.keymap.del "n" "K")
+        (vim.keymap.del "n" "L")
+        (vim.keymap.del "n" "H")))))
+
 (local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
+  (map :n :<leader>d<cr> (fn [] (draw true)))
+  (map :n :<leader>d<bs> (fn [] (draw false)))
   (map :n :- ::Oil<cr>)
   (map :n :_ #(oil.open_cwd.callback))
   (map :v :y "<Plug>OSCYankVisual|gvy")

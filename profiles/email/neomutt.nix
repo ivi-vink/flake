@@ -184,6 +184,7 @@
       macros = [
         { map = ["index" "pager"]; key = ","; action = "<pipe-message>khard add-email<return>"; }
         { map = ["index"]; key = "X"; action = "<save-message>=Spam<enter>y"; }
+        { map = ["index"]; key = "Ma"; action = "<save-message>=Archive<enter>y"; }
         { map = ["index"]; key = "A"; action = "<modify-labels-then-hide>+archive -unread -inbox<enter><mark-message>z<enter><change-folder>^<enter>'z"; }
         { map = ["index"]; key = "D"; action = "<delete-message>"; }
         { map = ["index" "pager"]; key =  "S"; action = "<sync-mailbox>!notmuch-hook<enter><mark-message>z<enter><change-folder>^<enter>'z"; }

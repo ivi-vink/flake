@@ -45,6 +45,7 @@
         bat
         nil
         shellcheck
+        vale
       ];
       plugins = with pkgs.vimPlugins; [
         # highlighting
