@@ -4,6 +4,7 @@
 
 (local event vim.api.nvim_create_autocmd)
 
+(vim.api.nvim_create_augroup "my" {:clear true})
 (vim.api.nvim_create_augroup "conf#events" {:clear true})
 
 (event

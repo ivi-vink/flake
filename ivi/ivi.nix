@@ -97,12 +97,6 @@ self: lib: with lib; let
         ];
 
         machines = {
-          work = {
-            isDarwin = true;
-            profiles = [
-              "core"
-            ];
-          };
           wsl = {
             isFake = true;
             profiles = [
@@ -132,6 +126,20 @@ self: lib: with lib; let
               "station"
               "email"
             ];
+            syncthing = {
+              enable = true;
+              id = "";
+            };
+          };
+          work = {
+            isDarwin = true;
+            profiles = [
+              "core"
+            ];
+            syncthing = {
+              enable = true;
+              id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
+            };
           };
           serber = {
             isServer = true;
