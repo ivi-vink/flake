@@ -82,6 +82,7 @@
         cmd - 3 : osascript -e 'tell application "slack" to activate'
         cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
         cmd - 5 : osascript -e 'tell application "calendar" to activate'
+        cmd - 6 : osascript -e 'tell application "mail" to activate'
         cmd - return : ${pkgs.kitty}/bin/kitty --single-instance -d ~
         cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
