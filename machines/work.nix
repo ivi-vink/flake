@@ -35,12 +35,20 @@
       [ pkgs.qemu
         pkgs.kitty
         pkgs.openssh
+        pkgs.python311
+        pkgs.mpv
       ];
+    hm.home.sessionPath = [
+      "/opt/homebrew/bin"
+    ];
 
     networking.hostName = "work";
     sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
     homebrew = {
       enable = true;
+      brews = [
+        "choose-gui"
+      ];
       casks = [
         "docker"
       ];
@@ -64,6 +72,34 @@
         p8+rG7+7P03W7J4E6AIxANp5CxwCtTlh1a1+8Kdvfc7ZvFuMwPlM3d8EFk9y9aRZ
         jurkqKKyl7EUOk0ufvUaQQ==
         -----END CERTIFICATE-----
+      '';
+    };
+    services.skhd = {
+      enable = true;
+      skhdConfig = ''
+        cmd - return : ${pkgs.kitty}/bin/kitty --single-instance -d ~
+        cmd + shift - return : ${pkgs.writers.writeBash "passmenu" ''
+          shopt -s nullglob globstar
+
+          dmenu="/opt/homebrew/bin/choose"
+
+          (
+              export PASSWORD_STORE_DIR="$HOME/sync/password-store"
+              prefix="$PASSWORD_STORE_DIR"
+              echo "prefix: $prefix"
+              password_files=( "$prefix"/**/*.gpg )
+              password_files=( "''${password_files[@]#"$prefix"/}" )
+              password_files=( "''${password_files[@]%.gpg}" )
+              echo "password_files: ''${password_files[*]}"
+
+              password="$(printf '%s\n' "''${password_files[@]}" | "$dmenu" "$@")"
+              echo "password: $password"
+
+              [[ -n $password ]] || exit
+
+              ${pkgs.pass}/bin/pass show -c "$password"
+          ) >/tmp/debug 2>&1
+        ''}
       '';
     };
 
