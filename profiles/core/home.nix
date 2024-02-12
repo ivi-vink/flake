@@ -151,6 +151,7 @@
         go-flake      = "nix flake new -t ~/flake#go ";
         lock-pass     = "gpgconf --kill gpg-agent";
         use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
+        use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
       };
     };
 
