@@ -78,7 +78,7 @@
       enable = true;
       skhdConfig = ''
         cmd - return : ${pkgs.kitty}/bin/kitty --single-instance -d ~
-        cmd + shift - return : ${pkgs.writers.writeBash "passmenu" ''
+        cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
 
           dmenu="/opt/homebrew/bin/choose"
