@@ -77,6 +77,11 @@
     services.skhd = {
       enable = true;
       skhdConfig = ''
+        cmd - 1 : osascript -e 'tell application "kitty" to activate'
+        cmd - 2 : osascript -e 'tell application "Google Chrome" to activate'
+        cmd - 3 : osascript -e 'tell application "slack" to activate'
+        cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
+        cmd - 5 : osascript -e 'tell application "calendar" to activate'
         cmd - return : ${pkgs.kitty}/bin/kitty --single-instance -d ~
         cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
