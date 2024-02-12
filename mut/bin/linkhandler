@@ -6,21 +6,32 @@
 # if a music file or pdf, it will download,
 # otherwise it opens link in browser.
 
+if command -v pbpaste >/dev/null;
+then
+    paste=pbpaste
+else
+    paste="xclip -o"
+fi
+
+if [ -z $BROWSER ]; then
+    BROWSER=open
+fi
+
 if [ -z "$1" ]; then
-	url="$(xclip -o)"
+	url="$($paste)"
 else
 	url="$1"
 fi
 
 case "$url" in
 	*mkv|*webm|*mp4|*youtube.com/watch*|*youtube.com/playlist*|*youtube.com/shorts*|*youtu.be*|*hooktube.com*|*bitchute.com*|*videos.lukesmith.xyz*|*odysee.com*)
-		setsid -f mpv -quiet "$url" >/dev/null 2>&1 ;;
+		nohup mpv -quiet "$url" >/dev/null 2>&1 ;;
 	*png|*jpg|*jpe|*jpeg|*gif)
-		curl -sL "$url" > "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")" && sxiv -a "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")"  >/dev/null 2>&1 & ;;
+		curl -sL "$url" > "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")" && sxiv -a "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")"  ;;
 	*pdf|*cbz|*cbr)
-		curl -sL "$url" > "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")" && zathura "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")"  >/dev/null 2>&1 & ;;
+		curl -sL "$url" > "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")" && zathura "/tmp/$(echo "$url" | sed "s/.*\///;s/%20/ /g")"  ;;
 	*mp3|*flac|*opus|*mp3?source*)
-		qndl "$url" 'curl -LO'  >/dev/null 2>&1 ;;
+		qndl "$url" 'curl -LO'  ;;
 	*)
-		[ -f "$url" ] && setsid -f "$TERMINAL" -e "$EDITOR" "$url" >/dev/null 2>&1 || setsid -f "$BROWSER" "$url" >/dev/null 2>&1
+		[ -f "$url" ] && nohup "$TERMINAL" -e "$EDITOR" "$url" >/dev/null 2>&1 || nohup "$BROWSER" "$url"
 esac
