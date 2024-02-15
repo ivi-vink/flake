@@ -37,6 +37,7 @@
         pkgs.openssh
         pkgs.python311
         pkgs.mpv
+        pkgs.kubelogin
       ];
     hm.home.sessionPath = [
       "/opt/homebrew/bin"

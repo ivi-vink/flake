@@ -14,11 +14,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-23.05";
-
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-
-    nix-darwin.url = "path:/Users/ivi/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "path:/Users/ivi/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
