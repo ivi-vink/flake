@@ -7,3 +7,4 @@ virt-install \
   --boot uefi \
   --graphics spice \
   --cdrom ./result/iso/nixos-24.05.20231204.2c7f3c0-x86_64-linux.iso
+
