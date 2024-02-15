@@ -11,7 +11,9 @@
         merge.tool = "fugitive";
         gpg.format = "ssh";
         user.signingKey = "${config.ivi.home}/.ssh/id_ed25519_sk.pub";
+        commit.gpgsign = true;
       };
+
       ignores = [
         "/.direnv/"
         "/.envrc"
