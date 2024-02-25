@@ -38,6 +38,8 @@
         pkgs.python311
         pkgs.mpv
         pkgs.kubelogin
+        pkgs.zsh
+        pkgs.bashInteractive
       ];
     hm.home.sessionPath = [
       "/opt/homebrew/bin"
@@ -129,8 +131,10 @@
     # The platform the configuration will be used on.
     nixpkgs.hostPlatform = "aarch64-darwin";
     users.users.${ivi.username} = {
-      shell = pkgs.bashInteractive;
+      shell = pkgs.zsh;
     };
-    environment.shells = [pkgs.bashInteractive];
+    environment.shells = [pkgs.bashInteractive pkgs.zsh];
+    environment.pathsToLink = [ "/share/zsh" ];
+    programs.zsh.enable = true;
   };
 }

@@ -53,6 +53,7 @@
     curl
     fd
     lf
+    fzf
     ripgrep
     parallel
     pinentry-curses

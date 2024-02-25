@@ -5,6 +5,34 @@
   pkgs,
   ...
 }: with lib; {
+  programs.tmux = let
+    config = ''
+        set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
+        set -g status off
+        set -s set-clipboard on
+        setw -g mouse on
+        set -g default-terminal "st-256color"
+        set -ga terminal-overrides ",xterm-256color:Tc"
+        set-option -g focus-events on
+        set-option -sg escape-time 10
+        unbind M-x
+        set -g prefix M-x
+        bind M-x send-prefix
+
+        set-window-option -g mode-keys vi
+        bind-key -T copy-mode-vi v send -X begin-selection
+        bind-key -T copy-mode-vi V send -X select-line
+        bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+        bind-key -T copy-mode-vi : command-prompt
+      '';
+  in {
+    enable = true;
+  } // (if machine.isDarwin then {
+    tmuxConfig = config;
+  } else {
+    extraConfig = config;
+  });
+
   hm = {
     fonts.fontconfig.enable = true;
     # https://github.com/nix-community/home-manager/issues/4692
@@ -55,17 +83,6 @@
       };
     };
 
-    home.sessionVariables = {
-      EDITOR = "nvim";
-      TERMINAL = "st";
-    };
-
-    home.sessionPath = [
-      "${config.ivi.home}/.krew/bin"
-      "${config.ivi.home}/.cargo/bin"
-      "${pkgs.ncurses}/bin"
-    ];
-
     programs.starship.enable = true;
 
     programs.direnv = {
@@ -89,69 +106,119 @@
     '';
     };
 
-    programs.tmux = {
-      enable = true;
-      extraConfig = ''
-      set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
-      set -g status off
-      set -s set-clipboard on
-      setw -g mouse on
-      set -g default-terminal "st-256color"
-      set -ga terminal-overrides ",xterm-256color:Tc"
-      set-option -g focus-events on
-      set-option -sg escape-time 10
-      unbind M-x
-      set -g prefix M-x
-      bind M-x send-prefix
+    programs = {
+      zsh = {
+        enable = true;
+        completionInit = ''
+        autoload -U compinit
+        zstyle ':completion:*' menu select
+        zmodload zsh/complist
+        compinit
+        _comp_options+=(globdots) # Include hidden files.
+        '';
+        initExtra = ''
+          # Use vim keys in tab complete menu:
+          bindkey -M menuselect 'h' vi-backward-char
+          bindkey -M menuselect 'k' vi-up-line-or-history
+          bindkey -M menuselect 'l' vi-forward-char
+          bindkey -M menuselect 'j' vi-down-line-or-history
+          # Use lf to switch directories and bind it to ctrl-o
+          lfcd () {
+              tmp="$(mktemp -uq)"
+              trap 'rm -f $tmp >/dev/null 2>&1 && trap - HUP INT QUIT TERM EXIT' HUP INT QUIT TERM EXIT
+              lf -last-dir-path="$tmp" "$@"
+              if [ -f "$tmp" ]; then
+                  dir="$(cat "$tmp")"
+                  [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+              fi
+          }
+          bindkey -s '^o' '^ulfcd\n'
 
-      set-window-option -g mode-keys vi
-      bind-key -T copy-mode-vi v send -X begin-selection
-      bind-key -T copy-mode-vi V send -X select-line
-      bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
-      bind-key -T copy-mode-vi : command-prompt
-    '';
-    };
+          export EDITOR="vremote"
+          export TERMINAL="st"
+          ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
+          ( command -v docker ) &>/dev/null && eval "$(docker completion zsh)"
+          ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion zsh)"
+          ( command -v zoxide ) &>/dev/null && eval "$(zoxide init zsh)"
+          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.ivi.home}/.krew/bin:${config.ivi.home}/.cargo/bin:${pkgs.ncurses}/bin"
+          [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
+          unset LD_PRELOAD
 
-    programs.bash = {
-      enable = true;
-      bashrcExtra = ''
-      ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
-      ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
-      ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
-      ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
-      export PATH=$PATH:$HOME/.local/bin
-      [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
-      unset LD_PRELOAD
-      # include nix.sh if it exists
+          export COLORTERM=truecolor
+          export GPG_TTY="$(tty)"
+          gpgconf --launch gpg-agent
 
-      export COLORTERM=truecolor
-      export GPG_TTY="$(tty)"
-      gpgconf --launch gpg-agent
+          if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+            eval `ssh-agent`
+            ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+          fi
+          export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+          ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+        '';
+        shellAliases = {
+          k9s           = "k9s ";
+          k             = "kubectl ";
+          d             = "docker ";
+          ls            = "ls --color=auto";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
+          b             = "/run/current-system/bin/switch-to-configuration boot";
+          v             = "vremote";
+          lf            = "lfub";
+          M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
+          m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          newflake      = "nix flake new -t ~/flake ";
+          ansible-flake = "nix flake new -t ~/flake#ansible ";
+          go-flake      = "nix flake new -t ~/flake#go ";
+          lock-pass     = "gpgconf --kill gpg-agent";
+          use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
+          use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
+        };
+      };
 
-      if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-        eval `ssh-agent`
-        ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-      fi
-      export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-      ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
-    '';
-      shellAliases = {
-        k9s           = "k9s ";
-        k             = "kubectl ";
-        d             = "docker ";
-        ls            = "ls --color=auto";
-        s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
-        b             = "/run/current-system/bin/switch-to-configuration boot";
-        v             = "nvim";
-        M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
-        m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
-        mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
-        newflake      = "nix flake new -t ~/flake ";
-        ansible-flake = "nix flake new -t ~/flake#ansible ";
-        go-flake      = "nix flake new -t ~/flake#go ";
-        lock-pass     = "gpgconf --kill gpg-agent";
-        use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
-        use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
+      bash = {
+        enable = false;
+        bashrcExtra = ''
+        export EDITOR="nvim"
+        export TERMINAL="st"
+        ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
+        ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
+        ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
+        ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
+        export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.ivi.home}/.krew/bin:${config.ivi.home}/.cargo/bin:${pkgs.ncurses}/bin"
+        [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
+        unset LD_PRELOAD
+        # include nix.sh if it exists
+
+        export COLORTERM=truecolor
+        export GPG_TTY="$(tty)"
+        gpgconf --launch gpg-agent
+
+        if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+          eval `ssh-agent`
+          ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+        fi
+        export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+        ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+      '';
+        shellAliases = {
+          k9s           = "k9s ";
+          k             = "kubectl ";
+          d             = "docker ";
+          ls            = "ls --color=auto";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
+          b             = "/run/current-system/bin/switch-to-configuration boot";
+          v             = "nvim";
+          M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
+          m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          newflake      = "nix flake new -t ~/flake ";
+          ansible-flake = "nix flake new -t ~/flake#ansible ";
+          go-flake      = "nix flake new -t ~/flake#go ";
+          lock-pass     = "gpgconf --kill gpg-agent";
+          use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
+          use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
+        };
       };
     };
 

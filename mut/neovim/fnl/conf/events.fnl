@@ -3,9 +3,35 @@
 (local {: attach} (require :conf.lsp))
 
 (local event vim.api.nvim_create_autocmd)
+(local command vim.api.nvim_create_user_command)
 
 (vim.api.nvim_create_augroup "my" {:clear true})
 (vim.api.nvim_create_augroup "conf#events" {:clear true})
+
+(command :Event
+         (fn [cmd]
+           (let [del cmd.bang
+                 [event_name & command] cmd.fargs]
+             (P cmd)
+             (local c (vim.iter command))
+             (if del
+               (do
+                 (local events
+                       (vim.iter
+                         (vim.api.nvim_get_autocmds
+                           {:group :my
+                              :event event_name
+                              :buffer 0})))
+                 (events:map (fn [e] (vim.api.nvim_del_autocmd e.id))))
+               (event
+                 event_name
+                 {:group :my
+                  :buffer 0
+                  :callback #(vim.cmd (.. "silent " (c:join " ")))}))))
+         {:bang true :nargs :* :complete :file :force true})
+(let [map vim.keymap.set]
+  (map :n :<c-e> ":Event BufWritePost <up>")
+  (map :n :<M-e> ":Event! BufWritePost "))
 
 (event
   :LspAttach
@@ -44,16 +70,17 @@
   {:group "conf#events"
    :pattern ["*"]
    :callback #(vim.cmd (.. "mksession! " session-file))})
-(event
-  :VimEnter
-  {:group "conf#events"
-   :pattern ["*"]
-   :callback #(if (= 1 (vim.fn.filereadable session-file))
-                  (do
-                    (local start-with-arg (>= 1 (vim.fn.argc)))
-                    (local file (vim.fn.argv 0))
-                    (local cwd (vim.fn.getcwd))
-                    (vim.schedule #(vim.cmd (.. "source " session-file)))
-                    (if start-with-arg (vim.schedule #(do
-                                                        (vim.cmd (.. "cd " cwd))
-                                                        (vim.cmd (.. "e " file)))))))})
+;; (event
+;;   :VimEnter
+;;   {:group "conf#events"
+;;    :pattern ["*"]
+;;    :callback #(if (= 1 (vim.fn.filereadable session-file))
+;;                   (do
+;;                     (local start-with-arg (>= 1 (vim.fn.argc)))
+;;                     (local file (vim.fn.argv 0))
+;;                     (local cwd (vim.fn.getcwd))
+;;                     (if start-with-arg (do
+;;                                          (vim.schedule #(vim.cmd (.. "source " session-file)))
+;;                                          (vim.schedule #(do
+;;                                                           (vim.cmd (.. "cd " cwd))
+;;                                                           (vim.cmd (.. "e " file))))))))})

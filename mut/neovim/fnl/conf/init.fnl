@@ -27,12 +27,14 @@
       toggle
       (do
         (vim.cmd "set virtualedit=all")
+        (vim.keymap.set :v "<leader>;" "<esc>:VBox<CR>")
         (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
         (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
         (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
         (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
       (do
         (vim.cmd "set virtualedit=")
+        (vim.keymap.del :v "<leader>;")
         (vim.keymap.del "n" "J")
         (vim.keymap.del "n" "K")
         (vim.keymap.del "n" "L")
@@ -86,7 +88,11 @@
   (map :n :<leader>xb #(fzf.buffers
                          {:keymap {:fzf {"alt-a" "toggle-all"}}
                           :actions {:default {:fn action.buf_edit_or_qf}}}))
-  (map :n :<leader>x<cr> #(vim.cmd "b #")))
+  (map :n :<leader>x<cr> #(vim.cmd "b #"))
+  (map :n :<leader><bs>
+       #(do
+          (local uis (vim.iter (vim.api.nvim_list_uis)))
+          (uis:map (fn [ui] (vim.fn.chanclose ui.chan))))))
 
 
 (vim.api.nvim_create_user_command
@@ -166,7 +172,7 @@
     (local thunk #(qfjob cmd.fargs nil))
     (set last_job_thunk thunk)
     (thunk))
-  {:nargs :* :bang true :complete :shellcmd})
+  {:nargs :* :bang true :complete "file"})
 (vim.api.nvim_create_user_command
   :Sh
   (fn [cmd]
