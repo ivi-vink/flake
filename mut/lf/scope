@@ -6,8 +6,8 @@ set -C -f
 IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 
 image() {
-	if [ -f "$1" ] && [ -n "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && command -V ueberzug >/dev/null 2>&1; then
-		printf '{"action": "add", "identifier": "PREVIEW", "x": "%s", "y": "%s", "width": "%s", "height": "%s", "scaler": "contain", "path": "%s"}\n' "$4" "$5" "$(($2-1))" "$(($3-1))" "$1" > "$FIFO_UEBERZUG"
+	if [ -f "$1" ] && command -V kitten >/dev/null 2>&1; then
+        kitten icat --transfer-mode file --stdin no --place "${2}x${3}@${4}x${5}" "$1" < /dev/null > /dev/tty
 	else
 		mediainfo "$6"
 	fi
@@ -31,7 +31,7 @@ image/svg+xml)
 	image "$CACHE.png" "$2" "$3" "$4" "$5" "$1"
 	;;
 	image/*) image "$1" "$2" "$3" "$4" "$5" "$1" ;;
-	text/html) lynx -width="$4" -display_charset=utf-8 -dump "$1" ;;
+	text/html) open "$1" ;;
 	text/troff) man ./ "$1" | col -b ;;
 	text/* | */xml | application/json | application/x-ndjson) bat -p --theme ansi --terminal-width "$(($4-2))" -f "$1" ;;
 	audio/* | application/octet-stream) mediainfo "$1" || exit 1 ;;

@@ -63,6 +63,14 @@
                   (lint.try_lint)
                   (vim.schedule #(vim.diagnostic.setloclist {:open false})))})
 
+(event
+  [:BufEnter]
+  {:group "conf#events"
+   :callback
+   #(do (var dir (vim.fn.fnamemodify (vim.fn.expand "%") ":h"))
+        (if (vim.startswith dir "oil://") (set dir (dir:sub (+ 1 (length "oil://")))))
+        (vim.cmd (.. "silent !lf -remote \"send cd '" dir "'\"")))})
+
 
 (local session-file (.. vim.env.HOME "/.vimsession.vim"))
 (event

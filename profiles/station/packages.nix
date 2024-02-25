@@ -20,6 +20,7 @@
       (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
         gke-gcloud-auth-plugin
       ]))
+      imagemagick
     ] ++ (optionals (!machine.isDarwin) [
       pywal
       dasel

@@ -67,6 +67,8 @@
     file
     pstree
     bc
+    mediainfo
+    bat
   ] ++ (optionals (!machine.isDarwin) [
     pkgsi686Linux.glibc
     gdb

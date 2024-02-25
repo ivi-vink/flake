@@ -1,6 +1,9 @@
 {pkgs,config,...}: {
   hm.home.packages = [pkgs.ueberzug pkgs.lf];
   hm.xdg.configFile = {
+    "lf/cleaner".source = config.lib.meta.mkMutableSymlink /mut/lf/cleaner;
+    "lf/scope".source = config.lib.meta.mkMutableSymlink /mut/lf/scope;
+    "lf/lfrc".source = config.lib.meta.mkMutableSymlink /mut/lf/lfrc;
     "lf/icons".text = ''
     di	📁
     fi	📃
@@ -80,13 +83,5 @@
     *.jar   ♨
     *.java	♨
     '';
-    "lf/cleaner".text = ''
-    #!/bin/sh
-    if [ -n "$FIFO_UEBERZUG" ]; then
-      printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
-    fi
-    '';
-    "lf/scope".source = config.lib.meta.mkMutableSymlink /mut/lf/scope;
-    "lf/lfrc".source = config.lib.meta.mkMutableSymlink /mut/lf/lfrc;
   };
 }
