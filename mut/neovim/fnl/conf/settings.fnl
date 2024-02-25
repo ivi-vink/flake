@@ -70,6 +70,5 @@
   ; winbar "%=%m %f"
   winbar ""
   hlsearch off
-  clipboard ""
   showtabline 0
   cmdheight 1)

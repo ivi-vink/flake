@@ -8,7 +8,6 @@
   programs.tmux = let
     config = ''
         set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
-        set -g allow-passthrough
         set -g status off
         set -s set-clipboard on
         setw -g mouse on

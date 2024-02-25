@@ -10,6 +10,8 @@
 (require :conf.diagnostic)
 (require :conf.events)
 
+(vim.opt.clipboard:append [:unnamedplus])
+
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
                                 (vim.inspect v))]
