@@ -3,7 +3,7 @@ export PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:/usr/bi
 server_pipe="$XDG_CACHE_HOME/nvim/server.pipe"
 (
     if ! [ -e "$server_pipe" ]; then
-        nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
+        PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:/usr/bin" nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
     fi
 
     if nvim --headless --server ~/.cache/nvim/server.pipe --remote-expr 'luaeval("vim.json.encode(vim.iter(vim.api.nvim_list_uis()):map(function(v) return v.chan end):totable())")' \
