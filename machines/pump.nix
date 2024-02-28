@@ -41,6 +41,15 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
+  networking.hostId = "7da046cb";
+
+  fileSystems."/data" =
+    { device = "zpool/data";
+      fsType = "zfs";
+    };
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/fc8829a4-d9d5-4001-a3b2-8dae8b85acd7";
       fsType = "ext4";
