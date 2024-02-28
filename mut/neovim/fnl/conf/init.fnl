@@ -91,7 +91,7 @@
                          {:keymap {:fzf {"alt-a" "toggle-all"}}
                           :actions {:default {:fn action.buf_edit_or_qf}}}))
   (map :n :<leader>x<cr> #(vim.cmd "b #"))
-  (map :n :<leader><bs>
+  (map :n :<C-w>d
        #(do
           (local uis (vim.iter (vim.api.nvim_list_uis)))
           (uis:map (fn [ui] (vim.fn.chanclose ui.chan))))))

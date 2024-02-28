@@ -1,14 +1,31 @@
 #!/bin/bash
+PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:/usr/bin"
 server_pipe="$XDG_CACHE_HOME/nvim/server.pipe"
-if ! [ -e "$server_pipe" ]; then
-    nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
-fi
+(
+    if ! [ -e "$server_pipe" ]; then
+        nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
+    fi
 
-if nvim --headless --server ~/.cache/nvim/server.pipe --remote-expr 'luaeval("vim.json.encode(vim.iter(vim.api.nvim_list_uis()):map(function(v) return v.chan end):totable())")' | jq -r '.[]' | while read -r chan; do
-    echo "already existing ui($chan)..."
-    exit 1
-done
-then
-    nvim --server "$server_pipe" --remote "${@}"
-    exec nvim --server "$server_pipe" --remote-ui
-fi
+    if nvim --headless --server ~/.cache/nvim/server.pipe --remote-expr 'luaeval("vim.json.encode(vim.iter(vim.api.nvim_list_uis()):map(function(v) return v.chan end):totable())")' \
+        | jq -r '.[]' \
+        | while read -r chan; do
+        osascript -e 'display notification "already existing ui('"$chan"')..." with title "vremote"'
+        exit 1
+    done
+    then
+        if [ -n "$1" ]; then
+            file_names=()
+            for file_name in "${@}"; do
+                if [[ "${file_name:0:1}" == / || "${file_name:0:2}" == ~[/a-zA-Z0-9] ]]
+                then
+                    file_names+=("$file_name")
+                else
+                    file_names+=("${PWD}/$file_name")
+                fi
+            done
+            echo "got file_names: ${file_names[*]}"
+            nvim --server "$server_pipe" --remote "${file_names[@]}" >/dev/tty
+        fi
+        exec nvim --server "$server_pipe" --remote-ui >/dev/tty
+    fi
+) > ~/vremote_logs 2>&1

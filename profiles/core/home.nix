@@ -110,7 +110,8 @@
       zsh = {
         enable = true;
         completionInit = ''
-        autoload -U compinit
+        autoload -U compinit select-word-style select-word-style
+        select-word-style bash
         zstyle ':completion:*' menu select
         zmodload zsh/complist
         compinit
@@ -122,6 +123,8 @@
           bindkey -M menuselect 'k' vi-up-line-or-history
           bindkey -M menuselect 'l' vi-forward-char
           bindkey -M menuselect 'j' vi-down-line-or-history
+
+
           # Use lf to switch directories and bind it to ctrl-o
           lfcd () {
               tmp="$(mktemp -uq)"
