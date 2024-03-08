@@ -11,8 +11,8 @@
     xsession = {
       enable = true;
       initExtra = ''
-      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod1 = Alt_R"
-      ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod3 = Alt_R"
+      ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
+      ${pkgs.xorg.xset}/bin/xset r rate 220 30
       wal -R
       dwm
       dwmblocks &

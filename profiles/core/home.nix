@@ -6,8 +6,8 @@
   ...
 }: with lib; {
   programs.tmux = let
-    config = ''
-        set-option -g default-shell ${pkgs.bashInteractive}/bin/bash
+    cfg = ''
+        set-option -g default-shell ${config.ivi.shell}/bin/zsh
         set -g status off
         set -s set-clipboard on
         setw -g mouse on
@@ -19,6 +19,19 @@
         set -g prefix M-x
         bind M-x send-prefix
 
+        bind -n M-w switch-client -T windows
+        bind -T windows c if 'n=`tmux list-panes | grep -c ^`; [ $n -gt 1 ]' {
+           kill-pane
+        }
+        bind -T windows n splitp
+        bind -T windows N splitp -h
+        bind -T windows h select-pane -L
+        bind -T windows j select-pane -D
+        bind -T windows k select-pane -U
+        bind -T windows l select-pane -R
+        bind -T windows _ resize-pane -Z
+        bind -T windows = selectl even-vertical
+
         set-window-option -g mode-keys vi
         bind-key -T copy-mode-vi v send -X begin-selection
         bind-key -T copy-mode-vi V send -X select-line
@@ -28,9 +41,9 @@
   in {
     enable = true;
   } // (if machine.isDarwin then {
-    tmuxConfig = config;
+    tmuxConfig = cfg;
   } else {
-    extraConfig = config;
+    extraConfig = cfg;
   });
 
   hm = {

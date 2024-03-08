@@ -1,5 +1,5 @@
 { config, lib, pkgs, modulesPath, ... }:
-
+with lib;
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
@@ -30,6 +30,12 @@
       -----END CERTIFICATE-----
     '';
   };
+  users.users.${ivi.username} = {
+    shell = pkgs.zsh;
+  };
+  environment.shells = [pkgs.bashInteractive pkgs.zsh];
+  environment.pathsToLink = [ "/share/zsh" ];
+  programs.zsh.enable = true;
 
   documentation.dev.enable = true;
   networking.hostName = "lemptop";
