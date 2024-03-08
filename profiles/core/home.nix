@@ -129,7 +129,7 @@
           lfcd () {
               tmp="$(mktemp -uq)"
               trap 'rm -f $tmp >/dev/null 2>&1 && trap - HUP INT QUIT TERM EXIT' HUP INT QUIT TERM EXIT
-              lf -last-dir-path="$tmp" "$@"
+              EDITOR=vremote lf -last-dir-path="$tmp" "$@"
               if [ -f "$tmp" ]; then
                   dir="$(cat "$tmp")"
                   [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
@@ -137,7 +137,7 @@
           }
           bindkey -s '^o' '^ulfcd\n'
 
-          export EDITOR="vremote"
+          export EDITOR="nvim"
           export TERMINAL="st"
           ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
           ( command -v docker ) &>/dev/null && eval "$(docker completion zsh)"

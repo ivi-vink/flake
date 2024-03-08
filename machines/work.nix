@@ -40,6 +40,7 @@
         pkgs.kubelogin
         pkgs.zsh
         pkgs.bashInteractive
+        pkgs.awscli2
       ];
     hm.home.sessionPath = [
       "/opt/homebrew/bin"

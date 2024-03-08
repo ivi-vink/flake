@@ -163,6 +163,7 @@ map i :rename # before extension
 map a :rename; cmd-right # after extension
 map B bulkrename
 map b $setbg $f
+map <backspace2> clear
 
 map <c-e> down
 map <c-y> up

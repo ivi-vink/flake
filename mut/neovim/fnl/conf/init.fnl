@@ -96,6 +96,14 @@
           (local uis (vim.iter (vim.api.nvim_list_uis)))
           (uis:map (fn [ui] (vim.fn.chanclose ui.chan))))))
 
+(do
+  (local obsidian (require "obsidian"))
+  (obsidian.setup
+    { :workspaces
+      [{
+        :name "notes"
+        :path "~/Sync/my/notes"}]}))
+
 
 (vim.api.nvim_create_user_command
   :NixEdit
