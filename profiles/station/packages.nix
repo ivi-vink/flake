@@ -15,7 +15,6 @@
       k9s
       krew
       azure-cli
-      github-cli
       argocd
       (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
         gke-gcloud-auth-plugin

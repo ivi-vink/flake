@@ -40,11 +40,8 @@
       '';
   in {
     enable = true;
-  } // (if machine.isDarwin then {
-    tmuxConfig = cfg;
-  } else {
     extraConfig = cfg;
-  });
+  };
 
   hm = {
     fonts.fontconfig.enable = true;
@@ -123,6 +120,9 @@
       zsh = {
         enable = true;
         completionInit = ''
+        if type brew &>/dev/null; then
+          FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
+        fi
         autoload -U compinit select-word-style select-word-style
         select-word-style bash
         zstyle ':completion:*' menu select
@@ -274,7 +274,8 @@
       enableSshSupport = false;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
-      pinentryFlavor = "gtk2";
+      # pinentryFlavor = "gtk2";
+      pinentryPackage = pkgs.pinentry-gtk2;
     };
   };
 }

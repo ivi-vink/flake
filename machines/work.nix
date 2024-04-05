@@ -14,8 +14,9 @@
       };
     };
     security = {
-      sudo = mkSinkUndeclaredOptions {};
+      sudo.wheelNeedsPassword = mkSinkUndeclaredOptions {};
     };
+    systemd = mkSinkUndeclaredOptions {};
     users.users = mkOption {
       type = types.attrsOf (types.submodule ({...}: {
         options = {
@@ -41,11 +42,21 @@
         pkgs.zsh
         pkgs.bashInteractive
         pkgs.awscli2
-      ];
-    hm.home.sessionPath = [
-      "/opt/homebrew/bin"
-    ];
+        pkgs.skhd
+        pkgs.act
+     ];
     hm = {
+      home = {
+        sessionPath = [
+          "/opt/homebrew/bin"
+        ];
+        file."gpg-agent.conf" = {
+          text = ''
+            pinentry-program /opt/homebrew/bin/pinentry-mac
+          '';
+          target = ".gnupg/gpg-agent.conf";
+        };
+      };
       programs.kitty = {
         enable = true;
         shellIntegration = {
@@ -67,6 +78,9 @@
           mouse_map right press ungrabbed mouse_select_command_output
           map kitty_mod+v mouse_select_command_output
           scrollback_pager less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER
+
+          map kitty_mod+shift+k change_font_size all +2.0
+          map kitty_mod+shift+j change_font_size all -2.0
 
           map kitty_mod+k scroll_to_prompt -1
           map kitty_mod+j scroll_to_prompt 1
@@ -149,6 +163,7 @@
       enable = true;
       brews = [
         "choose-gui"
+        "pinentry-mac"
       ];
       casks = [
         "docker"
@@ -184,6 +199,14 @@
         cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
         cmd - 5 : osascript -e 'tell application "calendar" to activate'
         cmd - 6 : osascript -e 'tell application "mail" to activate'
+        cmd - w [
+          "Google Chrome" ~
+          * : osascript -e 'tell application "Google Chrome" to activate'
+        ]
+        cmd - e : osascript -e 'tell application "mail" to activate'
+        cmd - m : osascript -e 'tell application "Slack" to activate'
+        cmd + shift - m : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
+        cmd - return : osascript -e 'tell application "kitty" to activate'
         cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
 
@@ -232,6 +255,9 @@
     };
     environment.shells = [pkgs.bashInteractive pkgs.zsh];
     environment.pathsToLink = [ "/share/zsh" ];
+    environment.variables = {
+      SLACK_NO_AUTO_UPDATES = "1";
+    };
     programs.zsh.enable = true;
   };
 }

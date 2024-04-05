@@ -42,7 +42,6 @@
         alejandra
         statix
         fzf
-        bat
         nil
         shellcheck
         vale
@@ -56,6 +55,7 @@
         lsp_lines-nvim
         gitsigns-nvim
         vim-helm
+        lualine-nvim
 
         # external
         oil-nvim
@@ -73,6 +73,7 @@
         lsp_signature-nvim
         nvim-dap
         nvim-dap-ui
+        nvim-nio
         nvim-dap-python
         luasnip
         vim-test

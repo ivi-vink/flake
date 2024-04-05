@@ -6,5 +6,6 @@
 (require :conf.pkgs.gitsigns)
 (require :conf.pkgs.oil)
 (require :conf.pkgs.lint)
+(require :conf.pkgs.lualine)
 ;; (require :conf.pkgs.lsp_lines)
 ;; (require :conf.pkgs.null-ls)

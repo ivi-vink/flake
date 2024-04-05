@@ -70,5 +70,5 @@
   ; winbar "%=%m %f"
   winbar ""
   hlsearch off
-  showtabline 0
+  showtabline 1
   cmdheight 1)

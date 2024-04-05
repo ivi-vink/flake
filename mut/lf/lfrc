@@ -25,6 +25,7 @@ set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 set cleaner '~/.config/lf/cleaner'
 set previewer '~/.config/lf/scope'
 set autoquit true
+set relativenumber
 
 cmd z %{{
     echo "$1" > ~/lflogs
