@@ -1,4 +1,4 @@
-{mvinkioPkgs, ...}: (final: prev: {
+{...}: (final: prev: {
   tree-sitter = mvinkioPkgs.tree-sitter;
   vimPlugins =
     prev.vimPlugins

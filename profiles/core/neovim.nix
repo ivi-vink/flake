@@ -78,6 +78,9 @@
         luasnip
         vim-test
         nvim-lint
+        vim-surround
+        conform-nvim
+        trouble-nvim
 
         # cmp
         nvim-cmp

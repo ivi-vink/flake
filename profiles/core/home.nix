@@ -136,6 +136,8 @@
           bindkey -M menuselect 'k' vi-up-line-or-history
           bindkey -M menuselect 'l' vi-forward-char
           bindkey -M menuselect 'j' vi-down-line-or-history
+          bindkey -M menuselect 'n' vi-forward-blank-word
+          bindkey -M menuselect 'p' vi-backward-blank-word
 
 
           # Use lf to switch directories and bind it to ctrl-o

@@ -44,6 +44,7 @@
         pkgs.awscli2
         pkgs.skhd
         pkgs.act
+        pkgs.yubikey-manager
      ];
     hm = {
       home = {
@@ -63,6 +64,7 @@
           enableZshIntegration = true;
         };
         extraConfig = ''
+          allow_remote_control yes
           cursor_shape block
           font_family      JetBrainsMono Nerd Font Mono
           text_composition_strategy platform
@@ -108,6 +110,7 @@
           map kitty_mod+r load_config_file
           map cmd+c copy_to_clipboard
           map cmd+v paste_from_clipboard
+          map cmd+q quit
 
           ## name: Kanagawa
           ## license: MIT
@@ -162,7 +165,6 @@
     homebrew = {
       enable = true;
       brews = [
-        "choose-gui"
         "pinentry-mac"
       ];
       casks = [
@@ -170,6 +172,7 @@
       ];
       masApps = {
         tailscale = 1475387142;
+        slack = 803453959;
       };
     };
     services.syncthing = {
@@ -193,7 +196,7 @@
     services.skhd = {
       enable = true;
       skhdConfig = ''
-        cmd - 1 : osascript -e 'tell application "kitty" to activate'
+        cmd - 1 : osascript -e 'tell application "alacritty" to activate'
         cmd - 2 : osascript -e 'tell application "Google Chrome" to activate'
         cmd - 3 : osascript -e 'tell application "slack" to activate'
         cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
@@ -206,11 +209,33 @@
         cmd - e : osascript -e 'tell application "mail" to activate'
         cmd - m : osascript -e 'tell application "Slack" to activate'
         cmd + shift - m : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
-        cmd - return : osascript -e 'tell application "kitty" to activate'
+        cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
+        cmd - d : ${pkgs.writers.writeBash "passautotype" ''
+          shopt -s nullglob globstar
+
+          dmenu="/opt/homebrew/bin/dmenu-mac"
+
+          (
+              export PASSWORD_STORE_DIR="$HOME/sync/password-store"
+              prefix="$PASSWORD_STORE_DIR"
+              echo "prefix: $prefix"
+              password_files=( "$prefix"/**/*.gpg )
+              password_files=( "''${password_files[@]#"$prefix"/}" )
+              password_files=( "''${password_files[@]%.gpg}" )
+              echo "password_files: ''${password_files[*]}"
+
+              password="$(printf '%s\n' "''${password_files[@]}" | "$dmenu" "$@")"
+              echo "password: $password"
+
+              [[ -n $password ]] || exit
+
+              /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.loadSpoon([[PassAutotype]]):autotype([[$password]])"
+          ) >/tmp/debug 2>&1
+        ''}
         cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
 
-          dmenu="/opt/homebrew/bin/choose"
+          dmenu="/opt/homebrew/bin/dmenu-mac"
 
           (
               export PASSWORD_STORE_DIR="$HOME/sync/password-store"
@@ -231,7 +256,51 @@
         ''}
       '';
     };
+    services.yabai = {
+      enable = true;
+      package = pkgs.yabai;
+      enableScriptingAddition = true;
+      config = {
+        focus_follows_mouse          = "autofocus";
+        mouse_follows_focus          = "off";
+        window_placement             = "first_child";
+        window_opacity               = "off";
+        window_opacity_duration      = "0.0";
+        window_border                = "on";
+        window_border_placement      = "inset";
+        window_border_width          = 2;
+        window_border_radius         = 3;
+        active_window_border_topmost = "off";
+        window_topmost               = "on";
+        window_shadow                = "float";
+        active_window_border_color   = "0xff5c7e81";
+        normal_window_border_color   = "0xff505050";
+        insert_window_border_color   = "0xffd75f5f";
+        active_window_opacity        = "1.0";
+        normal_window_opacity        = "1.0";
+        split_ratio                  = "0.50";
+        auto_balance                 = "on";
+        mouse_modifier               = "fn";
+        mouse_action1                = "move";
+        mouse_action2                = "resize";
+        layout                       = "bsp";
+        window_origin_display        = "focused";
+        display_arrangement_order    = "vertical";
+        top_padding                  = 10;
+        bottom_padding               = 10;
+        left_padding                 = 10;
+        right_padding                = 10;
+        window_gap                   = 10;
+      };
 
+      extraConfig = ''
+          # rules
+          yabai -m rule --add app='System Settings' manage=off
+          yabai -m rule --add app='kitty' title='dap' display='2'
+
+          # Any other arbitrary config here
+        '';
+    };
     # Auto upgrade nix package and the daemon service.
     services.nix-daemon.enable = true;
     # nix.package = pkgs.nix;

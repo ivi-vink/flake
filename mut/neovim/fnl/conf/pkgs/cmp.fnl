@@ -8,7 +8,7 @@
   (and (not= col 0) (= is_string nil)))
 
 (fn edit? [line]
-  (not= nil (line:match "^ed?i?t? .*$")))
+    (or (not= nil (line:match "^.* %.?.*$")) (not= nil (line:match "^ed?i?t? .*$"))))
 
 (fn endswith? [line char]
   (not= nil (line:match (.. ".*" char "$"))))
@@ -60,22 +60,23 @@
     ; todo sorting based on least recently used
    (cmp.setup.cmdline
      ":"
-      {:enabled (fn [] (local val (edit? (vim.fn.getcmdline)))
-                       (if (not val)
-                           (cmp.close))
-                       val)
+      {:enabled (fn []
+                  (local val (edit? (vim.fn.getcmdline)))
+                  (if (not val)
+                     (cmp.close))
+                  val)
        :completion {:completeopt "menu,menuone,noinsert"}
        :mapping {:<C-n> (cmp.mapping
                           (fn [fallback]
                             (if (cmp.visible)
                                 (cmp.select_next_item)
-                                (fallback)))
+                                (cmp.complete)))
                           [:i :c])
                  :<C-p> (cmp.mapping
                           (fn [fallback]
                             (if (cmp.visible)
                                 (cmp.select_prev_item)
-                                (fallback)))
+                                (cmp.complete)))
                           [:i :c])
                  :<BS> (cmp.mapping
                          (fn [fallback]
@@ -102,8 +103,7 @@
                                      (do
                                        (vim.schedule fallback))))))
                          [:i :c])}
-       :sources (cmp.config.sources
-                   [{:name :cmdline :trigger_characters []} {:name :path}])}
+       :sources (cmp.config.sources [{:name :path}])}
 
 
 

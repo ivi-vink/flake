@@ -1,0 +1,3 @@
+#!/bin/bash
+fifo_name="/tmp/choose"
+

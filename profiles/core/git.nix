@@ -19,6 +19,7 @@
         "/.envrc"
         "/.env"
         ".vimsession.vim"
+        "tfplan"
       ];
     };
   };

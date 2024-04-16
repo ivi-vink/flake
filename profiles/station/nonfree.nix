@@ -1,7 +1,6 @@
 {pkgs, lib, ...}: with lib; {
     hm.home.packages = with pkgs; [
         discord
-        slack
     ];
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (lib.getName pkg) [

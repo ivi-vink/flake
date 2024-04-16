@@ -41,11 +41,47 @@
         :env {:CGO_CFLAGS :-Wno-error=cpp}
         :program "${fileDirname}"}])
 
-(dapui.setup {:expand_lines false})
-(dap-py.setup)
+(set dap.defaults.fallback.external_terminal
+  {:command :/Applications/Alacritty.app/Contents/MacOS/alacritty
+   :args [:-T :dap :-e]});
+
+
+(dapui.setup
+  {:expand_lines false
+   :layouts
+   [{:position :bottom :size 10 :elements [{:id :repl :size 0.5} {:id :console :size 0.5}]}
+    {:position :left :size 40 :elements [{:id :breakpoints :size 0.25} {:id :stacks :size 0.25} {:id :watches :size 0.25} {:id :scopes :size 0.25}]}
+    {:position :bottom :size 25 :elements [{:id :repl :size 0.35} {:id :watches :size 0.65}]}]})
+(dap-py.setup nil {:console :externalTerminal})
+(tset (. configurations.python 1) :waitOnNormalExit true)
+(tset (. configurations.python 1) :waitOnAbnormalExit true)
+
+(local run_table
+       {:python
+        (fn [fname]
+          {
+           :name (.. "Launch " fname)
+           :program fname
+           :console "externalTerminal"
+           :request "launch"
+           :type "python"
+           :waitOnAbnormalExit true
+           :waitOnNormalExit true})})
+
+(vim.keymap.set
+  :n
+  "s;"
+  (fn []
+    (local fname (vim.fn.fnamemodify (vim.fn.bufname "%") ":p"))
+    (local get_config (. run_table (vim.opt_local.ft:get)))
+    (if get_config
+      (dap.run (get_config fname)))))
+
 
 (vim.keymap.set :n :si (lambda []
-                         (dapui.toggle {:reset true})) {:silent true})
+                         (dapui.toggle {:layout 1 :reset true})
+                         (dapui.toggle {:layout 2 :reset true})) {:silent true})
+(vim.keymap.set :n :s<enter> #(dapui.toggle {:layout 3 :reset true}) {:silent true})
 ;;     "breakpoints",
 ;;     "repl",
 ;;     "scopes",

@@ -1,14 +1,14 @@
-(vim.cmd "colorscheme kanagawa-wave")
+(require :conf.settings)
+(require :conf.nix-develop)
+(require :conf.diagnostic)
+(require :conf.events)
+(require :conf.pkgs)
+
+(vim.schedule #(vim.cmd "colorscheme kanagawa-wave"))
 (vim.cmd "filetype plugin on")
 (vim.cmd "filetype indent on")
 (vim.cmd "highlight WinSeparator guibg=None")
 (vim.cmd "packadd cfilter")
-
-(require :conf.settings)
-(require :conf.pkgs)
-(require :conf.nix-develop)
-(require :conf.diagnostic)
-(require :conf.events)
 
 (vim.opt.clipboard:append [:unnamedplus])
 
@@ -42,7 +42,7 @@
         (vim.keymap.del "n" "L")
         (vim.keymap.del "n" "H")))))
 
-(local cope #(vim.cmd (.. ":copen " (math.floor (/ vim.o.lines 2.1)))))
+(local cope #(vim.cmd (.. ":botright copen " (math.floor (/ vim.o.lines 2.1)))))
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
   (map :n :<leader>d<cr> (fn [] (draw true)))
@@ -55,9 +55,9 @@
   (map :n :<leader>ll ":lopen<cr>")
   (map :n :<leader>l<BS> ":lclose<cr>")
   (map :n "<M-h>" cope)
-  (map :n "<M-j>" ":cnext<cr>")
-  (map :n "<M-k>" ":cprev<cr>")
-  (map :n :<M-l> ":Recompile<CR>")
+  (map :n "<C-n>" ":cnext<cr>")
+  (map :n "<C-p>" ":cprev<cr>")
+  (map :n :<C-a> ":Recompile<CR>")
   (map :n :<C-s>
        #(do
           (vim.api.nvim_feedkeys
@@ -82,11 +82,21 @@
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
-  (map :n :<c-p> #(fzf.files))
   (map :n :<leader>xp #(fzf.files))
-  (map :n "<leader>;" ":silent grep ")
+  (map :n "<leader>;" #(do
+                         (var keys "")
+                         (if (not= (vim.opt_local.filetype:get) "oil")
+                             (set keys (.. ":silent grep " (vim.fn.fnamemodify (vim.fn.bufname "%") ":h") "<c-f>B<left>i<space>"))
+                             (do
+                               (local f (vim.fn.bufname "%"))
+                               (set keys (.. ":silent grep " (f:gsub "oil://" "") "<c-f>B<left>i<space>"))))
+                         (vim.api.nvim_feedkeys
+                           (vim.api.nvim_replace_termcodes
+                             keys true false true)
+                           :n false)))
   (map :n "<leader>'" ":silent args `fd `<left>")
   (map :n :<leader>xa #(fzf.args))
+  (map :n "<leader>x;" #(fzf.quickfix))
   (map :n :<leader>xb #(fzf.buffers
                          {:keymap {:fzf {"alt-a" "toggle-all"}}
                           :actions {:default {:fn action.buf_edit_or_qf}}}))
