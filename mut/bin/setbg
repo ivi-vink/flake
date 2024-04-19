@@ -12,4 +12,3 @@ if [ $reload -eq 1 ]; then
 else
     sxiv -tob ~/bg | parallel wal -i
 fi
-kak -l | parallel '<<< "colorscheme wal" kak -p {}'

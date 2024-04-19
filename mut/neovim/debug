@@ -1,8 +1,0 @@
-~/projects/k8s ~/neovim
-can't find session: kaks@projects-k8s
-direnv: loading ~/projects/k8s/.envrc
-direnv: using flake
-direnv: nix-direnv: using cached dev shell
-make: *** No rule to make target 'envtest'.  Stop.
-direnv: export +AR +AS +CC +CONFIG_SHELL +CXX +ENVTEST +ENVTEST_K8S_VERSION +GOTOOLDIR +HOST_PATH +IN_NIX_SHELL +KUBEBUILDER_ASSETS +LD +LOCALBIN +NIX_BINTOOLS +NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu +NIX_BUILD_CORES +NIX_CC +NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu +NIX_CFLAGS_COMPILE +NIX_ENFORCE_NO_NATIVE +NIX_HARDENING_ENABLE +NIX_INDENT_MAKE +NIX_LDFLAGS +NIX_STORE +NM +OBJCOPY +OBJDUMP +RANLIB +READELF +SIZE +SOURCE_DATE_EPOCH +STRINGS +STRIP +buildInputs +buildPhase +builder +cmakeFlags +configureFlags +depsBuildBuild +depsBuildBuildPropagated +depsBuildTarget +depsBuildTargetPropagated +depsHostHost +depsHostHostPropagated +depsTargetTarget +depsTargetTargetPropagated +doCheck +doInstallCheck +dontAddDisableDepTrack +mesonFlags +nativeBuildInputs +out +outputs +patches +phases +propagatedBuildInputs +propagatedNativeBuildInputs +shell +shellHook +stdenv +strictDeps +system ~PATH ~XDG_DATA_DIRS ~name
-~/neovim
