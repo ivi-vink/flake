@@ -3,31 +3,39 @@ if [ -z "$PATH" ]; then
     PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:/usr/bin:/bin"
 fi
 server_pipe="$XDG_CACHE_HOME/nvim/server.pipe"
+if ! [ -e "$server_pipe" ]; then
+    nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
+fi
+
 (
-    if ! [ -e "$server_pipe" ]; then
-        nohup nvim --listen "$server_pipe" --headless >/dev/null 2>&1 &
+    file_names=()
+    if [ -n "$1" ]; then
+        for file_name in "${@}"; do
+            if [[ "${file_name:0:1}" == / || "${file_name:0:2}" == ~[/a-zA-Z0-9] ]]
+            then
+                file_names+=("$file_name")
+            else
+                file_names+=("${PWD}/$file_name")
+            fi
+        done
+        echo "got file_names: ${file_names[*]}"
     fi
 
-    if nvim --headless --server ~/.cache/nvim/server.pipe --remote-expr 'luaeval("vim.json.encode(vim.iter(vim.api.nvim_list_uis()):map(function(v) return v.chan end):totable())")' \
-        | jq -r '.[]' \
-        | while read -r chan; do
-        osascript -e 'display notification "already existing ui('"$chan"')..." with title "vremote"'
-        exit 1
-    done
+    if ! nvim \
+            --headless \
+            --server ~/.cache/nvim/server.pipe \
+            --remote-expr 'luaeval("vim.json.encode(vim.iter(vim.api.nvim_list_uis()):map(function(v) return v.chan end):totable())")' \
+        | jq -er '.[]'
     then
-        if [ -n "$1" ]; then
-            file_names=()
-            for file_name in "${@}"; do
-                if [[ "${file_name:0:1}" == / || "${file_name:0:2}" == ~[/a-zA-Z0-9] ]]
-                then
-                    file_names+=("$file_name")
-                else
-                    file_names+=("${PWD}/$file_name")
-                fi
-            done
-            echo "got file_names: ${file_names[*]}"
-            nvim --server "$server_pipe" --remote "${file_names[@]}" >/dev/tty
-        fi
+        nvim --server "$server_pipe" --remote "${file_names[@]}" >/dev/tty
         exec nvim --server "$server_pipe" --remote-ui >/dev/tty
+    else
+        if ! command -v osascript >/dev/null 2>&1; then
+            notify-send "already existing ui
+starting new nvim instance"
+        else
+            osascript -e 'display notification "already existing ui..." with title "vremote"'
+        fi
+        exec nvim "${file_names[@]}" >/dev/tty </dev/tty
     fi
 ) > ~/vremote_logs 2>&1

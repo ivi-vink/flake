@@ -1,2 +1,6 @@
 #!/bin/sh
-exec kitten icat --clear --stdin no --transfer-mode file < /dev/null > /dev/tty
+if [ -n "$FIFO_UEBERZUG" ]; then
+	printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
+else
+    exec kitten icat --clear --stdin no --transfer-mode file < /dev/null > /dev/tty
+fi

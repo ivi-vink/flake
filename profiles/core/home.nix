@@ -40,8 +40,11 @@
       '';
   in {
     enable = true;
+  } // (if machine.isDarwin then {
+    tmuxConfig = cfg;
+  } else {
     extraConfig = cfg;
-  };
+  });
 
   hm = {
     fonts.fontconfig.enable = true;
@@ -120,15 +123,12 @@
       zsh = {
         enable = true;
         completionInit = ''
-        if type brew &>/dev/null; then
-          FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
-        fi
-        autoload -U compinit select-word-style select-word-style
-        select-word-style bash
-        zstyle ':completion:*' menu select
-        zmodload zsh/complist
-        compinit
-        _comp_options+=(globdots) # Include hidden files.
+          autoload -U compinit select-word-style select-word-style
+          select-word-style bash
+          zstyle ':completion:*' menu select
+          zmodload zsh/complist
+          compinit
+          _comp_options+=(globdots) # Include hidden files.
         '';
         initExtra = ''
           # Use vim keys in tab complete menu:
@@ -136,15 +136,14 @@
           bindkey -M menuselect 'k' vi-up-line-or-history
           bindkey -M menuselect 'l' vi-forward-char
           bindkey -M menuselect 'j' vi-down-line-or-history
-          bindkey -M menuselect 'n' vi-forward-blank-word
-          bindkey -M menuselect 'p' vi-backward-blank-word
+          set -o emacs
 
 
           # Use lf to switch directories and bind it to ctrl-o
           lfcd () {
               tmp="$(mktemp -uq)"
               trap 'rm -f $tmp >/dev/null 2>&1 && trap - HUP INT QUIT TERM EXIT' HUP INT QUIT TERM EXIT
-              EDITOR=vremote lf -last-dir-path="$tmp" "$@"
+              EDITOR=vremote lfub -last-dir-path="$tmp" "$@"
               if [ -f "$tmp" ]; then
                   dir="$(cat "$tmp")"
                   [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
@@ -174,6 +173,7 @@
           ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
         '';
         shellAliases = {
+          open          = "xdg-open ";
           k9s           = "k9s ";
           k             = "kubectl ";
           d             = "docker ";
@@ -276,8 +276,7 @@
       enableSshSupport = false;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
-      # pinentryFlavor = "gtk2";
-      pinentryPackage = pkgs.pinentry-gtk2;
+      pinentryFlavor = "gtk2";
     };
   };
 }

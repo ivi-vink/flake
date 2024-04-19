@@ -115,6 +115,10 @@
         :path "~/Sync/my/notes"}]}))
 
 
+(do
+  (local fzf (require "fzf-lua"))
+  ((. fzf "register_ui_select")))
+
 (vim.api.nvim_create_user_command
   :NixEdit
   (fn [{: args}]
@@ -122,8 +126,6 @@
     (vim.cmd (.. "e " (f:read))))
   {:nargs 1})
 
-;; I like to use the qf to run a lot of stuff that prints junk
-;; Here I just check if ansi control stuff is printed and reparse the lines with efm
 (local qf
        (fn [{: id : title}]
          (fn [lines]

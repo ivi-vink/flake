@@ -1,4 +1,5 @@
 (local oil (require :oil))
+(local fzf (require :fzf-lua))
 
 (oil.setup
   {
@@ -22,7 +23,7 @@
     "<C-s>"  "actions.select_vsplit"
     "<C-h>"  "actions.select_split"
     "<C-t>"  "actions.select_tab"
-    "<C-p>"  "actions.preview"
+    "<C-p>"  #(fzf.files)
     "<C-c>"  "actions.close"
     "<C-l>"  "actions.refresh"
     "."  "actions.open_cmdline"
