@@ -12,9 +12,6 @@
       bashInteractive
       powershell
 
-      arduino-ide
-      arduino-cli
-
       k9s
       krew
       azure-cli
@@ -24,6 +21,8 @@
       ]))
       imagemagick
     ] ++ (optionals (!machine.isDarwin) [
+      arduino-ide
+      arduino-cli
       xdotool
       pywal
       dasel

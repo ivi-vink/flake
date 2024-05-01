@@ -20,6 +20,7 @@
         "/.env"
         ".vimsession.vim"
         "tfplan"
+        "plan"
       ];
     };
   };

@@ -151,6 +151,36 @@
           }
           bindkey -s '^o' '^ulfcd\n'
 
+          login-to-cloud () {
+              case $1 in
+                  aws)
+                      export AWS_PROFILE=$(aws configure list-profiles | grep -v default | fzf)
+                      if ! error=$(aws sts get-caller-identity 2>&1); then
+                          if echo "$error" | grep 'SSO session associated with this profile has expired'; then
+                              aws sso login
+                          else
+                              echo "Not sure what to do with error: $error"
+                          fi
+                      fi
+                      ;;
+                  gcp)
+                      gcloud config configurations activate $(gcloud config configurations list --format json | jq '.[] | "\(.name) \(.properties.core.account)"' -r | fzf | awk '{print $1}')
+                      if ! gcloud compute instances list &> /dev/null </dev/null; then
+                          gcloud auth login
+                      fi
+                      ;;
+                  azure)
+                      id=$(az account list --all | jq '.[] | select(.name | test("N/A.*") | not) | "\(.name)\t\(.id)"' -r | fzf | awk -F'\t' '{print $2}')
+                      az account set --subscription $id
+                      if ! az resource list &>/dev/null; then
+                          az login --tenant $(az account show | jq '.tenantId' -r)
+                      fi
+                      ;;
+                  *) echo "Don't know how to switch context for: $1" ;;
+              esac
+          }
+
+          export ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|/@'
           export EDITOR="nvim"
           export TERMINAL="st"
           ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
