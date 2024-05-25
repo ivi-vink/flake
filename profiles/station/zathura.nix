@@ -23,6 +23,9 @@
       map i recolor
       map p print
       map g goto top
+
+      map m mark_add
+      map ' mark_evaluate
     '';
     };
   };

@@ -198,7 +198,7 @@
 (vim.api.nvim_create_user_command
   :Sh
   (fn [cmd]
-    (local thunk #(qfjob [:sh :-c cmd.args] nil))
+    (local thunk #(qfjob [:zshcmd cmd.args] nil))
     (set last_job_thunk thunk)
     (thunk))
   {:nargs :* :bang true :complete :shellcmd})

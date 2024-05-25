@@ -25,6 +25,7 @@
       opacityRules = [
         "100:class_g = 'Wfica'"
         "100:class_g = 'dwm'"
+        "100:class_g = 'Zathura'"
         "100:name *= 'Firefox'"
         "100:name *= 'mpv'"
         "100:name *= 'LibreWolf'"

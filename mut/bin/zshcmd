@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+if [ -f ~/.zshrc ]; then
+    source ~/.zshrc &>/dev/null
+fi
+
+# Enable alias expansion
+setopt aliases
+
+# Run your commands that use aliases
+eval ${@}
