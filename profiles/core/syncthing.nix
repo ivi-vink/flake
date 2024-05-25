@@ -6,7 +6,7 @@ in {
   ];
 
   services.syncthing = {
-    enable = true;
+    enable = mkDefault true;
     user = ivi.username;
     inherit group;
     dataDir = config.ivi.home;

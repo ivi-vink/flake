@@ -2,6 +2,7 @@
   security.acme = {
     acceptTerms = true;
     defaults = {
+      extraLegoFlags = [ "--dns.disable-cp" ];
       extraLegoRunFlags = ["--preferred-chain" "ISRG Root X1"];
       email = ivi.email;
       dnsProvider = "porkbun";

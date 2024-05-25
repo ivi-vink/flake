@@ -5,8 +5,9 @@
   pkgs,
   ...
 }: with lib; {
-  programs.tmux = let
-    cfg = ''
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
         set-option -g default-shell ${config.ivi.shell}/bin/zsh
         set -g status off
         set -s set-clipboard on
@@ -38,13 +39,7 @@
         bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
         bind-key -T copy-mode-vi : command-prompt
       '';
-  in {
-    enable = true;
-  } // (if machine.isDarwin then {
-    tmuxConfig = cfg;
-  } else {
-    extraConfig = cfg;
-  });
+  };
 
   hm = {
     fonts.fontconfig.enable = true;
@@ -118,6 +113,8 @@
       $endif
     '';
     };
+
+    programs.alacritty.enable = true;
 
     programs = {
       zsh = {
@@ -306,6 +303,7 @@
       enableSshSupport = false;
       defaultCacheTtl = 34550000;
       maxCacheTtl = 34550000;
+      pinentryPackage = pkgs.pinentry-gtk2;
       # pinentryFlavor = "gtk2";
     };
   };

@@ -145,8 +145,8 @@ self: lib: with lib; let
               "core"
               "server"
             ];
-            ipv4 = [ "65.108.155.179" ];
-            ipv6 = [ "2a01:4f9:c010:d2b5::1" ];
+            ipv4 = [ "65.109.143.65" ];
+            ipv6 = [ "2a01:4f9:c012:ccc2::1" ];
           };
           work = {
             isDarwin = true;

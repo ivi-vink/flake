@@ -23,7 +23,13 @@
         name = ivi.domain;
         stub-addr = "127.0.0.1@10053";
       } ];
-      forward-zone = [ {
+      forward-zone = [
+      {
+        name = "_acme-challenge.${ivi.domain}";
+        forward-addr = config.services.resolved.fallbackDns;
+        forward-tls-upstream = true;
+      }
+      {
         name = ".";
         forward-addr = config.services.resolved.fallbackDns;
         forward-tls-upstream = true;

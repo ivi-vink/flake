@@ -1,7 +1,7 @@
 {pkgs, home, ...}: (final: prev: {
     st = (prev.st.overrideAttrs (oldAttrs: {
       src = /. + home + "/flake/mut/st";
-      version = "0.3.1";
+      version = "0.3.2";
       buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
     }));
     dwm = (prev.dwm.overrideAttrs (oldAttrs: {

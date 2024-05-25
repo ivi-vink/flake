@@ -112,7 +112,7 @@
     { :workspaces
       [{
         :name "notes"
-        :path "~/Sync/my/notes"}]}))
+        :path (if (= 1 (vim.fn.isdirectory (vim.fn.expand "~/Sync/my/notes"))) "~/Sync/my/notes"  "~/sync/my/notes")}]}))
 
 
 (do

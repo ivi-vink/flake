@@ -1,6 +1,6 @@
 return {
   build = {
-    {verbose = false},
+    {verbose = true},
     {"fnl/**/*macro*.fnl", false}, -- dont compile macro files
     {"init.fnl", true},
     {"fnl/conf/**/*.fnl", true},

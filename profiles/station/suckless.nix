@@ -11,11 +11,11 @@
     xsession = {
       enable = true;
       initExtra = ''
-      ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
-      ${pkgs.xorg.xset}/bin/xset r rate 220 30
-      wal -R
-      dwm
-      dwmblocks &
+        ${pkgs.xorg.xset}/bin/xset r rate 230 30
+        [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
+        wal -R
+        dwm
+        dwmblocks &
     '';
     };
     services.picom = {

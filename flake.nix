@@ -13,10 +13,10 @@
       url = "github:kirelagin/dns.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-23.05";
+    simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nix-darwin = {
-      url = "path:/Users/ivi/nix-darwin";
+      url = "path:/home/ivi/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -62,13 +62,13 @@
         mapAttrs
         (hostname: cfg:
           mkSystem ivi.machines.${hostname} [cfg])
-        (modulesIn ./machines)
-        // {
-          windows = windowsModules: let
-            wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
-          in (mkSystem wsl []);
-          iso = mkSystem {modules = [./iso.nix];} [];
-        };
+        (modulesIn ./machines);
+        # // {
+        #   windows = windowsModules: let
+        #     wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
+        #   in (mkSystem wsl []);
+        #   iso = mkSystem {modules = [./iso.nix];} [];
+        # };
 
       darwinConfigurations."work" = let
         machine = ivi.machines."work";
