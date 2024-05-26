@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Displays current pomodoro status
+# When clicked, brings up `newsboat`.
+
+case $BLOCK_BUTTON in
+    1) setsid -f pomodoro start >/dev/null ;;
+    2) setsid -f pomodoro finish >/dev/null ;;
+    3) notify-send "🍅 Pomodoro module" "\- Shows current pomodoro status
+- Shows ⏱  if a Pomodoro is running
+- Left click starts a new Pomodoro
+- Middle click finishes a Pomodoro early
+- Shift click opens ~/.pomodoro in editor" ;;
+    6) "$TERMINAL" -e "$EDITOR" "$HOME/.pomodoro" ;;
+esac
+
+if ! status=$(pomodoro status); then
+    exit 0
+fi
+
+if [ -z "$status" ]; then
+    daily_completed=$(grep -c "^$(date --iso-8601)" ~/.pomodoro/history)
+    daily_total="$(grep daily_goal ~/.pomodoro/settings | cut -f2 -d'=')"
+
+    msg="$daily_completed/$daily_total🍅"
+    if [ "$daily_completed" -ne "0" ]; then
+        seconds_since_last_started="$(( $(date +%s -u) - $(tail -n1 ~/.pomodoro/history | cut -f1 -d' ' | xargs -I{} date -d"{}" +%s -u) ))"
+        seconds_since_last="$(( "$seconds_since_last_started" - 60*$(tail -n1 ~/.pomodoro/history | cut -f2 -d' ' | cut -f2 -d'=')))"
+        msg="$(date -d@"$seconds_since_last" +"%H:%M" -u)min ago $msg"
+    fi
+    echo "$msg"
+    exit 0
+fi
+
+echo "$status"

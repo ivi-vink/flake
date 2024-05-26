@@ -22,7 +22,7 @@
       :codeLensProvider (bm :n :<leader>gl #(vim.lsp.codelens.run))
       :hoverProvider (bo :keywordprg ":LspHover")
       :inlayHintProvider (do
-                          (vim.lsp.inlay_hint.enable buf true)
+                          (vim.lsp.inlay_hint.enable true)
                           (bm :n :<leader>gh #(vim.lsp.inlay_hint.enable 0 (not (vim.lsp.inlay_hint.is_enabled 0)))))
      :documentFormattingProvider (do
                                     (bo :formatexpr

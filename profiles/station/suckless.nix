@@ -73,6 +73,7 @@
     };
     home.packages = with pkgs; [
       libnotify
+      sxiv
       st
       dwm
       dwmblocks

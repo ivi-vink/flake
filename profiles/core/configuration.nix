@@ -69,6 +69,7 @@
     bc
     mediainfo
     bat
+    openpomodoro-cli
   ] ++ (optionals (!machine.isDarwin) [
     pkgsi686Linux.glibc
     gdb
