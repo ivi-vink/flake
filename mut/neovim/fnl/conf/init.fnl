@@ -45,6 +45,8 @@
 (local cope #(vim.cmd (.. ":botright copen " (math.floor (/ vim.o.lines 2.1)))))
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
+  (map :n :ga "<Plug>(EasyAlign)")
+  (map :x :ga "<Plug>(EasyAlign)")
   (map :n :<leader>d<cr> (fn [] (draw true)))
   (map :n :<leader>d<bs> (fn [] (draw false)))
   (map :n :- ::Oil<cr>)

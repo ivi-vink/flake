@@ -41,8 +41,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    man-pages
-    man-pages-posix
     vim
     wget
     git
@@ -70,7 +68,10 @@
     mediainfo
     bat
     openpomodoro-cli
+    coreutils
   ] ++ (optionals (!machine.isDarwin) [
+    man-pages
+    man-pages-posix
     pkgsi686Linux.glibc
     gdb
     pciutils

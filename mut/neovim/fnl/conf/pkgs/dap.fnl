@@ -43,7 +43,7 @@
 
 (set dap.defaults.fallback.external_terminal
   {:command :/Applications/Alacritty.app/Contents/MacOS/alacritty
-   :args [:-T :dap :-e]});
+   :args [:-T :dap :-e]})
 
 
 (dapui.setup
@@ -65,6 +65,7 @@
            :console "externalTerminal"
            :request "launch"
            :type "python"
+           :cwd :/Users/ivi/Programming
            :waitOnAbnormalExit true
            :waitOnNormalExit true})})
 
@@ -74,6 +75,11 @@
   (fn []
     (local fname (vim.fn.fnamemodify (vim.fn.bufname "%") ":p"))
     (local get_config (. run_table (vim.opt_local.ft:get)))
+
+    (set dap.defaults.fallback.external_terminal
+      {:command :/Applications/Alacritty.app/Contents/MacOS/alacritty
+       :args [:-T :dap :--working-directory (vim.fn.getcwd) :-e]})
+
     (if get_config
       (dap.run (get_config fname)))))
 

@@ -81,6 +81,7 @@
         vim-surround
         conform-nvim
         trouble-nvim
+        vim-easy-align
 
         # cmp
         nvim-cmp

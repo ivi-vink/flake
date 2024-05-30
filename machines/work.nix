@@ -45,6 +45,7 @@
         pkgs.skhd
         pkgs.act
         pkgs.yubikey-manager
+        pkgs.gomplate
      ];
     hm = {
       home = {
@@ -202,6 +203,36 @@
         cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
         cmd - 5 : osascript -e 'tell application "calendar" to activate'
         cmd - 6 : osascript -e 'tell application "mail" to activate'
+        cmd - k : ${pkgs.writers.writeBash "cycle_cclockwise" ''
+          if ! yabai -m window --focus prev &>/dev/null; then
+            yabai -m window --focus last
+          fi
+        ''}
+        cmd - j : ${pkgs.writers.writeBash "cycle_clockwise" ''
+          if ! yabai -m window --focus next &>/dev/null; then
+            yabai -m window --focus first
+          fi
+        ''}
+        cmd + shift - k : ${pkgs.writers.writeBash "swap_cclockwise" ''
+          win=$(yabai -m query --windows --window first | jq '.id')
+
+          while : ; do
+              yabai -m window $win --swap next &> /dev/null
+              if [[ $? -eq 1 ]]; then
+                  break
+              fi
+          done
+        ''}
+        cmd + shift - j : ${pkgs.writers.writeBash "swap_clockwise" ''
+          win=$(yabai -m query --windows --window last | jq '.id')
+
+          while : ; do
+              yabai -m window $win --swap prev &> /dev/null
+              if [[ $? -eq 1 ]]; then
+                  break
+              fi
+          done
+        ''}
         cmd - w [
           "Google Chrome" ~
           * : osascript -e 'tell application "Google Chrome" to activate'
@@ -210,6 +241,8 @@
         cmd - m : osascript -e 'tell application "Slack" to activate'
         cmd + shift - m : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
         cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
+        cmd - space : yabai -m window --swap first
+        cmd + shift - space : yabai -m window --toggle float
         cmd - d : ${pkgs.writers.writeBash "passautotype" ''
           shopt -s nullglob globstar
 
@@ -256,12 +289,13 @@
         ''}
       '';
     };
+    services.sketchybar.enable = true;
     services.yabai = {
       enable = true;
       package = pkgs.yabai;
       enableScriptingAddition = true;
       config = {
-        focus_follows_mouse          = "autofocus";
+        focus_follows_mouse          = "off";
         mouse_follows_focus          = "off";
         window_placement             = "first_child";
         window_opacity               = "off";
@@ -279,7 +313,8 @@
         active_window_opacity        = "1.0";
         normal_window_opacity        = "1.0";
         split_ratio                  = "0.50";
-        auto_balance                 = "on";
+        split_type                   = "horizontal";
+        auto_balance                 = "off";
         mouse_modifier               = "fn";
         mouse_action1                = "move";
         mouse_action2                = "resize";
@@ -296,7 +331,12 @@
       extraConfig = ''
           # rules
           yabai -m rule --add app='System Settings' manage=off
-          yabai -m rule --add app='kitty' title='dap' display='2'
+          yabai -m rule --add app='alacritty' title='dap' display='2'
+          yabai -m signal --add event=display_changed action=${pkgs.writers.writeBash "padding" ''
+            if ! yabai -m window --focus prev &>/dev/null; then
+              yabai -m window --focus last
+            fi
+          ''}
 
           # Any other arbitrary config here
         '';
