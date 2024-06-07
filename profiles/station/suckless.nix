@@ -15,7 +15,6 @@
         [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
         wal -R
         dwm
-        dwmblocks &
     '';
     };
     services.picom = {

@@ -20,6 +20,8 @@
         gke-gcloud-auth-plugin
       ]))
       imagemagick
+      poppler_utils
+      inkscape
     ] ++ (optionals (!machine.isDarwin) [
       arduino-ide
       arduino-cli

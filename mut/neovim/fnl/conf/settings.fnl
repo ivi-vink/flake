@@ -4,19 +4,19 @@
   codeium_enabled false
   loaded_2html_plugin true
   loaded_fzf false
-  loaded_man false
-  loaded_gzip false
+  ;; loaded_man true
+  ;; loaded_gzip true
   loaded_health false
   loaded_matchit false
   loaded_matchparen false
   loaded_netrwPlugin false
   loaded_rplugin false
   loaded_shada false
-  loaded_spellfile false
-  loaded_tarPlugin false
+  ;; loaded_spellfile true
+  ;; loaded_tarPlugin true
   loaded_tohtml false
   loaded_tutor false
-  loaded_zipPlugin false
+  ;; loaded_zipPlugin true
 
   zoxide_use_select true
   zoxide_hook "pwd"

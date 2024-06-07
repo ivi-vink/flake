@@ -69,6 +69,7 @@
     bat
     openpomodoro-cli
     coreutils
+    killall
   ] ++ (optionals (!machine.isDarwin) [
     man-pages
     man-pages-posix
