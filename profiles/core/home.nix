@@ -82,14 +82,14 @@
       };
     };
 
-    programs.ssh = {
-      enable = true;
-      matchBlocks = {
-        "*" = {
-          identityFile = "${config.ivi.home}/.ssh/id_ed25519_sk";
-        };
-      };
-    };
+    # programs.ssh = {
+    #   enable = true;
+    #   matchBlocks = {
+    #     "*" = {
+    #       identityFile = "${config.ivi.home}/.ssh/id_ed25519_sk";
+    #     };
+    #   };
+    # };
 
     programs.starship.enable = true;
 
@@ -147,6 +147,19 @@
               fi
           }
           bindkey -s '^o' '^ulfcd\n'
+
+          fzf-tail () {
+            fzf --tail 100000 --tac --no-sort --exact
+          }
+
+          fzf-stern () {
+            kubectl config set-context --current --namespace "$1"
+            kubectl stern -n "$1" "$2" --color always 2>&1 |
+                fzf --ansi --tail 100000 --tac --no-sort --exact \
+                    --bind 'ctrl-o:execute:kubectl logs {1} | nvim -' \
+                    --bind 'enter:execute:kubectl exec -it {1} -- bash' \
+                    --header '╱ Enter (kubectl exec) ╱ CTRL-O (open log in vim) ╱'
+          }
 
           login-to-cloud () {
               case $1 in
@@ -218,6 +231,7 @@
           lock-pass     = "gpgconf --kill gpg-agent";
           use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
           use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
+          sshdo         = "ssh -f -q  -o 'StrictHostKeyChecking no' ";
         };
       };
 

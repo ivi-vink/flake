@@ -194,15 +194,26 @@
         -----END CERTIFICATE-----
       '';
     };
+#         cmd - 1 : osascript -e 'tell application "alacritty" to activate'
+#         cmd - 2 : osascript -e 'tell application "Google Chrome" to activate'
+#         cmd - 3 : osascript -e 'tell application "slack" to activate'
+#         cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
+#         cmd - 5 : osascript -e 'tell application "calendar" to activate'
+#         cmd - 6 : osascript -e 'tell application "mail" to activate'
     services.skhd = {
       enable = true;
       skhdConfig = ''
-        cmd - 1 : osascript -e 'tell application "alacritty" to activate'
-        cmd - 2 : osascript -e 'tell application "Google Chrome" to activate'
-        cmd - 3 : osascript -e 'tell application "slack" to activate'
-        cmd - 4 : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
-        cmd - 5 : osascript -e 'tell application "calendar" to activate'
-        cmd - 6 : osascript -e 'tell application "mail" to activate'
+        cmd - 1 : yabai -m space --focus 1
+        cmd - 2 : yabai -m space --focus 2
+        cmd - 3 : yabai -m space --focus 3
+        cmd - 4 : yabai -m space --focus 4
+        cmd - 5 : yabai -m space --focus 5
+        cmd - 6 : yabai -m space --focus 6
+        cmd - 7 : yabai -m space --focus 7
+        cmd - 0x2F : yabai -m display --focus next || yabai -m display --focus first
+
+        cmd - h : yabai -m window --resize right:-40:0 2> /dev/null || yabai -m window --resize left:-40:0 2> /dev/null
+        cmd - l : yabai -m window --resize right:40:0 2> /dev/null || yabai -m window --resize left:40:0 2> /dev/null
         cmd - k : ${pkgs.writers.writeBash "cycle_cclockwise" ''
           if ! yabai -m window --focus prev &>/dev/null; then
             yabai -m window --focus last
@@ -235,15 +246,19 @@
         ''}
         cmd - w [
           "Google Chrome" ~
-          * : osascript -e 'tell application "Google Chrome" to activate'
+          * : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
         ]
         cmd - e : osascript -e 'tell application "mail" to activate'
         cmd - m : osascript -e 'tell application "Slack" to activate'
         cmd + shift - m : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
+        cmd - q : yabai -m window --close
+        cmd + shift - r : /Applications/Alacritty.app/Contents/MacOS/alacritty -e htop
         cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
-        cmd - space : yabai -m window --swap first
+        cmd - space : ${pkgs.writers.writeBash "swap_first_or_recent" ''
+          yabai -m window --swap first || yabai -m window --swap recent
+        ''}
         cmd + shift - space : yabai -m window --toggle float
-        cmd - d : ${pkgs.writers.writeBash "passautotype" ''
+        cmd + shift - p : ${pkgs.writers.writeBash "passautotype" ''
           shopt -s nullglob globstar
 
           dmenu="/opt/homebrew/bin/dmenu-mac"
@@ -265,6 +280,7 @@
               /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.loadSpoon([[PassAutotype]]):autotype([[$password]])"
           ) >/tmp/debug 2>&1
         ''}
+        cmd - d : /opt/homebrew/bin/dmenu-mac
         cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
           shopt -s nullglob globstar
 
@@ -332,13 +348,11 @@
           # rules
           yabai -m rule --add app='System Settings' manage=off
           yabai -m rule --add app='alacritty' title='dap' display='2'
-          yabai -m signal --add event=display_changed action=${pkgs.writers.writeBash "padding" ''
-            if ! yabai -m window --focus prev &>/dev/null; then
-              yabai -m window --focus last
-            fi
-          ''}
 
           # Any other arbitrary config here
+          yabai -m signal --add event=window_destroyed action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
+          yabai -m signal --add event=application_terminated action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus recent || yabai -m window --focus first"
+          yabai -m signal --add event=window_created action="yabai -m window --warp east"
         '';
     };
     # Auto upgrade nix package and the daemon service.

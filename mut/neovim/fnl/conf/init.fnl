@@ -85,6 +85,17 @@
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
   (map :n :<leader>xp #(fzf.files))
+  (map :n "<leader>:" #(do
+                         (var keys "")
+                         (if (not= (vim.opt_local.filetype:get) "oil")
+                             (set keys (.. ":silent grep <c-r><c-w> " (vim.fn.bufname "%") "<c-f>B<left>i<space>"))
+                             (do
+                               (local f (vim.fn.bufname "%"))
+                               (set keys (.. ":silent grep " (f:gsub "oil://" "") "<c-f>B<left>i<space>"))))
+                         (vim.api.nvim_feedkeys
+                           (vim.api.nvim_replace_termcodes
+                             keys true false true)
+                           :n false)))
   (map :n "<leader>;" #(do
                          (var keys "")
                          (if (not= (vim.opt_local.filetype:get) "oil")
