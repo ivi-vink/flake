@@ -42,6 +42,12 @@
         (vim.keymap.del "n" "L")
         (vim.keymap.del "n" "H")))))
 
+(fn i-grep [word file]
+   (vim.api.nvim_feedkeys
+     (vim.api.nvim_replace_termcodes
+       (.. ":silent grep " (if (not= "" word) (.. word " ") "") (file:gsub "oil://" "") "<c-f>B<left>i<space>") true false true)
+     :n false))
+
 (local cope #(vim.cmd (.. ":botright copen " (math.floor (/ vim.o.lines 2.1)))))
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
@@ -78,35 +84,17 @@
             :n false)
           (vim.schedule #(do
                            (vim.cmd "let v:searchforward = 0")
-                           (map :n :/ "/Compile.*" {:buffer true})
+                           (map :n :/ "/Compile.*" {:buffer truwe})
                            (map :n :? "?Compile.*" {:buffer true})))))
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
   (map :n :<leader>xp #(fzf.files))
-  (map :n "<leader>:" #(do
-                         (var keys "")
-                         (if (not= (vim.opt_local.filetype:get) "oil")
-                             (set keys (.. ":silent grep <c-r><c-w> " (vim.fn.bufname "%") "<c-f>B<left>i<space>"))
-                             (do
-                               (local f (vim.fn.bufname "%"))
-                               (set keys (.. ":silent grep " (f:gsub "oil://" "") "<c-f>B<left>i<space>"))))
-                         (vim.api.nvim_feedkeys
-                           (vim.api.nvim_replace_termcodes
-                             keys true false true)
-                           :n false)))
-  (map :n "<leader>;" #(do
-                         (var keys "")
-                         (if (not= (vim.opt_local.filetype:get) "oil")
-                             (set keys (.. ":silent grep " (vim.fn.fnamemodify (vim.fn.bufname "%") ":h") "<c-f>B<left>i<space>"))
-                             (do
-                               (local f (vim.fn.bufname "%"))
-                               (set keys (.. ":silent grep " (f:gsub "oil://" "") "<c-f>B<left>i<space>"))))
-                         (vim.api.nvim_feedkeys
-                           (vim.api.nvim_replace_termcodes
-                             keys true false true)
-                           :n false)))
+  (map :n "<leader>:" #(i-grep "<c-r><c-w>" (vim.fn.bufname "%")))
+  (map :v "<leader>:" ":Vgrep!<cr>")
+  (map :n "<leader>;" #(i-grep "" (vim.fn.fnamemodify (vim.fn.bufname "%") ":h")))
+  (map :v "<leader>;"  ":Vgrep<cr>")
   (map :n "<leader>'" ":silent args `fd `<left>")
   (map :n :<leader>xa #(fzf.args))
   (map :n "<leader>x;" #(fzf.quickfix))
@@ -131,6 +119,17 @@
 (do
   (local fzf (require "fzf-lua"))
   ((. fzf "register_ui_select")))
+
+(vim.api.nvim_create_user_command
+  :Vgrep
+  (fn [{: bang}]
+   (local [buf <row <col] (vim.fn.getpos "'<"))
+   (local [buf >row >col] (vim.fn.getpos "'>"))
+   (local [line & rest] (vim.api.nvim_buf_get_text 0 (- <row 1) (- <col 1) (- >row 1) >col {}))
+   (if bang
+     (i-grep line (vim.fn.bufname "%"))
+     (i-grep line (vim.fn.fnamemodify (vim.fn.bufname "%") ":h"))))
+  {:range 1 :bang true})
 
 (vim.api.nvim_create_user_command
   :NixEdit

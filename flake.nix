@@ -50,6 +50,7 @@
                   (composeManyExtensions [
                     (import ./overlays/vimPlugins.nix {inherit pkgs;})
                     (import ./overlays/openpomodoro-cli.nix {inherit pkgs lib;})
+                    (import ./overlays/fzf.nix {inherit pkgs lib;})
                     inputs.neovim-nightly-overlay.overlay
                   ])
                 ];
