@@ -26,6 +26,9 @@ if [ -z "$status" ]; then
     if [ "$daily_completed" -ne "0" ]; then
         seconds_since_last_started="$(( $(date +%s -u) - $(tail -n1 ~/.pomodoro/history | cut -f1 -d' ' | xargs -I{} date -d"{}" +%s -u) ))"
         seconds_since_last="$(( "$seconds_since_last_started" - 60*$(tail -n1 ~/.pomodoro/history | cut -f2 -d' ' | cut -f2 -d'=')))"
+        if [ "$seconds_since_last" -lt 0 ]; then
+            seconds_since_last=0
+        fi
         msg="$(date -d@"$seconds_since_last" +"%H:%M" -u)min ago $msg"
     fi
     echo "$msg"

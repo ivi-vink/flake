@@ -61,6 +61,7 @@ with lib;
   '';
 
   virtualisation.docker.enable = true;
+  programs.nix-ld.enable = true;
 
   sound.enable = false;
   hardware.pulseaudio.enable = false;
