@@ -191,6 +191,7 @@
           }
 
           export ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|/@'
+          export MANPAGER='nvim +Man!'
           export EDITOR="nvim"
           export TERMINAL="st"
           ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"

@@ -21,11 +21,17 @@ with lib;
           max_connections = 20;
           connection_timeout = 60;
         };
+        spotify = {
+          allow_cache = true;
+          cache_size = 0;
+        };
       };
       extraConfigFiles = [
         config.secrets.mopidy.path
       ];
     };
+    secrets.mopidy.owner = ivi.username;
+
     hm.programs.ncmpcpp = {
       enable = true;
       bindings = [
@@ -194,6 +200,7 @@ with lib;
         statusbar_time_color = "cyan:b";
         execute_on_song_change = ''"pkill -RTMIN+11 dwmblocks"'';
         execute_on_player_state_change = ''"pkill -RTMIN+11 dwmblocks"'';
+        mpd_connection_timeout = 60;
       };
     };
   }
