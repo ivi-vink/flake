@@ -82,6 +82,8 @@
         conform-nvim
         trouble-nvim
         vim-easy-align
+        nvim-comment
+        nvim-cinnamon
 
         # cmp
         nvim-cmp

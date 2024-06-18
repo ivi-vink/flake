@@ -18,6 +18,11 @@
   in
     prev.vimPlugins
     // {
+      nvim-cinnamon = getVimPlugin {
+        name = "vim-easygrep";
+        git = "declancm/cinnamon.nvim";
+        rev = "e48538cba26f079822329a6d12b8cf2b916e925a";
+      };
       nvim-nio = getVimPlugin {
         name = "nvim-nio";
         git = "nvim-neotest/nvim-nio";

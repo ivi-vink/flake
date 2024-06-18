@@ -46,6 +46,7 @@
         pkgs.act
         pkgs.yubikey-manager
         pkgs.gomplate
+        pkgs.just
      ];
     hm = {
       home = {

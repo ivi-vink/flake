@@ -73,7 +73,7 @@
   ] ++ (optionals (!machine.isDarwin) [
     man-pages
     man-pages-posix
-    pkgsi686Linux.glibc
+    # pkgsi686Linux.glibc
     gdb
     pciutils
     dnsutils

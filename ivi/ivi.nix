@@ -119,6 +119,12 @@ self: lib: with lib; let
               "core"
             ];
           };
+          vm-aarch64 = {
+            isStation = true;
+            profiles = [
+              "core"
+            ];
+          };
           persephone = {
             isFake = true;
             tailnet = {

@@ -158,6 +158,7 @@
                 fzf --ansi --tail 100000 --tac --no-sort --exact \
                     --bind 'ctrl-o:execute:kubectl logs {1} | nvim -' \
                     --bind 'enter:execute:kubectl exec -it {1} -- bash' \
+                    --preview 'echo {}' --preview-window down:20%:wrap \
                     --header '╱ Enter (kubectl exec) ╱ CTRL-O (open log in vim) ╱'
           }
 

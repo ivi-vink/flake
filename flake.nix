@@ -16,7 +16,7 @@
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nix-darwin = {
-      url = "path:/home/ivi/nix-darwin";
+      url = "path:/Users/ivi/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -94,6 +94,8 @@
                 nixpkgs.overlays = with lib; [
                   (composeManyExtensions [
                     (import ./overlays/vimPlugins.nix {inherit pkgs;})
+                    (import ./overlays/openpomodoro-cli.nix {inherit pkgs lib;})
+                    (import ./overlays/fzf.nix {inherit pkgs lib;})
                     inputs.neovim-nightly-overlay.overlay
                   ])
                 ];
