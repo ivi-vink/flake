@@ -202,7 +202,7 @@
 #         cmd - 5 : osascript -e 'tell application "calendar" to activate'
 #         cmd - 6 : osascript -e 'tell application "mail" to activate'
     services.skhd = {
-      enable = true;
+      enable = false;
       skhdConfig = ''
         cmd - 1 : yabai -m space --focus 1
         cmd - 2 : yabai -m space --focus 2
@@ -308,7 +308,7 @@
     };
     services.sketchybar.enable = true;
     services.yabai = {
-      enable = true;
+      enable = false;
       package = pkgs.yabai;
       enableScriptingAddition = true;
       config = {
