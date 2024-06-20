@@ -124,6 +124,9 @@ self: lib: with lib; let
             profiles = [
               "core"
             ];
+            syncthing = {
+              enable = false;
+            };
           };
           persephone = {
             isFake = true;

@@ -29,6 +29,20 @@ NIXNAME := "vm-aarch64"
         nixos-install --no-root-passwd && reboot
     "
 
+@vm-secrets ip:
+	# GPG keyring
+	rsync -av -e 'ssh {{SSH_OPTIONS}}' \
+		--exclude='.#*' \
+		--exclude='S.*' \
+		--exclude='*.conf' \
+		$HOME/.gnupg/ root@{{ip}}:~/.gnupg
+	# SSH keys
+	rsync -av -e 'ssh {{SSH_OPTIONS}}' \
+		--exclude='environment' \
+		$HOME/.ssh/ root@{{ip}}:~/.ssh
+	# Sops keys
+	rsync -avr -e 'ssh {{SSH_OPTIONS}}' --relative ~/./.config/sops root@{{ip}}:~
+
 # copy the Nix configurations into the VM.
 @vm-copy ip:
     rsync -av -e 'ssh {{SSH_OPTIONS}} -p22' \
@@ -38,7 +52,7 @@ NIXNAME := "vm-aarch64"
 
 # run the nixos-rebuild switch command. This does NOT copy files so you
 # have to run vm/copy before.
-@vm-switch ip: (vm-copy ip)
+@vm-switch ip: (vm-copy ip) (vm-secrets ip)
     ssh {{SSH_OPTIONS}} -p22 root@{{ip}} " \
         sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/nix-config#{{NIXNAME}}\" \
     "

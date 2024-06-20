@@ -1,6 +1,9 @@
 # https://github.com/mitchellh/nixos-config/blob/main/machines/vm-aarch64-prl.nix
 { config, pkgs, lib, ... }: {
   system.stateVersion = "24.05";
+
+  sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
+
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = true;
   services.openssh.settings.PermitRootLogin = "yes";
