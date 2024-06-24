@@ -65,6 +65,7 @@
         gv-vim
         zoxide-vim
         obsidian-nvim
+        go-nvim
 
         # Coding
         fzf-lua

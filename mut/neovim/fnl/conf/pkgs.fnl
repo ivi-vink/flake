@@ -7,5 +7,7 @@
 (require :conf.pkgs.oil)
 (require :conf.pkgs.lint)
 (require :conf.pkgs.lualine)
+(require :conf.pkgs.go)
+(require :conf.pkgs.luasnip)
 ;; (require :conf.pkgs.lsp_lines)
 ;; (require :conf.pkgs.null-ls)
