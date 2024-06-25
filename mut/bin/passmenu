@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+shopt -s nullglob globstar
+
+dmenu=dmenu
+if [ "$(uname)" = "Darwin" ]; then
+    dmenu="/opt/homebrew/bin/dmenu-mac"
+fi
+
+(
+    export PASSWORD_STORE_DIR="$HOME/sync/password-store"
+    prefix="$PASSWORD_STORE_DIR"
+    echo "prefix: $prefix"
+    password_files=( "$prefix"/**/*.gpg )
+    password_files=( "${password_files[@]#"$prefix"/}" )
+    password_files=( "${password_files[@]%.gpg}" )
+    echo "password_files: ${password_files[*]}"
+
+    password="$(printf '%s\n' "${password_files[@]}" | "$dmenu" "$@")"
+    echo "password: $password"
+
+    [[ -n $password ]] || exit
+
+    pass show -c "$password"
+) >/tmp/debug 2>&1
+

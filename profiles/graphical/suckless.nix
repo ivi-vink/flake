@@ -13,13 +13,6 @@
   hm = {
     xsession = {
       enable = true;
-      initExtra = ''
-        ${pkgs.xorg.xset}/bin/xset r rate 230 30
-        [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
-        ${pkgs.open-vm-tools}/bin/vmware-user-suid-wrapper
-        wal -R
-        dwm
-    '';
     };
     services.picom = {
       enable = true;
@@ -87,6 +80,7 @@
       dmenu
       librewolf
       xclip
+      mpv
     ];
   };
 }

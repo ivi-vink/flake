@@ -5,7 +5,17 @@
     ];
   system.stateVersion = "24.05";
   virtualisation.vmware.guest.enable = true;
+  networking.hostName = "vm-aarch64";
 
+  hm.xsession.initExtra = ''
+      ${pkgs.xorg.xset}/bin/xset r rate 230 30
+      [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
+      ${pkgs.open-vm-tools}/bin/vmware-user-suid-wrapper
+      wal -R
+      dwm
+  '';
+
+  services.pcscd.enable = true;
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
   users.users.${lib.ivi.username} = {
     shell = pkgs.zsh;
@@ -13,8 +23,6 @@
   environment.shells = [pkgs.bashInteractive pkgs.zsh];
   environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.enable = true;
-  services.xserver.displayManager.sessionCommands = ''
-  '';
 
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = true;

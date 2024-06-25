@@ -199,6 +199,7 @@
           ( command -v docker ) &>/dev/null && eval "$(docker completion zsh)"
           ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion zsh)"
           ( command -v zoxide ) &>/dev/null && eval "$(zoxide init zsh)"
+          ( command -v pioctl ) &>/dev/null && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
           export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.ivi.home}/.krew/bin:${config.ivi.home}/.cargo/bin:${pkgs.ncurses}/bin"
           [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
           unset LD_PRELOAD
