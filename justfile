@@ -30,18 +30,18 @@ NIXNAME := "vm-aarch64"
     "
 
 @vm-secrets ip:
-	# GPG keyring
-	rsync -av -e 'ssh {{SSH_OPTIONS}}' \
-		--exclude='.#*' \
-		--exclude='S.*' \
-		--exclude='*.conf' \
-		$HOME/.gnupg/ root@{{ip}}:~/.gnupg
-	# SSH keys
-	rsync -av -e 'ssh {{SSH_OPTIONS}}' \
-		--exclude='environment' \
-		$HOME/.ssh/ root@{{ip}}:~/.ssh
-	# Sops keys
-	rsync -avr -e 'ssh {{SSH_OPTIONS}}' --relative ~/./.config/sops root@{{ip}}:~
+    # GPG keyring
+    rsync -av -e 'ssh {{SSH_OPTIONS}}' \
+        --exclude='.#*' \
+        --exclude='S.*' \
+        $HOME/.gnupg/ root@{{ip}}:~/.gnupg
+    # SSH keys
+    rsync -av -e 'ssh {{SSH_OPTIONS}}' \
+        --exclude='environment' \
+        --exclude='ssh_auth_sock' \
+        $HOME/.ssh/ root@{{ip}}:~/.ssh
+    # Sops keys
+    rsync -avr -e 'ssh {{SSH_OPTIONS}}' --relative ~/./.config/sops root@{{ip}}:~
 
 # copy the Nix configurations into the VM.
 @vm-copy ip:
@@ -54,7 +54,7 @@ NIXNAME := "vm-aarch64"
 # have to run vm/copy before.
 @vm-switch ip: (vm-copy ip) (vm-secrets ip)
     ssh {{SSH_OPTIONS}} -p22 root@{{ip}} " \
-        sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/nix-config#{{NIXNAME}}\" \
+        sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --impure --flake \"/nix-config#{{NIXNAME}}\" \
     "
 
 # after bootstrap0, run this to finalize. After this, do everything else

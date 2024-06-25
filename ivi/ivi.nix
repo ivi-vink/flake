@@ -123,6 +123,7 @@ self: lib: with lib; let
             isStation = true;
             profiles = [
               "core"
+              "graphical"
             ];
             syncthing = {
               enable = false;
