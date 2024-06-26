@@ -5,6 +5,7 @@
     ];
   system.stateVersion = "24.05";
   virtualisation.vmware.guest.enable = true;
+  virtualisation.docker.enable = true;
   networking.hostName = "vm-aarch64";
 
   hm.xsession.initExtra = ''
@@ -14,6 +15,14 @@
       wal -R
       dwm
   '';
+  environment.systemPackages = with pkgs; [
+    kubernetes-helm
+    azure-cli
+    awscli2
+    (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
+      gke-gcloud-auth-plugin
+    ]))
+  ];
 
   services.pcscd.enable = true;
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";

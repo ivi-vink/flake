@@ -120,12 +120,13 @@
       zsh = {
         enable = true;
         completionInit = ''
-          autoload -U compinit select-word-style select-word-style
+          autoload -Uz +X compinit bashcompinit select-word-style select-word-style
           select-word-style bash
           zstyle ':completion:*' menu select
           zmodload zsh/complist
-          compinit
           _comp_options+=(globdots) # Include hidden files.
+          compinit
+          bashcompinit
         '';
         initExtra = ''
           # Use vim keys in tab complete menu:
@@ -200,7 +201,11 @@
           ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion zsh)"
           ( command -v zoxide ) &>/dev/null && eval "$(zoxide init zsh)"
           ( command -v pioctl ) &>/dev/null && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
-          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.ivi.home}/.krew/bin:${config.ivi.home}/.cargo/bin:${pkgs.ncurses}/bin"
+
+          # Workaround for completion here...
+          ( command -v aws ) &>/dev/null && source /run/current-system/sw/share/zsh/site-functions/_aws
+          ( command -v az ) &>/dev/null && source /run/current-system/sw/share/zsh/site-functions/_az
+
           [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
           unset LD_PRELOAD
 

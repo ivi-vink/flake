@@ -32,7 +32,7 @@
         uid = mkIf (!machine.isDarwin) 1000;
         description = ivi.realName;
         openssh.authorizedKeys.keys = ivi.sshKeys;
-        extraGroups = ["wheel" "networkmanager" "docker" "transmission" "dialout"];
+        extraGroups = ["wheel" "networkmanager" "docker" "transmission" "dialout" "test"];
         isNormalUser = true;
       };
       root = {

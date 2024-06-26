@@ -126,7 +126,8 @@ self: lib: with lib; let
               "graphical"
             ];
             syncthing = {
-              enable = false;
+              enable = true;
+              id = "LDZVZ6H-KO3BKC6-FMLZOND-MKXI4DF-SNT27OT-Q5KMN2M-A2DYFNQ-3BWUYA6";
             };
           };
           persephone = {

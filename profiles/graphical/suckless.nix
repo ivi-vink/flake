@@ -81,6 +81,7 @@
       librewolf
       xclip
       mpv
+      maim
     ];
   };
 }
