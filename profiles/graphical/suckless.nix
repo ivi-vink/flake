@@ -8,7 +8,7 @@
   nixpkgs.overlays = [(import (self + "/overlays/suckless.nix") {inherit pkgs; home = self;})];
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
   hm = {
     xsession = {
       enable = true;

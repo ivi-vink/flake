@@ -159,7 +159,7 @@
           }
 
           fzf-stern () {
-            kubectl config set-context --current --namespace "$1"
+            kubectl config set-context --current --namespace "$1" &&
             kubectl stern -n "$1" "$2" --color always 2>&1 |
                 fzf --ansi --tail 100000 --tac --no-sort --exact \
                     --bind 'ctrl-o:execute:kubectl logs {1} | nvim -' \
@@ -233,7 +233,7 @@
           k             = "kubectl ";
           d             = "docker ";
           ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.my.home}/flake#${config.networking.hostName}";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake /nix-config#${config.networking.hostName}";
           b             = "/run/current-system/bin/switch-to-configuration boot";
           v             = "vremote";
           lf            = "lfub";

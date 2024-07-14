@@ -48,7 +48,6 @@ with lib;
   programs.slock.enable = true;
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;
-  services.xserver.libinput.enable = true;
 
   services.pcscd.enable = true;
   security.pam.services = {
