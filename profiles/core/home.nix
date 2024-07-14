@@ -218,6 +218,8 @@
           export GPG_TTY="$(tty)"
           gpgconf --launch gpg-agent
 
+          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
+
           if [ ! -S ~/.ssh/ssh_auth_sock ]; then
             eval `ssh-agent`
             ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
