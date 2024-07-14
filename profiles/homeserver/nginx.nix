@@ -4,8 +4,8 @@
     type = types.attrsOf (types.submodule ({ name, ... }: {
       config = mkIf (name != "default") {
         forceSSL = mkDefault true;
-        sslCertificateKey = "/var/lib/acme/${ivi.domain}/key.pem";
-        sslCertificate = "/var/lib/acme/${ivi.domain}/fullchain.pem";
+        sslCertificateKey = "/var/lib/acme/${my.domain}/key.pem";
+        sslCertificate = "/var/lib/acme/${my.domain}/fullchain.pem";
       };
     }));
   };

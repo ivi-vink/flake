@@ -4,7 +4,13 @@ with lib;
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
-  networking.nameservers = ["192.168.2.13"];
+  # networking.nameservers = ["192.168.2.13"];
+  hm.xsession.initExtra = ''
+      ${pkgs.xorg.xset}/bin/xset r rate 230 30
+      [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
+      wal -R
+      dwm
+  '';
 
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
   services.tailscale.enable = true;
@@ -30,9 +36,7 @@ with lib;
       -----END CERTIFICATE-----
     '';
   };
-  users.users.${ivi.username} = {
-    shell = pkgs.zsh;
-  };
+  my.shell = pkgs.zsh;
   environment.shells = [pkgs.bashInteractive pkgs.zsh];
   environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.enable = true;

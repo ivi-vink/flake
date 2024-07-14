@@ -29,90 +29,123 @@
     deploy-rs,
     ...
   }: let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {inherit system;};
-    lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
-
-    # Gets module from ./machines/ and uses the lib to define which other modules
-    # the machine needs.
-    mkSystem = machine: machineConfig:
-      with lib;
-        lib.nixosSystem {
-          inherit lib system;
-          specialArgs = {inherit self machine inputs;};
-          modules = with lib;
-            machine.modules
-            ++ [inputs.home-manager.nixosModules.default]
-            ++ machineConfig
-            ++ [
-              ({config, ...}: {
-                nixpkgs.overlays = with lib; [
-                  (composeManyExtensions [
-                    (import ./overlays/vimPlugins.nix {inherit pkgs;})
-                    (import ./overlays/openpomodoro-cli.nix {inherit pkgs lib;})
-                    (import ./overlays/fzf.nix {inherit pkgs lib;})
-                    inputs.neovim-nightly-overlay.overlay
-                  ])
-                ];
-              })
-            ];
-        };
+    lib =
+      (nixpkgs.lib.extend
+        (_: _: home-manager.lib)).extend
+          (import ./lib inputs);
   in
-    with lib; {
+    with lib; rec {
       inherit lib;
-      nixosConfigurations = with lib;
-        mapAttrs
-        (hostname: cfg:
-          mkSystem ivi.machines.${hostname} [cfg])
-        (modulesIn ./machines);
-        # // {
-        #   windows = windowsModules: let
-        #     wsl = recursiveUpdate ivi.machines.wsl {modules = ivi.machines.wsl.modules ++ windowsModules;};
-        #   in (mkSystem wsl []);
-        #   iso = mkSystem {modules = [./iso.nix];} [];
-        # };
+      nixosConfigurations = mkSystems {
+        lemptop = {
+          system = "x86_64-linux";
+          modules =
+            [
+              ./machines/lemptop.nix
+            ]
+            ++ modulesIn ./profiles/core
+            ++ modulesIn ./profiles/graphical
+            ++ modulesIn ./profiles/station
+            ++ modulesIn ./profiles/email
+            ++ [
+              (import ./profiles/netboot/system.nix nixosConfigurations.pump)
+            ];
+          opts = {
+            isStation = true;
+            syncthing = {
+              enable = true;
+              id = "TGRWV6Z-5CJ4KRI-4VDTIUE-UA5LQYS-3ARZGNK-KL7HGXP-352PB5Q-ADTV6Q2";
+            };
+          };
+        };
 
-      darwinConfigurations."work" = let
-        machine = ivi.machines."work";
-        system = "aarch64-darwin";
-        pkgs = import nixpkgs {inherit system;};
-        lib = (nixpkgs.lib.extend (_: _: home-manager.lib)).extend (import ./ivi self);
-      in
-        inputs.nix-darwin.lib.darwinSystem
-        {
-          inherit lib system;
-          specialArgs = {inherit self machine inputs;};
+        pump = {
+          system = "x86_64-linux";
+          modules =
+            [
+              ./machines/pump-netboot.nix
+              ./profiles/core/configuration.nix
+              ./profiles/core/syncthing.nix
+              ./profiles/core/secrets.nix
+              ./profiles/core/hm.nix
+            ]
+            ++ modulesIn ./profiles/homeserver;
+          opts = {
+            isServer = true;
+            ipv4 = [ "192.168.2.13" ];
+            ipv6 = [ "2a02:a46b:ee73:1:c240:4bcb:9fc3:71ab" ];
+            tailnet = {
+              ipv4 = "100.90.145.95";
+              ipv6 = "fd7a:115c:a1e0::e2da:915f";
+              nodeKey = "nodekey:dcd737aab30c21eb4f44a40193f3b16a8535ffe2fb5008904b39bb54e2da915e";
+            };
+            syncthing = {
+              enable = false;
+              # id = "7USTCMT-QZTLGPL-5FCRKJW-BZUGMOS-H7D2TTK-F4COYPG-5D7VUO2-QFME2AS";
+            };
+          };
+        };
+
+        serber = {
+          system = "x86_64-linux";
+          modules =
+            [
+              ./machines/serber.nix
+            ]
+            ++ modulesIn ./profiles/core
+            ++ modulesIn ./profiles/server;
+          opts = {
+            isServer = true;
+            ipv4 = [ "65.109.143.65" ];
+            ipv6 = [ "2a01:4f9:c012:ccc2::1" ];
+          };
+        };
+
+        work = {
+          system = "aarch64-darwin";
           modules =
             [
               ./machines/work.nix
-              inputs.home-manager.darwinModules.default
             ]
-            ++ (attrValues (modulesIn ./profiles/core))
-            ++ (attrValues (modulesIn ./profiles/station))
-            ++ [
-              ({config, ...}: {
-                nixpkgs.overlays = with lib; [
-                  (composeManyExtensions [
-                    (import ./overlays/vimPlugins.nix {inherit pkgs;})
-                    (import ./overlays/openpomodoro-cli.nix {inherit pkgs lib;})
-                    (import ./overlays/fzf.nix {inherit pkgs lib;})
-                    inputs.neovim-nightly-overlay.overlay
-                  ])
-                ];
-              })
-            ];
+            ++ modulesIn ./profiles/core;
+          opts = {
+            isDarwin = true;
+            syncthing = {
+              enable = true;
+              id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
+            };
+          };
         };
 
-      deploy.nodes =
-        mapAttrs
-        (hostname: machine: {
-          hostname = hostname + "." + ivi.domain;
-          sshUser = "root";
-          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
-        })
-        (filterAttrs (_: machine: machine.isServer) ivi.machines);
+        vm-aarch64 = {
+          system = "aarch64-linux";
+          modules =
+            [
+              ./machines/vm-aarch64.nix
+            ]
+            ++ modulesIn ./profiles/core
+            ++ modulesIn ./profiles/graphical;
+          opts = {
+            isStation = true;
+            syncthing = {
+              enable = true;
+              id = "LDZVZ6H-KO3BKC6-FMLZOND-MKXI4DF-SNT27OT-Q5KMN2M-A2DYFNQ-3BWUYA6";
+            };
+          };
+        };
+      };
 
-      devShells."${system}".hetzner = pkgs.mkShell {
+      deploy.nodes = {
+        pump = {
+          hostname = "192.168.2.13"; # hostname + "." + my.domain;
+          sshUser = "root";
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.pump;
+        };
+      };
+
+      devShells.x86_64-linux.hetzner = let
+        pkgs = (import nixpkgs {system = "x86_64-linux";});
+      in with pkgs; mkShell {
         name = "deploy";
         buildInputs = [
           pkgs.bashInteractive
@@ -123,9 +156,9 @@
         '';
       };
 
-      templates =
-        mapAttrs
-        (name: type: {path = ./templates + "/${name}";})
-        (builtins.readDir ./templates);
+      # templates =
+      #   mapAttrs
+      #   (name: type: {path = ./templates + "/${name}";})
+      #   (builtins.readDir ./templates);
     };
 }

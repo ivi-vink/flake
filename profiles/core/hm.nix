@@ -1,6 +1,6 @@
 {inputs, config, lib, pkgs, ...}: with lib; {
   imports = [
-    (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" ivi.username ])
+    (mkAliasOptionModule [ "hm" ] [ "home-manager" "users" my.username ])
   ];
 
   home-manager = {

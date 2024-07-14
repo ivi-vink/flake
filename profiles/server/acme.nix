@@ -3,7 +3,7 @@
     acceptTerms = true;
     defaults = {
       extraLegoRunFlags = ["--preferred-chain" "ISRG Root X1"];
-      email = ivi.email;
+      email = my.email;
       dnsProvider = "porkbun";
       credentialsFile = config.secrets.porkbun.path;
     };

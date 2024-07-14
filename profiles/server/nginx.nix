@@ -17,7 +17,7 @@
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
 
-      virtualHosts."${ivi.domain}" = {
+      virtualHosts."${my.domain}" = {
       };
     };
     networking.firewall.allowedTCPPorts = [ 80 443 ];

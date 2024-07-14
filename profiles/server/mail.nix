@@ -11,12 +11,12 @@
     enableSubmissionSsl = true;
     # TODO: configurate a local dns server?
 
-    fqdn = ivi.domain;
-    domains = [ ivi.domain ];
+    fqdn = my.domain;
+    domains = [ my.domain ];
     loginAccounts = {
-        ${ivi.email} = {
-            hashedPasswordFile = config.secrets.ivi.path;
-            aliases = [ "@${ivi.domain}" ];
+        ${my.email} = {
+            hashedPasswordFile = config.secrets.my.path;
+            aliases = [ "@${my.domain}" ];
         };
     };
     certificateScheme = "acme";

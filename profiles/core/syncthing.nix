@@ -1,5 +1,5 @@
-{machine, config, lib,...}: with lib; let
-    group = if machine.isDarwin then (builtins.toString config.ivi.gid) else config.ivi.group;
+{machines, machine, config, lib,...}: with lib; let
+    group = if machine.isDarwin then (builtins.toString config.my.gid) else config.my.group;
 in {
   imports = [
     (mkAliasOptionModule [ "synced" ] [ "services" "syncthing" "settings" "folders" ])
@@ -7,16 +7,16 @@ in {
 
   services.syncthing = {
     enable = machine.syncthing.enable;
-    user = ivi.username;
+    user = my.username;
     inherit group;
-    dataDir = config.ivi.home;
+    dataDir = config.my.home;
     overrideDevices = true;
     overrideFolders = true;
 
     key = config.secrets.syncthing.path;
 
     settings = let
-      allDevices = (filterAttrs (_: m: m.syncthing.id != "") ivi.machines);
+      allDevices = (filterAttrs (_: m: m.syncthing.id != "") machines);
     in {
       gui = {
         theme = "default";
@@ -43,17 +43,17 @@ in {
         allNames = attrNames allDevices;
       in {
         my = {
-          path = "${config.ivi.home}/sync/my";
+          path = "${config.my.home}/sync/my";
           devices = allNames;
           versioning = simple;
         };
         pictures = {
-          path = "${config.ivi.home}/sync/pictures";
+          path = "${config.my.home}/sync/pictures";
           devices = allNames;
           versioning = trashcan;
         };
         password-store = {
-          path = "${config.ivi.home}/sync/password-store";
+          path = "${config.my.home}/sync/password-store";
           devices = allNames;
           versioning = trashcan;
         };

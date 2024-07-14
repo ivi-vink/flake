@@ -8,7 +8,7 @@
 with lib;
   mkIf (!machine.isDarwin) {
     # TODO: what about secrets on nix-darwin...
-    # secrets.mopidy.owner = lib.ivi.username;
+    # secrets.mopidy.owner = lib.my.username;
     hm.home.packages = [pkgs.mpc-cli];
     hm.services.mopidy = {
       enable = true;
@@ -30,7 +30,7 @@ with lib;
         config.secrets.mopidy.path
       ];
     };
-    secrets.mopidy.owner = ivi.username;
+    secrets.mopidy.owner = my.username;
 
     hm.programs.ncmpcpp = {
       enable = true;

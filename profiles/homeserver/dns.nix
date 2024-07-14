@@ -1,4 +1,4 @@
-{ config, machine, inputs, lib, ... }: with lib; let
+{ config, machines, machine, inputs, lib, ... }: with lib; let
     dns = inputs.dns.lib;
   in {
   system.extraDependencies = collectFlakeInputs inputs.dns;
@@ -20,12 +20,12 @@
         ];
       };
       stub-zone = [ {
-        name = ivi.domain;
+        name = my.domain;
         stub-addr = "127.0.0.1@10053";
       } ];
       forward-zone = [
       {
-        name = "_acme-challenge.${ivi.domain}";
+        name = "_acme-challenge.${my.domain}";
         forward-addr = config.services.resolved.fallbackDns;
         forward-tls-upstream = true;
       }
@@ -45,15 +45,15 @@
 
     zones = with dns.combinators; let
       here = {
-        A = map a ivi.machines.serber.ipv4;
-        AAAA = map a ivi.machines.serber.ipv6;
+        A = map a machines.serber.ipv4;
+        AAAA = map a machines.serber.ipv6;
       };
     in {
-      ${ivi.domain}.data = dns.toString ivi.domain (here // {
+      ${my.domain}.data = dns.toString my.domain (here // {
         TTL = 60 * 60;
         SOA = {
             nameServer = "@";
-            adminEmail = "dns@${ivi.domain}";
+            adminEmail = "dns@${my.domain}";
             serial = 0;
         };
         NS = [ "@" ];

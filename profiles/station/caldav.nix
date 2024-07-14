@@ -25,7 +25,7 @@
         };
         remote = {
           type = "caldav";
-          url = "https://cal.${ivi.domain}";
+          url = "https://cal.${my.domain}";
           userName = "mike";
           passwordCommand = ["echo" "''"];
         };
@@ -50,7 +50,7 @@
         };
         remote = {
           type = "carddav";
-          url = "https://cal.${ivi.domain}";
+          url = "https://cal.${my.domain}";
           userName = "mike";
           passwordCommand = ["echo" "''"];
         };

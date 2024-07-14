@@ -4,13 +4,13 @@
     defaults = {
       extraLegoFlags = [ "--dns.disable-cp" ];
       extraLegoRunFlags = ["--preferred-chain" "ISRG Root X1"];
-      email = ivi.email;
+      email = my.email;
       dnsProvider = "porkbun";
       environmentFile = config.secrets.porkbun.path;
     };
-    certs."${ivi.domain}" = {
+    certs."${my.domain}" = {
       # NOTE(ivi): use dns wildcard certs for local services
-      domain = "*.${ivi.domain}";
+      domain = "*.${my.domain}";
     };
   };
 }

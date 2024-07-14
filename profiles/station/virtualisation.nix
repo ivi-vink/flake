@@ -10,5 +10,5 @@
       uris = ["qemu:///system"];
     };
   };
-  ivi.extraGroups = [ "libvirtd" ];
+  my.extraGroups = [ "libvirtd" ];
 }

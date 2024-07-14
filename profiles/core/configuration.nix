@@ -5,7 +5,7 @@
   lib,
   ...
 }: with lib; {
-  imports = [ (mkAliasOptionModule [ "ivi" ] [ "users" "users" ivi.username ]) ];
+  imports = [ (mkAliasOptionModule [ "my" ] [ "users" "users" my.username ]) ];
 
   services = {
     resolved.fallbackDns = [
@@ -28,59 +28,17 @@
 
   time.timeZone = "Europe/Amsterdam";
   users.users = {
-      ${ivi.username} = {
+      ${my.username} = {
         uid = mkIf (!machine.isDarwin) 1000;
-        description = ivi.realName;
-        openssh.authorizedKeys.keys = ivi.sshKeys;
+        description = my.realName;
+        openssh.authorizedKeys.keys = my.sshKeys;
         extraGroups = ["wheel" "networkmanager" "docker" "transmission" "dialout" "test"];
         isNormalUser = true;
       };
       root = {
-        openssh.authorizedKeys.keys = config.ivi.openssh.authorizedKeys.keys;
+        openssh.authorizedKeys.keys = config.my.openssh.authorizedKeys.keys;
       };
   };
-
-  environment.systemPackages = with pkgs; [
-    vim
-    wget
-    git
-    subversion
-    htop
-    jq
-    yq-go
-    curl
-    fd
-    lf
-    fzf
-    ripgrep
-    parallel
-    pinentry-curses
-    gnused
-    gnutls
-    zoxide
-    binwalk
-    unzip
-    gcc
-    gnumake
-    file
-    pstree
-    bc
-    mediainfo
-    bat
-    openpomodoro-cli
-    coreutils
-    killall
-  ] ++ (optionals (!machine.isDarwin) [
-    man-pages
-    man-pages-posix
-    # pkgsi686Linux.glibc
-    gdb
-    pciutils
-    dnsutils
-    iputils
-    inetutils
-    usbutils
-  ]);
 
   nix.package = pkgs.nixVersions.latest;
   nix.extraOptions = ''

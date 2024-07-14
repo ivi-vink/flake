@@ -1,6 +1,5 @@
 {
   self,
-  config,
   pkgs,
   lib,
   machine,
@@ -80,7 +79,6 @@
       dmenu
       librewolf
       xclip
-      mpv
       maim
     ];
   };

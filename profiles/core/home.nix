@@ -8,7 +8,7 @@
   programs.tmux = {
     enable = true;
     extraConfig = ''
-        set-option -g default-shell ${config.ivi.shell}/bin/zsh
+        set-option -g default-shell ${config.my.shell}/bin/zsh
         set -g status off
         set -s set-clipboard on
         setw -g mouse on
@@ -42,7 +42,14 @@
   };
 
   hm = {
-    fonts.fontconfig.enable = true;
+    programs.password-store = {
+      enable = true;
+      settings = {
+        PASSWORD_STORE_DIR = config.synced.password-store.path;
+      };
+    };
+
+    # fonts.fontconfig.enable = true;
     # https://github.com/nix-community/home-manager/issues/4692
     # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
     xdg = {
@@ -86,7 +93,7 @@
     #   enable = true;
     #   matchBlocks = {
     #     "*" = {
-    #       identityFile = "${config.ivi.home}/.ssh/id_ed25519_sk";
+    #       identityFile = "${config.my.home}/.ssh/id_ed25519_sk";
     #     };
     #   };
     # };
@@ -113,8 +120,6 @@
       $endif
     '';
     };
-
-    programs.alacritty.enable = true;
 
     programs = {
       zsh = {
@@ -226,7 +231,7 @@
           k             = "kubectl ";
           d             = "docker ";
           ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.my.home}/flake#${config.networking.hostName}";
           b             = "/run/current-system/bin/switch-to-configuration boot";
           v             = "vremote";
           lf            = "lfub";
@@ -252,7 +257,7 @@
         ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
         ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
         ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
-        export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.ivi.home}/.krew/bin:${config.ivi.home}/.cargo/bin:${pkgs.ncurses}/bin"
+        export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
         [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
         unset LD_PRELOAD
         # include nix.sh if it exists
@@ -273,7 +278,7 @@
           k             = "kubectl ";
           d             = "docker ";
           ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.ivi.home}/flake#${config.networking.hostName}";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.my.home}/flake#${config.networking.hostName}";
           b             = "/run/current-system/bin/switch-to-configuration boot";
           v             = "nvim";
           M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
