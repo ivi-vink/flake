@@ -1,11 +1,34 @@
-{ config, lib, ... }: with lib; {
+{ config, lib, ... }: with lib;  let
+    multimediaUsernames = [
+      "prowlarr"
+      "sonarr"
+      "radarr"
+      "bazarr"
+      "jellyfin"
+      "transmission"
+    ];
+    mkMultimediaUsers = names: mergeAttrsList (imap0 (i: name: {${name} = {
+      uid = 2007 + i;
+      isSystemUser = true;
+      group = name;
+      createHome = false;
+    };}) names);
+    mkMultimediaGroups = names: mergeAttrsList (map (name: {${name} = { };}) names);
+  in {
   virtualisation.docker.rootless = {
     enable = true;
     setSocketVariable = true;
   };
 
-  users.groups.multimedia = { };
-  users.users.${my.username}.extraGroups = [ "multimedia" ];
+  users.groups = {
+    multimedia = {
+      gid = 1994;
+      members = multimediaUsernames;
+    };
+  } // mkMultimediaGroups multimediaUsernames;
+  users.users = {
+    ${my.username}.extraGroups = [ "multimedia" ];
+  } // mkMultimediaUsers multimediaUsernames;
 
   systemd.tmpfiles.rules = [
     "d /data 0770 - multimedia - -"
@@ -36,6 +59,10 @@
       prowlarr = {
         image = "linuxserver/prowlarr";
         extraOptions = ["--net=host"];
+        environment = {
+          PUID = "${toString config.users.users.prowlarr.uid}";
+          PGID = "${toString config.users.groups.multimedia.gid}";
+        };
         volumes = [
           "/data/config/prowlarr/data:/config"
         ];
@@ -43,38 +70,52 @@
       bazarr = {
         image = "linuxserver/bazarr";
         extraOptions = ["--net=host"];
+        environment = {
+          PUID = "${toString config.users.users.bazarr.uid}";
+          PGID = "${toString config.users.groups.multimedia.gid}";
+        };
         volumes = [
           "/data/media:/data"
-          "/data/config/prowlarr/data:/config"
+          "/data/config/bazarr/data:/config"
         ];
       };
       radarr = {
         image = "linuxserver/radarr";
         extraOptions = ["--net=host"];
+        environment = {
+          PUID = "${toString config.users.users.radarr.uid}";
+          PGID = "${toString config.users.groups.multimedia.gid}";
+        };
         volumes = [
-          "/data/media:/data"
+          "/data:/data"
           "/data/config/radarr/data:/config"
         ];
       };
       sonarr = {
         image = "linuxserver/sonarr";
         extraOptions = ["--net=host"];
+        environment = {
+          PUID = "${toString config.users.users.sonarr.uid}";
+          PGID = "${toString config.users.groups.multimedia.gid}";
+        };
         volumes = [
-          "/data/media:/data"
+          "/data:/data"
           "/data/config/sonarr/data:/config"
         ];
       };
       jellyfin = {
         image = "jellyfin/jellyfin";
         extraOptions = ["--net=host"];
+        user = "${toString config.users.users.jellyfin.uid}:${toString config.users.groups.multimedia.gid}";
         volumes = [
+          "/data/media:/media"
           "/data/config/jellyfin/config:/config"
-          "/data/config/jellyfin/cache:/config"
+          "/data/config/jellyfin/cache:/cache"
         ];
       };
       transmission = {
         image = "haugene/transmission-openvpn";
-        extraOptions = ["--cap-add=NET_ADMIN"];
+        extraOptions = ["--cap-add=NET_ADMIN" "--group-add=${toString config.users.groups.multimedia.gid}"];
         volumes = [
           "/data/config/ovpn:/etc/openvpn/custom"
           "/data/config/transmission:/config"

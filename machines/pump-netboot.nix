@@ -33,6 +33,7 @@
   boot.zfs.forceImportRoot = false;
   networking.hostId = "7da046cb";
 
+  boot.initrd.availableKernelModules = [ "e1000e" ];
   boot.initrd.network = {
     enable = true;
     ssh = {
