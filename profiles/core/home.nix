@@ -124,17 +124,20 @@
     programs = {
       zsh = {
         enable = true;
+        autosuggestion.enable = true;
         completionInit = ''
-          autoload -Uz +X compinit bashcompinit select-word-style select-word-style
+          zmodload zsh/complist
+          autoload -Uz +X compinit bashcompinit select-word-style
           select-word-style bash
           zstyle ':completion:*' menu select
-          zmodload zsh/complist
           _comp_options+=(globdots) # Include hidden files.
           compinit
           bashcompinit
         '';
         initExtra = ''
           # Use vim keys in tab complete menu:
+          export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
+          export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
           bindkey -M menuselect 'h' vi-backward-char
           bindkey -M menuselect 'k' vi-up-line-or-history
           bindkey -M menuselect 'l' vi-forward-char
@@ -153,6 +156,8 @@
               fi
           }
           bindkey -s '^o' '^ulfcd\n'
+
+          export FZF_DEFAULT_OPTS='-m --bind ctrl-a:select-all,ctrl-d:deselect-all,ctrl-t:toggle-all'
 
           fzf-tail () {
             fzf --tail 100000 --tac --no-sort --exact
@@ -197,7 +202,7 @@
               esac
           }
 
-          export ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|/@'
+          export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
           export MANPAGER='nvim +Man!'
           export EDITOR="nvim"
           export TERMINAL="st"
@@ -206,6 +211,8 @@
           ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion zsh)"
           ( command -v zoxide ) &>/dev/null && eval "$(zoxide init zsh)"
           ( command -v pioctl ) &>/dev/null && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
+          export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          krew info stern && eval "$(kubectl stern --completion zsh)"
 
           # Workaround for completion here...
           ( command -v aws ) &>/dev/null && source /run/current-system/sw/share/zsh/site-functions/_aws

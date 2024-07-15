@@ -80,6 +80,8 @@
       librewolf
       xclip
       maim
+      asciinema
+      asciinema-agg
     ];
   };
 }

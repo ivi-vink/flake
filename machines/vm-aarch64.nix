@@ -7,6 +7,7 @@
   virtualisation.vmware.guest.enable = true;
   virtualisation.docker.enable = true;
   networking.hostName = "vm-aarch64";
+  programs.nix-ld.enable = true;
 
   hm.xsession.initExtra = ''
       ${pkgs.xorg.xset}/bin/xset r rate 230 30
@@ -22,6 +23,11 @@
     (google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
       gke-gcloud-auth-plugin
     ]))
+    k9s
+    kubectl
+    krew
+    kubelogin
+    just
   ];
 
   services.pcscd.enable = true;
