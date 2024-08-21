@@ -45,14 +45,6 @@
       "jellyfin.${my.domain}"  = { locations."/" = { proxyPass = "http://127.0.0.1:8096"; }; };
     };
   };
-  # services = {
-  #   jellyfin = { enable = true; group = "multimedia"; };
-  #   sonarr = { enable = true; group = "multimedia"; };
-  #   radarr = { enable = true; group = "multimedia"; };
-  #   bazarr = { enable = true; group = "multimedia"; };
-  #   readarr = { enable = true; group = "multimedia"; };
-  #   prowlarr = { enable = true; };
-  # };
   virtualisation.oci-containers = {
     backend = "docker";
     containers = {
