@@ -1,14 +1,14 @@
 {
   pkgs,
+  config,
   ...
 }: {
   hm = {
-    # https://github.com/nix-community/home-manager/issues/4692
-    # xdg = {
-    #   configFile = with config.lib.meta; {
-    #     "nvim".source = mkMutableSymlink /mut/neovim;
-    #   };
-    # };
+    xdg = {
+      configFile = with config.lib.meta; {
+        "nvim".source = mkMutableSymlink /mut/neovim;
+      };
+    };
 
     editorconfig = {
       enable = true;

@@ -1,5 +1,5 @@
 # https://github.com/mitchellh/nixos-config/blob/main/machines/vm-aarch64-prl.nix
-{ self, config, pkgs, lib, ... }: {
+{ self, config, pkgs, lib, ... }: with lib; {
   imports =
     [ (self + "/profiles/vmware-guest.nix")
     ];
@@ -32,9 +32,8 @@
 
   services.pcscd.enable = true;
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
-  users.users.${lib.ivi.username} = {
-    shell = pkgs.zsh;
-  };
+  my.shell = pkgs.zsh;
+
   environment.shells = [pkgs.bashInteractive pkgs.zsh];
   environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.enable = true;

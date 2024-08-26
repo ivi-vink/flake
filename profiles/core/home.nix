@@ -8,37 +8,37 @@
   programs.tmux = {
     enable = true;
     extraConfig = ''
-        set-option -g default-shell ${config.my.shell}/bin/zsh
-        set -g status off
-        set -s set-clipboard on
-        setw -g mouse on
-        set -g default-terminal "st-256color"
-        set -ga terminal-overrides ",xterm-256color:Tc"
-        set-option -g focus-events on
-        set-option -sg escape-time 10
-        unbind M-x
-        set -g prefix M-x
-        bind M-x send-prefix
+      set-option -g default-shell ${config.my.shell}/bin/zsh
+      set -g status off
+      set -s set-clipboard on
+      setw -g mouse on
+      set -g default-terminal "st-256color"
+      set -ga terminal-overrides ",xterm-256color:Tc"
+      set-option -g focus-events on
+      set-option -sg escape-time 10
+      unbind M-x
+      set -g prefix M-x
+      bind M-x send-prefix
 
-        bind -n M-w switch-client -T windows
-        bind -T windows c if 'n=`tmux list-panes | grep -c ^`; [ $n -gt 1 ]' {
-           kill-pane
-        }
-        bind -T windows n splitp
-        bind -T windows N splitp -h
-        bind -T windows h select-pane -L
-        bind -T windows j select-pane -D
-        bind -T windows k select-pane -U
-        bind -T windows l select-pane -R
-        bind -T windows _ resize-pane -Z
-        bind -T windows = selectl even-vertical
+      bind -n M-w switch-client -T windows
+      bind -T windows c if 'n=`tmux list-panes | grep -c ^`; [ $n -gt 1 ]' {
+         kill-pane
+      }
+      bind -T windows n splitp
+      bind -T windows N splitp -h
+      bind -T windows h select-pane -L
+      bind -T windows j select-pane -D
+      bind -T windows k select-pane -U
+      bind -T windows l select-pane -R
+      bind -T windows _ resize-pane -Z
+      bind -T windows = selectl even-vertical
 
-        set-window-option -g mode-keys vi
-        bind-key -T copy-mode-vi v send -X begin-selection
-        bind-key -T copy-mode-vi V send -X select-line
-        bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
-        bind-key -T copy-mode-vi : command-prompt
-      '';
+      set-window-option -g mode-keys vi
+      bind-key -T copy-mode-vi v send -X begin-selection
+      bind-key -T copy-mode-vi V send -X select-line
+      bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+      bind-key -T copy-mode-vi : command-prompt
+    '';
   };
 
   hm = {
@@ -178,12 +178,13 @@
                   aws)
                       export AWS_PROFILE=$(aws configure list-profiles | grep -v default | fzf)
                       if ! error=$(aws sts get-caller-identity 2>&1); then
-                          if echo "$error" | grep 'SSO session associated with this profile has expired'; then
-                              aws sso login
-                          else
-                              echo "Not sure what to do with error: $error"
-                          fi
+                          case "$error" in
+                            *'SSO session associated with this profile has expired'*) aws sso login ;;
+                            *'Error loading SSO Token'*) aws sso login ;;
+                            *) echo "Not sure what to do with error: $error"; echo "trying to sign in"; aws sso login ;;
+                          esac
                       fi
+                      eval "$(aws configure export-credentials --format env)"
                       ;;
                   gcp)
                       gcloud config configurations activate $(gcloud config configurations list --format json | jq '.[] | "\(.name) \(.properties.core.account)"' -r | fzf | awk '{print $1}')
