@@ -236,6 +236,8 @@
           ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
         '';
         shellAliases = {
+          t             = "terraform ";
+          c             = "xclip -f | xclip -sel c -f ";
           open          = "xdg-open ";
           k9s           = "k9s ";
           k             = "kubectl ";

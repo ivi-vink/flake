@@ -10,7 +10,25 @@
 (vim.cmd "highlight WinSeparator guibg=None")
 (vim.cmd "packadd cfilter")
 
-(vim.opt.clipboard:append [:unnamedplus])
+(vim.opt.clipboard:append ["unnamedplus"])
+
+(local osc52 (require :vim.ui.clipboard.osc52))
+(let
+  [paste 
+   (fn [] [(vim.fn.split (vim.fn.getreg "") "\n") (vim.fn.getregtype "")])
+   xclip 
+   (fn [lines] 
+     (vim.system [:xclip] {:text true :stdin lines} (fn [exitobj]))
+     (vim.system [:xclip :-selection :clipboard] {:text true :stdin lines} (fn [exitobj]))
+     nil)]
+  (set
+     vim.g.clipboard
+     {:name "OSC 52"
+      :copy {:+ xclip
+             :* xclip}
+      :paste {:+ paste
+              :* paste}}))
+
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
@@ -23,24 +41,24 @@
 (fzf.setup [:max-perf])
 
 (local
-  draw
-  (fn [toggle]
-    (if
-      toggle
-      (do
-        (vim.cmd "set virtualedit=all")
-        (vim.keymap.set :v "<leader>;" "<esc>:VBox<CR>")
-        (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
-        (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
-        (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
-        (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
-      (do
-        (vim.cmd "set virtualedit=")
-        (vim.keymap.del :v "<leader>;")
-        (vim.keymap.del "n" "J")
-        (vim.keymap.del "n" "K")
-        (vim.keymap.del "n" "L")
-        (vim.keymap.del "n" "H")))))
+ draw
+ (fn [toggle]
+   (if
+     toggle
+     (do
+       (vim.cmd "set virtualedit=all")
+       (vim.keymap.set :v "<leader>;" "<esc>:VBox<CR>")
+       (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
+       (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
+       (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
+       (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
+     (do
+       (vim.cmd "set virtualedit=")
+       (vim.keymap.del :v "<leader>;")
+       (vim.keymap.del "n" "J")
+       (vim.keymap.del "n" "K")
+       (vim.keymap.del "n" "L")
+       (vim.keymap.del "n" "H")))))
 
 (local commenter (require :nvim_comment))
 (commenter.setup)
@@ -69,7 +87,6 @@
   (map :n :<leader>d<bs> (fn [] (draw false)))
   (map :n :- ::Oil<cr>)
   (map :n :_ #(oil.open_cwd.callback))
-  (map :v :y "<Plug>OSCYankVisual|gvy")
   (map :n :<leader>qf cope)
   (map :n :<leader>q<BS> ":cclose<cr>")
   (map :n :<leader>ll ":lopen<cr>")
@@ -104,6 +121,7 @@
   (map :n "]x" ":lnext<cr>")
   (map :n "[g" ":GV<cr>")
   (map :n "]g" ":GV?<cr>")
+  (map :n "]G" ":GV!<cr>")
   (map :n :<leader>xp #(fzf.files))
   (map :n "<leader>:" #(i-grep "<c-r><c-w>" (vim.fn.bufname "%")))
   (map :v "<leader>:" ":Vgrep!<cr>")
@@ -148,7 +166,7 @@
 (vim.api.nvim_create_user_command
   :NixEdit
   (fn [{: args}]
-    (local f (io.popen (.. "nix eval --raw " vim.env.HOME "/flake#nixosConfigurations." (vim.fn.hostname) ".pkgs." args)))
+    (local f (io.popen (.. "nix eval --raw /nix-config#nixosConfigurations." (vim.fn.hostname) ".pkgs." args)))
     (vim.cmd (.. "e " (f:read))))
   {:nargs 1})
 
@@ -255,3 +273,38 @@
           (set last_job_thunk thunk)
           (thunk))))
   {:nargs :* :bang true :complete :shellcmd})
+
+
+
+(fn browse_git_remote
+  [data]
+  (P data)
+  (local 
+    {: commit
+     : git_dir
+     : line1
+     : line2
+     : path
+     : remote
+     : remote_name
+     : repo
+     : type } data)
+  (local [home repo]
+    (case remote
+      (where s (vim.startswith s "git@"))
+      (case [(s:match "(git@)([^:]+):(.*)(%.git)")]
+          ["git@" home repo ".git"] [home repo]
+          _ [])))
+
+  (case [home repo]
+    (where ["github.com" repo]) 
+    (do
+      (.. "https://" home "/" repo "/commit/" commit))))
+
+(vim.api.nvim_create_user_command
+  :Browse
+  (fn [{: args}] (vim.system ["xdg-open" args] {} (fn [])))
+  {:nargs 1})
+
+(set vim.g.fugitive_browse_handlers 
+     [browse_git_remote])

@@ -20,6 +20,6 @@ fi
 
     [[ -n $password ]] || exit
 
-    pass show -c "$password"
+    pass show "$password" | head -n1 | xclip -f | xclip -f -sel c
 ) >/tmp/debug 2>&1
 

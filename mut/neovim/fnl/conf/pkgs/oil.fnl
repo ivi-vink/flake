@@ -20,7 +20,16 @@
    {
     "g?"  "actions.show_help"
     "<CR>"  "actions.select"
-    "<C-s>"  "actions.select_vsplit"
+    "<C-s>"
+    #(do
+      (vim.api.nvim_feedkeys
+        (vim.api.nvim_replace_termcodes
+          ":Sh<up><c-f>" true false true)
+        :n false)
+      (vim.schedule #(do
+                       (vim.cmd "let v:searchforward = 0")
+                       (vim.keymap.set :n :/ "/Sh.*" {:buffer true})
+                       (vim.keymap.set :n :? "?Sh.*" {:buffer true}))))
     "<C-h>"  "actions.select_split"
     "<C-t>"  "actions.select_tab"
     "<C-p>"  #(fzf.files)

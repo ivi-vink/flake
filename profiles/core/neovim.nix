@@ -60,7 +60,6 @@
         # external
         oil-nvim
         vim-fugitive
-        vim-oscyank
         venn-nvim
         gv-vim
         zoxide-vim

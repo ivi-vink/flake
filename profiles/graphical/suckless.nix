@@ -79,6 +79,7 @@
       dmenu
       librewolf
       xclip
+      xdotool
       maim
       asciinema
       asciinema-agg
