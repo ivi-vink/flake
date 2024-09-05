@@ -313,8 +313,6 @@
               ["git@" home org project repo] 
               [(home:gsub "ssh%." "") [(.. org "/" project) repo]])))))
 
-  (P home repo)
-
   (case [home repo]
     (where ["bitbucket.org" repo]) 
     (do
