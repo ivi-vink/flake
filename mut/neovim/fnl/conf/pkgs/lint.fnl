@@ -15,7 +15,8 @@
 (conform.setup
   {:formatters_by_ft
    {:python [:ruff_format :isort]
-    :go [:goimports]}
+    :go [:goimports]
+    :terraform [:terraform_fmt]}
    :format_on_save
    {:timeout_ms 500
     :lsp_fallback false}})

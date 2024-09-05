@@ -17,11 +17,7 @@
           trim_trailing_whitespace = true;
           insert_final_newline = true;
         };
-        "*.yaml" = {
-          indent_style = "space";
-          indent_size = 2;
-        };
-        "*.nix" = {
+        "*.{yaml,nix,sh}" = {
           indent_style = "space";
           indent_size = 2;
         };

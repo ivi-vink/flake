@@ -81,6 +81,7 @@
 (local cope #(vim.cmd (.. ":botright copen " (math.floor (/ vim.o.lines 2.1)))))
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
+  (map :n :gb ":GBrowse<CR>")
   (map :n :ga "<Plug>(EasyAlign)")
   (map :x :ga "<Plug>(EasyAlign)")
   (map :n :<leader>d<cr> (fn [] (draw true)))
@@ -289,17 +290,76 @@
      : remote_name
      : repo
      : type } data)
+
+  (local
+    oilpath
+    (case (vim.fn.bufname "%")
+      (where oilbuf (vim.startswith oilbuf "oil://"))
+      (do
+        (local d (.. "oil://" (vim.fs.dirname git_dir) "/"))
+        (oilbuf:sub (+ 1 (d:len)) (oilbuf:len)))
+      _
+      ""))
+
   (local [home repo]
     (case remote
       (where s (vim.startswith s "git@"))
-      (case [(s:match "(git@)([^:]+):(.*)(%.git)")]
-          ["git@" home repo ".git"] [home repo]
-          _ [])))
+      (do
+        (or
+          (case [(s:match "(git@)([^:]+):(.*)(%.git)")]
+              ["git@" home repo ".git"] 
+              [home repo])
+          (case [(s:match "(git@)([^:]+):.*/(.*)/(.*)/(.*)")]
+              ["git@" home org project repo] 
+              [(home:gsub "ssh%." "") [(.. org "/" project) repo]])))))
+
+  (P home repo)
 
   (case [home repo]
+    (where ["bitbucket.org" repo]) 
+    (do
+      (case [path type]
+        ["" "tree"]
+        (.. "https://" home "/" repo "/src/" commit "/" (or oilpath path ""))
+        [path "blob"]
+        (.. "https://" home "/" repo "/src/" commit "/" path)
+        [path "commit"]
+        (.. "https://" home "/" repo "/commits/" commit)
+        [path "ref"]
+        (.. "https://" home "/" repo "/commits/" commit)))
+    (where ["dev.azure.com" [org repo]]) 
+    (do
+      (case [path type]
+        ["" "tree"]
+        (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" (or oilpath path ""))
+        [path "blob"]
+        (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" path)
+        [path "commit"]
+        (.. "https://" home "/" org "/_git/" repo "/commit/" commit)
+        [path "ref"]
+        (.. "https://" home "/" org "/_git/" repo "/commit/" commit)))
+    (where ["gitlab.com" repo]) 
+    (do
+      (case [path type]
+        ["" "tree"]
+        (.. "https://" home "/" repo "/-/tree/" commit "/" (or oilpath ""))
+        [path "commit"]
+        (.. "https://" home "/" repo "/-/commit/" commit)
+        [path "ref"]
+        (.. "https://" home "/" repo "/-/commit/" commit)
+        [path "blob"]
+        (.. "https://" home "/" repo "/-/blob/" commit "/" path)))
     (where ["github.com" repo]) 
     (do
-      (.. "https://" home "/" repo "/commit/" commit))))
+      (case [path type]
+        ["" "tree"]
+        (.. "https://" home "/" repo "/tree/" commit "/" (or oilpath ""))
+        [path "commit"]
+        (.. "https://" home "/" repo "/commit/" commit)
+        [path "ref"]
+        (.. "https://" home "/" repo "/commit/" commit)
+        [path "blob"]
+        (.. "https://" home "/" repo "/blob/" commit "/" path)))))
 
 (vim.api.nvim_create_user_command
   :Browse
