@@ -32,7 +32,7 @@ with lib;
     # gcc
     gnumake
     file
-    pstree
+    psmisc
     bc
     mediainfo
     bat

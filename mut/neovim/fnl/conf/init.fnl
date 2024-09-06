@@ -14,10 +14,10 @@
 
 (local osc52 (require :vim.ui.clipboard.osc52))
 (let
-  [paste 
+  [paste
    (fn [] [(vim.fn.split (vim.fn.getreg "") "\n") (vim.fn.getregtype "")])
-   xclip 
-   (fn [lines] 
+   xclip
+   (fn [lines]
      (vim.system [:xclip] {:text true :stdin lines} (fn [exitobj]))
      (vim.system [:xclip :-selection :clipboard] {:text true :stdin lines} (fn [exitobj]))
      nil)]
@@ -82,6 +82,7 @@
 (local oil (require :oil.actions))
 (let [map vim.keymap.set]
   (map :n :gb ":GBrowse<CR>")
+  (map :n :g<cr> ::G<cr>)
   (map :n :ga "<Plug>(EasyAlign)")
   (map :x :ga "<Plug>(EasyAlign)")
   (map :n :<leader>d<cr> (fn [] (draw true)))
@@ -280,7 +281,7 @@
 (fn browse_git_remote
   [data]
   (P data)
-  (local 
+  (local
     {: commit
      : git_dir
      : line1
@@ -307,14 +308,14 @@
       (do
         (or
           (case [(s:match "(git@)([^:]+):(.*)(%.git)")]
-              ["git@" home repo ".git"] 
+              ["git@" home repo ".git"]
               [home repo])
           (case [(s:match "(git@)([^:]+):.*/(.*)/(.*)/(.*)")]
-              ["git@" home org project repo] 
+              ["git@" home org project repo]
               [(home:gsub "ssh%." "") [(.. org "/" project) repo]])))))
 
   (case [home repo]
-    (where ["bitbucket.org" repo]) 
+    (where ["bitbucket.org" repo])
     (do
       (case [path type]
         ["" "tree"]
@@ -325,7 +326,7 @@
         (.. "https://" home "/" repo "/commits/" commit)
         [path "ref"]
         (.. "https://" home "/" repo "/commits/" commit)))
-    (where ["dev.azure.com" [org repo]]) 
+    (where ["dev.azure.com" [org repo]])
     (do
       (case [path type]
         ["" "tree"]
@@ -336,7 +337,7 @@
         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)
         [path "ref"]
         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)))
-    (where ["gitlab.com" repo]) 
+    (where ["gitlab.com" repo])
     (do
       (case [path type]
         ["" "tree"]
@@ -347,7 +348,7 @@
         (.. "https://" home "/" repo "/-/commit/" commit)
         [path "blob"]
         (.. "https://" home "/" repo "/-/blob/" commit "/" path)))
-    (where ["github.com" repo]) 
+    (where ["github.com" repo])
     (do
       (case [path type]
         ["" "tree"]
@@ -364,5 +365,5 @@
   (fn [{: args}] (vim.system ["xdg-open" args] {} (fn [])))
   {:nargs 1})
 
-(set vim.g.fugitive_browse_handlers 
+(set vim.g.fugitive_browse_handlers
      [browse_git_remote])
