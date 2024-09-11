@@ -173,51 +173,109 @@
                     --header '╱ Enter (kubectl exec) ╱ CTRL-O (open log in vim) ╱'
           }
 
-          login-to-cloud () {
-              case $1 in
-                  aws)
-                      export AWS_PROFILE=$(aws configure list-profiles | grep -v default | fzf)
-                      if ! error=$(aws sts get-caller-identity 2>&1); then
-                          case "$error" in
-                            *'SSO session associated with this profile has expired'*) aws sso login ;;
-                            *'Error loading SSO Token'*) aws sso login ;;
-                            *) echo "Not sure what to do with error: $error"; echo "trying to sign in"; aws sso login ;;
-                          esac
-                      fi
-                      eval "$(aws configure export-credentials --format env)"
-                      ;;
-                  gcp)
-                      gcloud config configurations activate $(gcloud config configurations list --format json | jq '.[] | "\(.name) \(.properties.core.account)"' -r | fzf | awk '{print $1}')
-                      if ! gcloud compute instances list &> /dev/null </dev/null; then
-                          gcloud auth login
-                      fi
-                      ;;
-                  azure)
-                      id=$(az account list --all | jq '.[] | select(.name | test("N/A.*") | not) | "\(.name)\t\(.id)"' -r | fzf | awk -F'\t' '{print $2}')
-                      az account set --subscription $id
-                      if ! az resource list &>/dev/null; then
-                          az login --tenant $(az account show | jq '.tenantId' -r)
-                      fi
-                      ;;
-                  *) echo "Don't know how to switch context for: $1" ;;
-              esac
+          G () { vi +"chdir ''${1:-.}" +G +only ; }
+
+          login_aws() {
+            aws configure list-profiles |
+              grep -E -v -e default -e '.*_.*' |
+              parallel --jobs 4 --quote \
+                sh -c 'aws sts get-caller-identity --profile {} 1>&2 || echo {}' |
+              xargs -I{} 'aws sso login --profile {}'
+
+            AWS_PROFILE="$(aws configure list-profiles | grep -v default | fzf)"
+            [ -z "$AWS_PROFILE" ] &&
+              {
+                echo Selected empty aws profile!
+                exit 1
+              }
+            export AWS_PROFILE
+            if ! error="$(aws sts get-caller-identity --profile "$AWS_PROFILE" 2>&1)"; then
+                case "$error" in
+                  *'SSO session associated with this profile has expired'*) aws sso login ;;
+                  *'Error loading SSO Token'*) aws sso login ;;
+                  *) echo "Not sure what to do with error: $error"; echo "trying to sign in"; aws sso login ;;
+                esac
+            fi
+            eval "$(aws configure export-credentials --profile "$AWS_PROFILE" --format env)"
+          }
+
+          login_gcp() {
+            gcloud config configurations activate "$(gcloud config configurations list --format json | jq '.[] | "\(.name) \(.properties.core.account)"' -r | fzf | awk '{print $1}')"
+            projects="$(gcloud projects list --format='value(name,projectId)' 2>/dev/null)" ||
+              {
+                gcloud auth login
+                projects="$(gcloud projects list --format='value(name,projectId)')"
+              }
+            project="$(printf '%s' "$projects" | fzf | awk '{ print $2 }')"
+            gcloud auth application-default set-quota-project "$project"
+            gcloud config set project "$project"
+
+            gcloud auth application-default print-access-token >/dev/null 2>&1 ||
+              {
+                gcloud auth application-default login
+              }
+          }
+
+          login_azure() {
+            missing_tenants="$(
+          grep -v \
+            -f /dev/fd/3 /dev/fd/4 3<<-EOF 4<<-EOF
+          $(az account list --output json | jq -r '.[] | .tenantId')
+          EOF
+          $(az account tenant list --output json 2>/dev/null | jq -r '.[].tenantId')
+          EOF
+          )" && {
+                    echo "Found tenants that were not logged in! Logging into all of them"
+                    printf '%s' "$missing_tenants
+          " | xargs -n1 az login --allow-no-subscriptions --tenant
+                }
+            set -- $(
+              {
+                  az account list --all 2>/dev/null ||
+                    {
+                      az login --allow-no-subscriptions && az account list --all
+                    }
+              } |  jq '.[] | select(.name | test("N/A.*") | not) | "\(.name)\t\(.id)"' -r | fzf
+            )
+
+            sub="$2"
+            az account set --subscription "''${sub:?}"
+            if ! az resource list >/dev/null 2>&1; then
+                az login --allow-no-subscriptions --tenant "$(az account show | jq '.tenantId' -r)"
+            fi
+          }
+
+          log_in () {
+            case $1 in
+                aws) login_aws ;;
+                gcp) login_gcp ;;
+                azure) login_azure ;;
+                all)
+                  login_aws
+                  login_gcp
+                  login_azure
+                  ;;
+                *) echo "Don't know how to switch context for: $1" ;;
+            esac
           }
 
           export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
           export MANPAGER='nvim +Man!'
           export EDITOR="nvim"
           export TERMINAL="st"
-          ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
-          ( command -v docker ) &>/dev/null && eval "$(docker completion zsh)"
-          ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion zsh)"
-          ( command -v zoxide ) &>/dev/null && eval "$(zoxide init zsh)"
-          ( command -v pioctl ) &>/dev/null && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
           export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-          krew info stern && eval "$(kubectl stern --completion zsh)"
 
-          # Workaround for completion here...
-          ( command -v aws ) &>/dev/null && source /run/current-system/sw/share/zsh/site-functions/_aws
-          ( command -v az ) &>/dev/null && source /run/current-system/sw/share/zsh/site-functions/_az
+          # Workarounds for completion here...
+          {
+            krew info stern  && eval "$(kubectl stern --completion zsh)"
+            ( command -v brew )  && eval "$(/opt/homebrew/bin/brew shellenv)"
+            ( command -v docker )  && eval "$(docker completion zsh)"
+            ( command -v kubectl )  && eval "$(kubectl completion zsh)"
+            ( command -v zoxide )  && eval "$(zoxide init zsh)"
+            ( command -v pioctl )  && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
+            ( command -v aws )  && source /run/current-system/sw/share/zsh/site-functions/_aws
+            ( command -v az )  && source /run/current-system/sw/share/zsh/site-functions/_az
+          } &>/dev/null
 
           [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
           unset LD_PRELOAD
@@ -236,16 +294,17 @@
           ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
         '';
         shellAliases = {
+          g             = "git ";
           t             = "terraform ";
           c             = "xclip -f | xclip -sel c -f ";
           open          = "xdg-open ";
-          k9s           = "k9s ";
           k             = "kubectl ";
           d             = "docker ";
           ls            = "ls --color=auto";
           s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake /nix-config#${config.networking.hostName}";
           b             = "/run/current-system/bin/switch-to-configuration boot";
-          v             = "vremote";
+          v             = "vi ";
+          e             = "vi ";
           lf            = "lfub";
           M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
           m             = "xrandr --output eDP1 --auto --output HDMI1 --off";

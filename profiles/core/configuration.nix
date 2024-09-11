@@ -44,4 +44,13 @@
   nix.extraOptions = ''
     experimental-features = nix-command flakes configurable-impure-env
   '';
+
+  hm.xdg.configFile."gtk-2.0/gtkrc".text = ''
+    gtk-key-theme-name = "Emacs"
+  '';
+
+  hm.xdg.configFile."gtk-3.0/settings.ini".text = ''
+    [Settings]
+    gtk-key-theme-name = Emacs
+  '';
 }

@@ -11,7 +11,7 @@ if [ $reload -eq 1 ]; then
     wal -R
 else
     if [ -z "$1" ]; then
-        sxiv -tob ~/bg | parallel wal -i
+        sxiv -tob ~/Wallpapers | xargs wal -i
     else
         wal -i "$1"
     fi
