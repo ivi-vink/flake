@@ -24,7 +24,7 @@
           isNormalUser = mkSinkUndeclaredOptions {};
         };
         config = {
-          home = "/Users/${ivi.username}";
+          home = "/Users/${my.username}";
         };
       }));
     };
@@ -33,20 +33,20 @@
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
     environment.systemPackages =
-      [ pkgs.qemu
-        pkgs.kitty
+      [ # pkgs.qemu
+        # pkgs.kitty
         pkgs.openssh
-        pkgs.python311
-        pkgs.mpv
+        # pkgs.python311
+        # pkgs.mpv
         pkgs.kubelogin
         pkgs.zsh
         pkgs.bashInteractive
-        pkgs.awscli2
+        # pkgs.awscli2
         pkgs.skhd
-        pkgs.act
+        # pkgs.act
         pkgs.yubikey-manager
-        pkgs.gomplate
-        pkgs.just
+        # pkgs.gomplate
+        # pkgs.just
      ];
     hm = {
       home = {
@@ -59,106 +59,6 @@
           '';
           target = ".gnupg/gpg-agent.conf";
         };
-      };
-      programs.kitty = {
-        enable = true;
-        shellIntegration = {
-          enableZshIntegration = true;
-        };
-        extraConfig = ''
-          allow_remote_control yes
-          cursor_shape block
-          font_family      JetBrainsMono Nerd Font Mono
-          text_composition_strategy platform
-          cursor_blink_interval 0
-          draw_minimal_borders yes
-          hide_window_decorations no
-          confirm_os_window_close 0
-          macos_option_as_alt yes
-          linux_display_server x11
-
-          clear_all_shortcuts yes
-          kitty_mod alt
-          mouse_map right press ungrabbed mouse_select_command_output
-          map kitty_mod+v mouse_select_command_output
-          scrollback_pager less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER
-
-          map kitty_mod+shift+k change_font_size all +2.0
-          map kitty_mod+shift+j change_font_size all -2.0
-
-          map kitty_mod+k scroll_to_prompt -1
-          map kitty_mod+j scroll_to_prompt 1
-          map kitty_mod+l show_last_visited_command_output
-          map kitty_mod+shift+l show_scrollback
-
-          map kitty_mod+w>p show_last_visited_command_output
-          map kitty_mod+w>shift+p show_first_command_output_on_screen
-
-          map kitty_mod+w>_ toggle_layout stack
-          map kitty_mod+w>= goto_layout fat
-          map kitty_mod+w>g goto_layout grid
-
-          map kitty_mod+w>c close_window
-          map kitty_mod+w>j neighboring_window bottom
-          map kitty_mod+w>k neighboring_window top
-          map kitty_mod+w>h neighboring_window left
-          map kitty_mod+w>l neighboring_window right
-          map kitty_mod+w>e open_url_with_hints
-          map kitty_mod+w>space move_window_to_top
-          map kitty_mod+w>shift+k move_window_forward
-          map kitty_mod+w>shift+j move_window_backward
-
-          map kitty_mod+enter new_window
-          map kitty_mod+r load_config_file
-          map cmd+c copy_to_clipboard
-          map cmd+v paste_from_clipboard
-          map cmd+q quit
-
-          ## name: Kanagawa
-          ## license: MIT
-          ## author: Tommaso Laurenzi
-          ## upstream: https://github.com/rebelot/kanagawa.nvim/
-
-
-          background #1F1F28
-          foreground #DCD7BA
-          selection_background #2D4F67
-          selection_foreground #C8C093
-          url_color #72A7BC
-          cursor #C8C093
-
-          # Tabs
-          active_tab_background #1F1F28
-          active_tab_foreground #C8C093
-          inactive_tab_background  #1F1F28
-          inactive_tab_foreground #727169
-          #tab_bar_background #15161E
-
-          # normal
-          color0 #16161D
-          color1 #C34043
-          color2 #76946A
-          color3 #C0A36E
-          color4 #7E9CD8
-          color5 #957FB8
-          color6 #6A9589
-          color7 #C8C093
-
-          # bright
-          color8  #727169
-          color9  #E82424
-          color10 #98BB6C
-          color11 #E6C384
-          color12 #7FB4CA
-          color13 #938AA9
-          color14 #7AA89F
-          color15 #DCD7BA
-
-
-          # extended colors
-          color16 #FFA066
-          color17 #FF5D62
-        '';
       };
     };
 
@@ -306,7 +206,7 @@
         ''}
       '';
     };
-    services.sketchybar.enable = true;
+    services.sketchybar.enable = false;
     services.yabai = {
       enable = false;
       package = pkgs.yabai;
@@ -374,7 +274,7 @@
 
     # The platform the configuration will be used on.
     nixpkgs.hostPlatform = "aarch64-darwin";
-    users.users.${ivi.username} = {
+    users.users.${my.username} = {
       shell = pkgs.zsh;
     };
     environment.shells = [pkgs.bashInteractive pkgs.zsh];

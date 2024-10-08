@@ -33,8 +33,16 @@ inputs: lib: prev: with lib; rec {
   }:
   let
     machine = machines.${name};
+    homeManagerModule = (if lib.hasInfix "darwin" system then
+      [inputs.home-manager.darwinModules.default]
+      else
+      [inputs.home-manager.nixosModules.default]);
+    systemForPlatform = (if lib.hasInfix "darwin" system then
+      lib.darwinSystem
+      else
+      lib.nixosSystem);
   in
-  lib.nixosSystem {
+  systemForPlatform {
     inherit lib system;
     specialArgs = {
       inherit (inputs) self;
@@ -43,10 +51,7 @@ inputs: lib: prev: with lib; rec {
     modules =
       modules
       ++
-      (if lib.hasInfix "darwin" system then
-      [inputs.home-manager.darwinModules.default]
-      else
-      [inputs.home-manager.nixosModules.default])
+      homeManagerModule
       ++ [
         ({pkgs, ...}: {
           nixpkgs.overlays = with lib; [

@@ -32,14 +32,16 @@ with lib;
     # gcc
     gnumake
     file
-    psmisc
+    # psmisc
     bc
-    mediainfo
+    # mediainfo
     bat
     openpomodoro-cli
     coreutils
     killall
   ] ++ (optionals (!machine.isDarwin) [
+    nsxiv
+    ueberzugpp
     man-pages
     man-pages-posix
     # pkgsi686Linux.glibc

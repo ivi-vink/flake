@@ -301,7 +301,7 @@
           k             = "kubectl ";
           d             = "docker ";
           ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake /nix-config#${config.networking.hostName}";
+          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.lib.meta.configPath}#${config.networking.hostName}";
           b             = "/run/current-system/bin/switch-to-configuration boot";
           v             = "vi ";
           e             = "vi ";

@@ -17,7 +17,6 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nix-darwin = {
       url = "path:/Users/ivi/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -27,12 +26,14 @@
     home-manager,
     sops-nix,
     deploy-rs,
+    nix-darwin,
     ...
   }: let
     lib =
-      (nixpkgs.lib.extend
+      ((nixpkgs.lib.extend
         (_: _: home-manager.lib)).extend
-          (import ./lib inputs);
+        (_: _: nix-darwin.lib)).extend
+        (import ./lib inputs);
   in
     with lib; rec {
       inherit lib;
@@ -101,22 +102,6 @@
           };
         };
 
-        work = {
-          system = "aarch64-darwin";
-          modules =
-            [
-              ./machines/work.nix
-            ]
-            ++ modulesIn ./profiles/core;
-          opts = {
-            isDarwin = true;
-            syncthing = {
-              enable = true;
-              id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
-            };
-          };
-        };
-
         vm-aarch64 = {
           system = "aarch64-linux";
           modules =
@@ -130,6 +115,25 @@
             syncthing = {
               enable = true;
               id = "LDZVZ6H-KO3BKC6-FMLZOND-MKXI4DF-SNT27OT-Q5KMN2M-A2DYFNQ-3BWUYA6";
+            };
+          };
+        };
+      };
+
+      darwinConfigurations = mkSystems {
+        work = {
+          system = "aarch64-darwin";
+          modules =
+            [
+              ./machines/work.nix
+            ]
+            ++ modulesIn ./profiles/core;
+          opts = {
+            isDarwin = true;
+            configPath = "/Users/${my.username}/nix-config";
+            syncthing = {
+              enable = true;
+              id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
             };
           };
         };
