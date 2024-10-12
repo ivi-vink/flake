@@ -98,7 +98,10 @@
     #   };
     # };
 
-    programs.starship.enable = true;
+    programs.starship = {
+      enable = true;
+      enableZshIntegration = false;
+    };
 
     programs.direnv = {
       enable = true;
@@ -126,15 +129,46 @@
         enable = true;
         autosuggestion.enable = true;
         completionInit = ''
-          zmodload zsh/complist
-          autoload -Uz +X compinit bashcompinit select-word-style
-          select-word-style bash
-          zstyle ':completion:*' menu select
-          _comp_options+=(globdots) # Include hidden files.
-          compinit
-          bashcompinit
+          if [ -z "$ZSHRC_IVI" ]; then
+            zmodload zsh/complist
+            autoload -Uz +X compinit bashcompinit select-word-style
+            select-word-style bash
+            zstyle ':completion:*' menu select
+            _comp_options+=(globdots) # Include hidden files.
+            compinit
+            bashcompinit
+          fi
         '';
         initExtra = ''
+          ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+          if command -v pnsh-nvim >/dev/null 2>&1 && [ -z "$ZSHRC_IVI" ]; then
+            export COLORTERM=truecolor
+            export GPG_TTY="$(tty)"
+            gpgconf --launch gpg-agent
+
+            if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+              eval `ssh-agent`
+              ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+            fi
+            export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+            ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+
+            if [[ $TERM != "dumb" ]]; then
+              eval "$(/etc/profiles/per-user/ivi/bin/starship init zsh)"
+            fi
+
+            pnsh-nvim true || {
+              echo "Pnsh exited badly :("
+            }
+          fi
+          export GNUPGHOME="''${HOME}/.gnupg"
+          export LOCALE_ARCHIVE_2_27="/nix/store/l8hm9q8ndlg2rvav47y7549llh6npznf-glibc-locales-2.39-52/lib/locale/locale-archive"
+          export PASSWORD_STORE_DIR="''${HOME}/sync/password-store"
+          export XDG_CACHE_HOME="''${HOME}/.cache"
+          export XDG_CONFIG_HOME="''${HOME}/.config"
+          export XDG_DATA_HOME="''${HOME}/.local/share"
+          export XDG_STATE_HOME="''${HOME}/.local/state"
+
           # Use vim keys in tab complete menu:
           export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
           export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
@@ -159,6 +193,22 @@
 
           export FZF_DEFAULT_OPTS='-m --bind ctrl-a:select-all,ctrl-d:deselect-all,ctrl-t:toggle-all'
 
+          # Options to fzf command
+          export FZF_COMPLETION_OPTS='--border --info=inline'
+
+          # Use fd (https://github.com/sharkdp/fd) for listing path candidates.
+          # - The first argument to the function ($1) is the base path to start traversal
+          # - See the source code (completion.{bash,zsh}) for the details.
+          _fzf_compgen_path() {
+            fd --hidden --follow --exclude ".git" . "$1"
+          }
+
+          # Use fd to generate the list for directory completion
+          _fzf_compgen_dir() {
+            fd --type d --hidden --follow --exclude ".git" . "$1"
+          }
+
+
           fzf-tail () {
             fzf --tail 100000 --tac --no-sort --exact
           }
@@ -171,6 +221,12 @@
                     --bind 'enter:execute:kubectl exec -it {1} -- bash' \
                     --preview 'echo {}' --preview-window down:20%:wrap \
                     --header '╱ Enter (kubectl exec) ╱ CTRL-O (open log in vim) ╱'
+          }
+
+          helmball() {
+            tar --extract --verbose --file "$1" &&
+              mv --verbose "''${1%-*}" "''${1%.tgz}" &&
+              rm --verbose "$1"
           }
 
           G () { vi +"chdir ''${1:-.}" +G +only ; }
@@ -266,57 +322,43 @@
           export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
           # Workarounds for completion here...
-          {
-            krew info stern  && eval "$(kubectl stern --completion zsh)"
-            ( command -v brew )  && eval "$(/opt/homebrew/bin/brew shellenv)"
-            ( command -v docker )  && eval "$(docker completion zsh)"
-            ( command -v kubectl )  && eval "$(kubectl completion zsh)"
-            ( command -v zoxide )  && eval "$(zoxide init zsh)"
-            ( command -v pioctl )  && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
-            ( command -v aws )  && source /run/current-system/sw/share/zsh/site-functions/_aws
-            ( command -v az )  && source /run/current-system/sw/share/zsh/site-functions/_az
-          } &>/dev/null
+          command -v zoxide  >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+          if [ -z "$ZSHRC_IVI" ]; then
+              krew info stern    >/dev/null 2>&1 && eval "$(kubectl stern --completion zsh)"
+              command -v brew    >/dev/null 2>&1 && eval "$(/opt/homebrew/bin/brew shellenv)"
+              command -v docker  >/dev/null 2>&1 && eval "$(docker completion zsh)"
+              command -v kubectl >/dev/null 2>&1 && eval "$(kubectl completion zsh)"
+              command -v pioctl  >/dev/null 2>&1 && eval "$(_PIOCTL_COMPLETE=zsh_source pioctl)"
+              command -v aws     >/dev/null 2>&1 && source /run/current-system/sw/share/zsh/site-functions/_aws
+              command -v az      >/dev/null 2>&1 && {
+                source /run/current-system/sw/share/zsh/site-functions/_az
+              }
+          fi
 
           [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
           unset LD_PRELOAD
 
-          export COLORTERM=truecolor
-          export GPG_TTY="$(tty)"
-          gpgconf --launch gpg-agent
-
           export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
 
-          if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-            eval `ssh-agent`
-            ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-          fi
-          export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-          ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+          alias g="git "
+          alias t="terraform "
+          alias c="xclip -f | xclip -sel c -f "
+          alias o="xdg-open "
+          alias k="kubectl "
+          alias d="docker "
+          alias l="ls --color=auto"
+          alias s="${if machine.isDarwin then "sudo darwin-rebuild switch --flake ~/nix-config" else "sudo nixos-rebuild switch --flake /nix-config"}"
+          alias b="/run/current-system/bin/switch-to-configuration boot"
+          alias v="vi "
+          alias e="vi "
+          alias l="lfub"
+          alias M="xrandr --output HDMI1 --auto --output eDP1 --off"
+          alias m="xrandr --output eDP1 --auto --output HDMI1 --off"
+          alias m="xrandr --output eDP1 --auto --output HDMI1 --off"
+          alias n="nix flake new -t ~/flake "
+          alias use-gpg-ssh="export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)"
+          alias use-fido-ssh="export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock"
         '';
-        shellAliases = {
-          g             = "git ";
-          t             = "terraform ";
-          c             = "xclip -f | xclip -sel c -f ";
-          open          = "xdg-open ";
-          k             = "kubectl ";
-          d             = "docker ";
-          ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.lib.meta.configPath}#${config.networking.hostName}";
-          b             = "/run/current-system/bin/switch-to-configuration boot";
-          v             = "vi ";
-          e             = "vi ";
-          lf            = "lfub";
-          M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
-          m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          newflake      = "nix flake new -t ~/flake ";
-          ansible-flake = "nix flake new -t ~/flake#ansible ";
-          go-flake      = "nix flake new -t ~/flake#go ";
-          lock-pass     = "gpgconf --kill gpg-agent";
-          use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
-          use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
-          sshdo         = "ssh -f -q  -o 'StrictHostKeyChecking no' ";
-        };
       };
 
       bash = {
