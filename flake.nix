@@ -148,6 +148,15 @@
             };
           };
         };
+
+        bellerophone = {
+          opts = {
+            syncthing = {
+              enable = true;
+              id = "75U7B2F-SZOJRY2-UKAADJD-NI3R5SJ-K4J35IN-D2NJJFJ-JG5TCJA-AUERDAA";
+            };
+          };
+        };
       };
 
       deploy.nodes = {
