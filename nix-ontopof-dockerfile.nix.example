@@ -72,9 +72,9 @@
           '';
           pnsh = getImageWithSkopeo {
             transport   = "docker-daemon:";
-            imageName   = "pionativedev.azurecr.io/pionative/pnsh-ide-support";
-            imageDigest = "sha256:976ab3d2e27ae229fa944057482772b1d7047c4e1aee026cc18ff73bc9a69193";
-            sha256      = "sha256-TljHXj0t6JWs5TW0gLRUAjH7dZdY3n1RaYKxXedvqOw=";
+            imageName   = "";
+            imageDigest = "";
+            sha256      = "";
           };
 
           # from: https://github.com/nix-community/home-manager/blob/70824bb5c790b820b189f62f643f795b1d2ade2e/modules/programs/neovim.nix#L412
@@ -149,7 +149,7 @@
         {
           pnsh-container = pnsh;
           neovim-container = pkgs.dockerTools.buildImage {
-            name =  "pionativedev.azurecr.io/pionative/pnsh-nvim";
+            name =  "";
             fromImage = pnsh;
             copyToRoot = pkgs.buildEnv {
               extraPrefix = "/usr";
