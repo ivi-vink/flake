@@ -6,7 +6,6 @@
 }: with lib; {
   hm = {
     home.packages = with pkgs; [
-      (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];})
       python311Packages.editorconfig
       calcurse
       bashInteractive

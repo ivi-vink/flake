@@ -30,17 +30,17 @@
       viAlias = true;
       vimAlias = true;
       extraPackages = with pkgs; [
-        bashInteractive
-        pyright
-        gopls
-        fennel
-        fnlfmt
-        alejandra
-        statix
-        fzf
-        nil
-        shellcheck
-        vale
+        # bashInteractive
+        # pyright
+        # gopls
+        # fennel
+        # fnlfmt
+        # alejandra
+        # statix
+        # fzf
+        # nil
+        # shellcheck
+        # vale
       ];
       plugins = with pkgs.vimPlugins; [
         # highlighting

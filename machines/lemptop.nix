@@ -6,10 +6,10 @@ with lib;
     ];
   # networking.nameservers = ["192.168.2.13"];
   hm.xsession.initExtra = ''
-      ${pkgs.xorg.xset}/bin/xset r rate 230 30
-      [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
-      wal -R
-      dwm
+    ${pkgs.xorg.xset}/bin/xset r rate 230 30
+    [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
+    wal -R
+    dwm
   '';
 
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
@@ -51,8 +51,8 @@ with lib;
 
   services.pcscd.enable = true;
   security.pam.services = {
-      login.u2fAuth = true;
-      sudo.u2fAuth = true;
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
   };
   services.udev.packages = [ pkgs.yubikey-personalization ];
   services.udev.extraRules = ''

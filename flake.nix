@@ -15,6 +15,7 @@
     };
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    drduh-yubikey-guide.url = "github:drduh/YubiKey-Guide";
     nix-darwin = {
       url = "path:/Users/ivi/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -115,6 +116,20 @@
               id = "GR5MHK2-HDCFX4I-Y7JYKDN-EFTQFG6-24CXSHB-M5C6R3G-2GWX5ED-VEPAQA7";
             };
           };
+        };
+
+        gpg = {
+          system = "aarch64-linux";
+          modules =
+            [
+              (import ./machines/gpg.nix inputs.drduh-yubikey-guide)
+              ./profiles/core/configuration.nix
+              ./profiles/core/hm.nix
+              ./profiles/core/meta.nix
+              ./profiles/core/neovim.nix
+            ]
+            ++ modulesIn ./profiles/graphical;
+          opts = { };
         };
 
         vm-aarch64 = {

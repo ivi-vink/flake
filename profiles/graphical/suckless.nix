@@ -75,7 +75,6 @@
       pywal
       inotify-tools
 
-      (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];})
       dmenu
       # librewolf
       ungoogled-chromium
@@ -84,6 +83,15 @@
       maim
       asciinema
       asciinema-agg
+      fontconfig
+    ];
+  };
+  fonts = {
+    fontconfig = {
+      enable = true;
+    };
+    packages = with pkgs; [
+      (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];})
     ];
   };
 }
