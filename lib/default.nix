@@ -33,8 +33,18 @@ inputs: lib: prev: with lib; rec {
   }:
   let
     machine = machines.${name};
+    systemClosure =
+    (if hasInfix "darwin" system then
+      darwinSystem
+      else
+      nixosSystem);
+    home-manager =
+      (if hasInfix "darwin" system then
+      [inputs.home-manager.darwinModules.default]
+      else
+      [inputs.home-manager.nixosModules.default]);
   in
-  lib.nixosSystem {
+  systemClosure {
     inherit lib system;
     specialArgs = {
       inherit (inputs) self;
@@ -43,10 +53,7 @@ inputs: lib: prev: with lib; rec {
     modules =
       modules
       ++
-      (if lib.hasInfix "darwin" system then
-      [inputs.home-manager.darwinModules.default]
-      else
-      [inputs.home-manager.nixosModules.default])
+      home-manager
       ++ [
         ({pkgs, ...}: {
           nixpkgs.overlays = with lib; [
@@ -60,9 +67,9 @@ inputs: lib: prev: with lib; rec {
       ];
   };
 
-  mkSystems = systems:
+  mkSystemsFor = allSystems: systems:
     let
-      machines = mkMachines (mapAttrs (name: value: value.opts) systems);
+      machines = mkMachines (mapAttrs (name: value: value.opts) allSystems);
     in
       (mapAttrs (mkSystem machines) systems);
 

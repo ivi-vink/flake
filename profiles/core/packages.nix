@@ -32,7 +32,6 @@ with lib;
     # gcc
     gnumake
     file
-    psmisc
     bc
     mediainfo
     bat
@@ -42,6 +41,7 @@ with lib;
   ] ++ (optionals (!machine.isDarwin) [
     man-pages
     man-pages-posix
+    psmisc
     # pkgsi686Linux.glibc
     gdb
     pciutils
