@@ -1,0 +1,176 @@
+{
+  description = "A simple Go package";
+
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+  outputs = { self, nixpkgs }:
+    let
+
+      # System types to support.
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+
+      # Helper function to generate an attrset '{ x86_64-linux = f "x86_64-linux"; ... }'.
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      # Nixpkgs instantiated for supported system types.
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+
+    in
+    {
+
+      # Requires dirty nixbld with access to docker daemon
+      packages = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+          getImageWithSkopeo =
+          let
+          fixName = name: builtins.replaceStrings [ "/" ":" ] [ "-" "-" ] name;
+          in
+          { imageName
+          , transport
+            # To find the digest of an image, you can use skopeo:
+            # see doc/functions.xml
+          , imageDigest
+          , sha256
+          , os ? "linux"
+          , # Image architecture, defaults to the architecture of the `hostPlatform` when unset
+            arch ? pkgs.go.GOARCH
+            # This is used to set name to the pulled image
+          , finalImageName ? imageName
+            # This used to set a tag to the pulled image
+          , finalImageTag ? "latest"
+            # This is used to disable TLS certificate verification, allowing access to http registries on (hopefully) trusted networks
+          , tlsVerify ? true
+
+          , name ? fixName "image-${finalImageName}-${finalImageTag}.tar"
+          }:
+                pkgs.runCommand name
+            {
+              inherit imageDigest;
+              imageName = finalImageName;
+              imageTag = finalImageTag;
+              impureEnvVars = pkgs.lib.fetchers.proxyImpureEnvVars;
+              outputHashMode = "flat";
+              outputHashAlgo = "sha256";
+              outputHash = sha256;
+
+              nativeBuildInputs = [ pkgs.skopeo ];
+              SSL_CERT_FILE = "${pkgs.cacert.out}/etc/ssl/certs/ca-bundle.crt";
+
+              sourceURL = if transport == "docker-daemon:" then "${transport}${imageDigest}" else "${transport}${imageName}@${imageDigest}";
+              destNameTag = "${finalImageName}:${finalImageTag}";
+            } ''
+            skopeo \
+              --insecure-policy \
+              --tmpdir=$TMPDIR \
+              --override-os ${os} \
+              --override-arch ${arch} \
+              copy \
+              --src-tls-verify=${pkgs.lib.boolToString tlsVerify} \
+              "$sourceURL" "docker-archive://$out:$destNameTag" \
+              | cat  # pipe through cat to force-disable progress bar
+          '';
+          pnsh = getImageWithSkopeo {
+            transport   = "docker-daemon:";
+            imageName   = "pionativedev.azurecr.io/pionative/pnsh-ide-support";
+            imageDigest = "sha256:976ab3d2e27ae229fa944057482772b1d7047c4e1aee026cc18ff73bc9a69193";
+            sha256      = "sha256-TljHXj0t6JWs5TW0gLRUAjH7dZdY3n1RaYKxXedvqOw=";
+          };
+
+          # from: https://github.com/nix-community/home-manager/blob/70824bb5c790b820b189f62f643f795b1d2ade2e/modules/programs/neovim.nix#L412
+          neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
+            viAlias = true;
+            vimAlias = true;
+            withPython3 = false;
+            withRuby = false;
+            withNodeJs = false;
+            extraPython3Packages = _: [];
+            extraLuaPackages = _: [];
+
+            plugins = with pkgs.vimPlugins; [
+              # highlighting
+              nvim-treesitter.withAllGrammars
+              playground
+              gruvbox-material
+              kanagawa-nvim
+              lsp_lines-nvim
+              gitsigns-nvim
+              vim-helm
+              lualine-nvim
+
+              # external
+              oil-nvim
+              vim-fugitive
+              venn-nvim
+              gv-vim
+              zoxide-vim
+              obsidian-nvim
+              go-nvim
+
+              # Coding
+              fzf-lua
+              nvim-lspconfig
+              null-ls-nvim
+              lsp_signature-nvim
+              nvim-dap
+              nvim-dap-ui
+              nvim-nio
+              nvim-dap-python
+              luasnip
+              vim-test
+              nvim-lint
+              vim-surround
+              conform-nvim
+              trouble-nvim
+              vim-easy-align
+              nvim-comment
+
+              # cmp
+              nvim-cmp
+              cmp-cmdline
+              cmp-nvim-lsp
+              cmp-buffer
+              cmp-path
+              cmp_luasnip
+
+              # conjure
+              vim-racket
+              nvim-parinfer
+              hotpot-nvim
+            ];
+            customRC = "";
+          };
+
+          neovim-package = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (neovimConfig
+            // {
+              wrapRc = false;
+            });
+        in
+        {
+          pnsh-container = pnsh;
+          neovim-container = pkgs.dockerTools.buildImage {
+            name =  "pionativedev.azurecr.io/pionative/pnsh-nvim";
+            fromImage = pnsh;
+            copyToRoot = pkgs.buildEnv {
+              extraPrefix = "/usr";
+              name = "neovim-nix-ide-usr";
+              paths =  with pkgs; [
+                neovim-package
+                docker-client
+                zoxide
+              ];
+            };
+            config = {
+              Entrypoint = ["/bin/zsh"];
+              Cmd = ["-c" "boot"];
+            };
+          };
+        });
+
+      # The default package for 'nix build'. This makes sense if the
+      # flake provides only one package or there is a clear "main"
+      # package.
+      defaultPackage = forAllSystems (system: self.packages.${system}.neovim-container);
+    };
+}
+

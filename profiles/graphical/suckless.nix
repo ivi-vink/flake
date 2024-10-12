@@ -77,7 +77,8 @@
 
       (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];})
       dmenu
-      librewolf
+      # librewolf
+      ungoogled-chromium
       xclip
       xdotool
       maim

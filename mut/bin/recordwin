@@ -1,0 +1,9 @@
+#!/bin/sh
+if pidof ffmpeg; then
+  notify-send ffmpeg "killing current recording"
+  pkill --signal=TERM ffmpeg
+else
+  notify-send ffmpeg "Start recording"
+  ffmpeg -f x11grab $(xdotool getwindowfocus getwindowgeometry | tr '\n' ' ' | gawk '{print "-video_size " $8 " -i +"$4 }') -y ~/recording.webm
+  notify-send ffmpeg "saved recording to ~/recording.webm"
+fi

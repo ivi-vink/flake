@@ -62,14 +62,14 @@
 
 (local commenter (require :nvim_comment))
 (commenter.setup)
-(local cinnamon (require :cinnamon))
-(cinnamon.setup {
-                 :extra_keymaps true
-                 :override_keymaps true
-                 :max_length 200
-                 :horizontal_scroll false
-                 :default_delay 7
-                 :scroll_limit -1})
+; (local cinnamon (require :cinnamon))
+; (cinnamon.setup {
+;                  :extra_keymaps true
+;                  :override_keymaps true
+;                  :max_length 200
+;                  :horizontal_scroll false
+;                  :default_delay 7
+;                  :scroll_limit -1})
 
 
 (fn i-grep [word file]

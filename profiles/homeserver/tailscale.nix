@@ -4,7 +4,6 @@
     enable = true;
     useRoutingFeatures = "server";
     extraUpFlags = ["--advertise-exit-node" "--advertise-routes=${builtins.head machine.ipv4}/32"];
-    extraDaemonFlags = ["--statedir=/data/tailscaled"];
     authKeyFile = config.secrets.tailscale.path;
   };
 

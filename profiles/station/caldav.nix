@@ -27,7 +27,7 @@
           type = "caldav";
           url = "https://cal.${my.domain}";
           userName = "mike";
-          passwordCommand = ["${pkgs.bashInteractive}/bin/bash" "-c" "echo 'hi'"];
+          passwordCommand = ["echo" "''"];
         };
         vdirsyncer = {
           enable = true;
@@ -52,7 +52,7 @@
           type = "carddav";
           url = "https://cal.${my.domain}";
           userName = "mike";
-          passwordCommand = ["${pkgs.bashInteractive}/bin/bash" "-c" "echo 'hi'"];
+          passwordCommand = ["echo" "''"];
         };
         vdirsyncer = {
           enable = true;

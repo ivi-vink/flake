@@ -6,12 +6,49 @@
   system.stateVersion = "24.05";
   virtualisation.vmware.guest.enable = true;
   virtualisation.docker.enable = true;
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
+  users.groups.docker.members = [
+  "nixbld1"
+  "nixbld10"
+  "nixbld11"
+  "nixbld12"
+  "nixbld13"
+  "nixbld14"
+  "nixbld15"
+  "nixbld16"
+  "nixbld17"
+  "nixbld18"
+  "nixbld19"
+  "nixbld2"
+  "nixbld20"
+  "nixbld21"
+  "nixbld22"
+  "nixbld23"
+  "nixbld24"
+  "nixbld25"
+  "nixbld26"
+  "nixbld27"
+  "nixbld28"
+  "nixbld29"
+  "nixbld3"
+  "nixbld30"
+  "nixbld31"
+  "nixbld32"
+  "nixbld4"
+  "nixbld5"
+  "nixbld6"
+  "nixbld7"
+  "nixbld8"
+  "nixbld9"
+  ];
   networking.hostName = "vm-aarch64";
   programs.nix-ld.enable = true;
 
   hm.xsession.initExtra = ''
       ${pkgs.xorg.xset}/bin/xset r rate 230 30
-      [ -z "$(lsusb | grep microdox)" ] && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option "ctrl:swapcaps"
       ${pkgs.open-vm-tools}/bin/vmware-user-suid-wrapper
       wal -R
       dwm
@@ -28,6 +65,10 @@
     krew
     kubelogin
     just
+    (ffmpeg.override {
+     withXcb = true;
+   })
+    mpv
   ];
 
   services.pcscd.enable = true;
@@ -108,4 +149,5 @@
   # networking.interfaces.ens160.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nix.settings.trusted-users = [ my.username ];
 }

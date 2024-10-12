@@ -1,0 +1,2 @@
+#!/bin/sh
+nix-shell -p yubikey-manager --run 'ykman oath accounts code --single Pionative:mike@pionative.com' | xclip -f | xclip -sel c -f

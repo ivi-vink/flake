@@ -23,7 +23,7 @@
    :settings
    {:venvPath (.. (vim.fn.getcwd) :.venv)}})
 
-(lspconfig.tsserver.setup
+(lspconfig.ts_ls.setup
   {:root_dir
    (lspconfig.util.root_pattern
      :.git

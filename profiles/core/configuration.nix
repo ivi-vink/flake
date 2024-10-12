@@ -32,7 +32,7 @@
         uid = mkIf (!machine.isDarwin) 1000;
         description = my.realName;
         openssh.authorizedKeys.keys = my.sshKeys;
-        extraGroups = ["wheel" "networkmanager" "docker" "transmission" "dialout" "test"];
+        extraGroups = ["wheel" "networkmanager" "docker" "transmission" "dialout" "test" "libvirtd"];
         isNormalUser = true;
       };
       root = {
