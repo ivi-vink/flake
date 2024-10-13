@@ -1,6 +1,0 @@
-#!/bin/sh
-if ! tmux has-session -t nvim
-then
-    tmux new -s nvim -- $SHELL \; send nvim C-m
-fi
-tmux attach -t nvim
