@@ -320,6 +320,7 @@
           export EDITOR="nvim"
           export TERMINAL="st"
           export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
 
           # Workarounds for completion here...
           command -v zoxide  >/dev/null 2>&1 && eval "$(zoxide init zsh)"
