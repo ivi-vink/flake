@@ -9,41 +9,15 @@
   virtualisation.docker.rootless = {
     enable = true;
     setSocketVariable = true;
+    daemon.settings = {
+      hosts = ["unix:///run/user/${toString config.my.uid}/docker.sock" "tcp://127.0.0.1:2376"];
+    };
   };
-  users.groups.docker.members = [
-  "nixbld1"
-  "nixbld10"
-  "nixbld11"
-  "nixbld12"
-  "nixbld13"
-  "nixbld14"
-  "nixbld15"
-  "nixbld16"
-  "nixbld17"
-  "nixbld18"
-  "nixbld19"
-  "nixbld2"
-  "nixbld20"
-  "nixbld21"
-  "nixbld22"
-  "nixbld23"
-  "nixbld24"
-  "nixbld25"
-  "nixbld26"
-  "nixbld27"
-  "nixbld28"
-  "nixbld29"
-  "nixbld3"
-  "nixbld30"
-  "nixbld31"
-  "nixbld32"
-  "nixbld4"
-  "nixbld5"
-  "nixbld6"
-  "nixbld7"
-  "nixbld8"
-  "nixbld9"
-  ];
+  systemd.user.services.docker.serviceConfig.Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS=\"-p 0.0.0.0:2376:2376/tcp\"";
+  systemd.user.services.docker.serviceConfig.ExecStart = let
+      cfg = config.virtualisation.docker.rootless;
+    in
+    mkForce "${cfg.package}/bin/dockerd-rootless --config-file=${(pkgs.formats.json {}).generate "daemon.json" cfg.daemon.settings}";
   networking.hostName = "vm-aarch64";
   programs.nix-ld.enable = true;
 
