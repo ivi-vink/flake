@@ -1,10 +1,14 @@
-{config,lib, ...}: with lib;
 {
+  config,
+  lib,
+  ...
+}:
+with lib; {
   hm = {
     programs.git = {
       enable = true;
       userName = my.realName;
-      userEmail = if config.networking.hostName == "work" then "mike@pionative.com" else my.email;
+      userEmail = my.email;
       extraConfig = {
         worktree.guessRemote = true;
         mergetool.fugitive.cmd = "vim -f -c \"Gdiff\" \"$MERGED\"";
