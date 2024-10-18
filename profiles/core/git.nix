@@ -15,8 +15,25 @@ with lib; {
         merge.tool = "fugitive";
         gpg.format = "ssh";
         user.signingKey = "${config.my.home}/.ssh/id_ed25519_sk.pub";
-        commit.gpgsign = true;
+        commit.gpgsign = false;
       };
+
+      includes = let
+        no-reply-email = {
+          user = {
+            email = "59492084+ivi-vink@users.noreply.github.com";
+          };
+        };
+      in [
+        {
+          condition = "hasconfig:remote.*.url:git@github.com:**/**";
+          contents = no-reply-email;
+        }
+        {
+          condition = "hasconfig:remote.*.url:https://github.com/**/**";
+          contents = no-reply-email;
+        }
+      ];
 
       ignores = [
         "/.direnv/"
