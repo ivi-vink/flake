@@ -16,6 +16,7 @@
   {:formatters_by_ft
    {:python [:ruff_format :isort]
     :go [:goimports]
+    :nix [:alejandra]
     :terraform [:terraform_fmt]
     :hcl [:terraform_fmt]}
    :format_on_save

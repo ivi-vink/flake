@@ -22,10 +22,10 @@
   programs.nix-ld.enable = true;
 
   hm.xsession.initExtra = ''
-      ${pkgs.xorg.xset}/bin/xset r rate 230 30
-      ${pkgs.open-vm-tools}/bin/vmware-user-suid-wrapper
-      wal -R
-      dwm
+    ${pkgs.xorg.xset}/bin/xset r rate 230 30
+    ${pkgs.open-vm-tools}/bin/vmware-user-suid-wrapper
+    wal -R
+    dwm
   '';
   environment.systemPackages = with pkgs; [
     kubernetes-helm

@@ -12,7 +12,7 @@ clip() {
 
 case "$(printf "a selected area\\ncurrent window\\nfull screen\\na selected area (save)\\ncurrent window (save)\\nfull screen (save)" | dmenu -l 6 -i -p "Screenshot which area?")" in
     "a selected area") maim -u -s | clip ;;
-    "current window") 
+    "current window")
         echo "$(xdotool getactivewindow)"
         maim -q -d 0.2 -i "$(xdotool getactivewindow)" | clip ;;
     "full screen") maim -q -d 0.2 | clip ;;
