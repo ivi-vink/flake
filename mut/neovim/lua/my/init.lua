@@ -109,15 +109,10 @@ function cope()
   vim.cmd(":botright copen " .. math.floor(vim.o.lines / 2.1))
 end
 local map = vim.keymap.set
--- (let [map vim.keymap.set]
 map("n", "gb", ":GBrowse<CR>")
 map("n", "g<cr>", ":G<cr>")
 map("n", "ge", function() vim.diagnostic.open_float() end)
 -- (vim.diagnostic.config {:virtual_text false})
---   ;(map :n :ga "<Plug>(EasyAlign)")
---   ;(map :x :ga "<Plug>(EasyAlign)")
---   ; (map :n :<leader>d<cr> (fn [] (draw true)))
---   ; (map :n :<leader>d<bs> (fn [] (draw false)))
 map("n", "-", ":Oil<cr>")
 map("n", "_", oil.open_cwd.callback)
 
@@ -127,7 +122,7 @@ map("n", "<leader>ll", ":lopen<cr>")
 map("n", "<leader>l<BS>", ":lclose<cr>")
 map("n", "<M-h>", cope)
 map("n", "<C-n>", ":cnext<cr>")
-map("n", "<C-p>", "cprev<cr>")
+map("n", "<C-p>", ":cprev<cr>")
 map("n", "<C-a>", ":Recompile<CR>")
 map("n", "<C-s>", function()
   vim.api.nvim_feedkeys(
@@ -174,7 +169,6 @@ map("n", "<leader>xa", fzf.args)
 map("n", "<leader>x;", fzf.quickfix)
 map("n", "<leader>xb", function()
   fzf.buffers({
-    keymap={fzf={["alt-a"]="toggle-all"}},
     actions={default={fn=action.buf_edit_or_qf}}
   })
 end)
