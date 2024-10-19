@@ -48,9 +48,20 @@ local fzf = require("fzf-lua")
 local action = (require "fzf-lua.actions")
 fzf.setup {"max-perf"}
 fzf.register_ui_select()
-require("gitsigns").setup()
 require("lsp_signature").setup()
 require("nvim-treesitter.configs").setup({highlight =  {enable = true}})
+require("gitsigns").setup({
+  current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
+    delay = 1000,
+    ignore_whitespace = false,
+    virt_text_priority = 100,
+    use_focus = true,
+  },
+})
+require("nvim_comment").setup()
 
 -- (do
 --   (local fzf (require "fzf-lua"))
@@ -75,9 +86,6 @@ require("nvim-treesitter.configs").setup({highlight =  {enable = true}})
 --        (vim.keymap.del "n" "K")
 --        (vim.keymap.del "n" "L")
 --        (vim.keymap.del "n" "H")))))
-
-local commenter = require("nvim_comment")
-commenter.setup()
 
 function i_grep(word, file)
   vim.api.nvim_feedkeys(
