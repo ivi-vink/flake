@@ -1,1 +1,1 @@
-return require("conf")
+return require("my")

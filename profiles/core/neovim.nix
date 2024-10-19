@@ -90,10 +90,9 @@
         cmp_luasnip
 
         # trying out lisp
-        # conjure
+        conjure
         vim-racket
         nvim-parinfer
-        hotpot-nvim
       ];
     };
   };

@@ -19,7 +19,7 @@ with lib; {
       };
 
       includes = let
-        no-reply-email = {
+        gh-no-reply-email = {
           user = {
             email = "59492084+ivi-vink@users.noreply.github.com";
           };
@@ -27,11 +27,11 @@ with lib; {
       in [
         {
           condition = "hasconfig:remote.*.url:git@github.com:**/**";
-          contents = no-reply-email;
+          contents = gh-no-reply-email;
         }
         {
           condition = "hasconfig:remote.*.url:https://github.com/**/**";
-          contents = no-reply-email;
+          contents = gh-no-reply-email;
         }
       ];
 

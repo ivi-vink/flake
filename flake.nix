@@ -30,14 +30,17 @@
     deploy-rs,
     ...
   }: let
-    withLibs = nixpkgs.lib.foldl
+    withLibs =
+      nixpkgs.lib.foldl
       (acc: inputLib: acc.extend (_: _: inputLib))
       nixpkgs.lib;
 
-    lib = (withLibs [
-      inputs.nix-darwin.lib
-      home-manager.lib
-    ]).extend
+    lib =
+      (withLibs [
+        inputs.nix-darwin.lib
+        home-manager.lib
+      ])
+      .extend
       (import ./lib inputs);
 
     nixosSystems = with lib; {
@@ -76,8 +79,8 @@
           ++ modulesIn ./profiles/homeserver;
         opts = {
           isServer = true;
-          ipv4 = [ "192.168.2.13" ];
-          ipv6 = [ "2a02:a46b:ee73:1:c240:4bcb:9fc3:71ab" ];
+          ipv4 = ["192.168.2.13"];
+          ipv6 = ["2a02:a46b:ee73:1:c240:4bcb:9fc3:71ab"];
           tailnet = {
             ipv4 = "100.90.145.95";
             ipv6 = "fd7a:115c:a1e0::e2da:915f";
@@ -100,8 +103,8 @@
           ++ modulesIn ./profiles/server;
         opts = {
           isServer = true;
-          ipv4 = [ "65.109.143.65" ];
-          ipv6 = [ "2a01:4f9:c012:ccc2::1" ];
+          ipv4 = ["65.109.143.65"];
+          ipv6 = ["2a01:4f9:c012:ccc2::1"];
         };
       };
 
@@ -116,7 +119,7 @@
             ./profiles/core/neovim.nix
           ]
           ++ modulesIn ./profiles/graphical;
-        opts = { };
+        opts = {};
       };
 
       vm-aarch64 = {
@@ -182,16 +185,18 @@
       };
 
       devShells.x86_64-linux.hetzner = let
-        pkgs = (import nixpkgs {system = "x86_64-linux";});
-      in with pkgs; mkShell {
-        name = "deploy";
-        buildInputs = [
-          pkgs.bashInteractive
-          deploy-rs.packages."${system}".default
-        ];
-        shellHook = ''
-          export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
-        '';
-      };
-   };
+        pkgs = import nixpkgs {system = "x86_64-linux";};
+      in
+        with pkgs;
+          mkShell {
+            name = "deploy";
+            buildInputs = [
+              pkgs.bashInteractive
+              deploy-rs.packages."${system}".default
+            ];
+            shellHook = ''
+              export HCLOUD_TOKEN="$(pass show personal/hetzner-token)"
+            '';
+          };
+    };
 }
