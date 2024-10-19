@@ -13,7 +13,7 @@ event(
    pattern= { "ZoxideDirChanged" },
    callback= function()
      vim.schedule(function()
-       oil.open(vim.fn.getcwd)
+       oil.open(vim.fn.getcwd())
      end)
    end})
 

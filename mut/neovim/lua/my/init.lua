@@ -63,10 +63,6 @@ require("gitsigns").setup({
 })
 require("nvim_comment").setup()
 
--- (do
---   (local fzf (require "fzf-lua"))
---   ((. fzf "register_ui_select")))
-
 -- (local
 --  draw
 --  (fn [toggle]
@@ -99,15 +95,11 @@ function i_grep(word, file)
     "n", false
   )
 end
--- (fn i-grep [word file]
---    (vim.api.nvim_feedkeys
---      (vim.api.nvim_replace_termcodes
---        (.. ":silent grep " (if (not= "" word) (.. word " ") "") (file:gsub "oil://" "") "<c-f>B<left>i<space>") true false true)
---      :n false))
--- (local cope #(vim.cmd (.. ":botright copen " (math.floor (/ vim.o.lines 2.1)))))
+
 function cope()
   vim.cmd(":botright copen " .. math.floor(vim.o.lines / 2.1))
 end
+
 local map = vim.keymap.set
 map("n", "gb", ":GBrowse<CR>")
 map("n", "g<cr>", ":G<cr>")
@@ -123,7 +115,7 @@ map("n", "<leader>l<BS>", ":lclose<cr>")
 map("n", "<M-h>", cope)
 map("n", "<C-n>", ":cnext<cr>")
 map("n", "<C-p>", ":cprev<cr>")
-map("n", "<C-a>", ":Recompile<CR>")
+map("n", "<C-a>", ":Rerun<CR>")
 map("n", "<C-s>", function()
   vim.api.nvim_feedkeys(
     vim.api.nvim_replace_termcodes(
@@ -207,112 +199,107 @@ end,
   {nargs=1}
 )
 
--- (local qf
---        (fn [{: id : title}]
---          (fn [lines]
---            (local s (fn [line pattern]
---                       (let [(result n) (line:gsub pattern "")]
---                          (match n
---                            nil line
---                            _ result))))
---            (local prettify #(-> $1
---                                 (s "%c+%[[0-9:;<=>?]*[!\"#$%%&'()*+,-./]*[@A-Z%[%]^_`a-z{|}~]*;?[A-Z]?")))
---            (vim.schedule
---              #(do
---                 (local is-qf (= (vim.opt_local.buftype:get) "quickfix"))
---                 (local is-at-last-line (let [[row col] (vim.api.nvim_win_get_cursor 0)
---                                              last-line (vim.api.nvim_buf_line_count 0)]
---                                          (do
---                                            (= row last-line))))
---                 (vim.fn.setqflist
---                   [] :a
---                   {: id : title
---                    :lines
---                    (icollect [l lines]
---                      (do
---                        (if (not= l "")
---                            (prettify l))))})
---                 (if (or
---                       (not is-qf)
---                       (and is-at-last-line is-qf))
---                     (vim.cmd ":cbottom")))))))
---
--- (var last_job_state nil)
--- (var last_job_thunk nil)
--- (local qfjob
---        (fn [cmd stdin]
---          (local title (table.concat cmd " "))
---          (vim.fn.setqflist [] " " {: title})
---          (local add2qf (qf (vim.fn.getqflist {:id 0 :title 1})))
---          (set
---            last_job_state
---            (vim.system
---                 cmd
---                 {: stdin
---                  :stdout (fn [err data]
---                            (if data
---                                (add2qf (string.gmatch data "[^\n]+"))))
---                  :stderr (fn [err data]
---                            (if data
---                                (add2qf (string.gmatch data "[^\n]+"))))}
---                 (fn [obj]
---                  (vim.schedule
---                    #(do
---                       (set winnr (vim.fn.winnr))
---                       (if (not= obj.code 0)
---                           (do
---                             (cope)
---                             (if (not= (vim.fn.winnr) winnr)
---                                 (do
---                                   (vim.notify (.. title " failed, going back"))
---                                   (vim.cmd "wincmd p | cbot"))
---                                 (vim.notify (.. title "failed, going back"))))
---                           (vim.notify (.. "\"" title "\" succeeded!"))))))))))
---
--- (vim.api.nvim_create_user_command
---   :Compile
---   (fn [cmd]
---     (local thunk #(qfjob cmd.fargs nil))
---     (set last_job_thunk thunk)
---     (thunk))
---   {:nargs :* :bang true :complete "file"})
--- (vim.api.nvim_create_user_command
---   :Sh
---   (fn [cmd]
---     (local thunk #(qfjob [:zshcmd cmd.args] nil))
---     (set last_job_thunk thunk)
---     (thunk))
---   {:nargs :* :bang true :complete :shellcmd})
--- (vim.api.nvim_create_user_command
---   :Recompile
---   (fn []
---     (if (= nil last_job_state)
---         (vim.notify "nothing to recompile")
---         (if (not (last_job_state:is_closing))
---             (vim.notify "Last job not finished")
---             (last_job_thunk))))
---   {:bang true})
--- (vim.api.nvim_create_user_command
---   :Stop
---   (fn []
---     (if (not= nil last_job_state)
---         (do
---           (last_job_state:kill)
---           (vim.notify "killed job"))
---         (vim.notify "nothing to do")))
---   {:bang true})
--- (vim.api.nvim_create_user_command
---   :Args
---   (fn [obj]
---     (if (not= 0 (length obj.fargs))
---         (do
---           (local thunk #(qfjob [:sh :-c obj.args] (vim.fn.argv)))
---           (set last_job_thunk thunk)
---           (thunk))))
---   {:nargs :* :bang true :complete :shellcmd})
---
---
---
+
+function qf(inputs)
+  local id, title = inputs.id, inputs.title
+  local prettify = function(line)
+    local l = line:gsub("%c+%[[0-9:;<=>?]*[!\"#$%%&'()*+,-./]*[@A-Z%[%]^_`a-z{|}~]*;?[A-Z]?", "")
+    return l
+  end
+  local in_qf = function()
+    return vim.opt_local.buftype:get() == "quickfix"
+  end
+  local is_at_last_line = function()
+    local row, _ = vim.api.nvim_win_get_cursor(0)
+    local last_line = vim.api.nvim_buf_line_count(0)
+    return row == last_line
+  end
+  return function(lines)
+    lines = vim.iter(lines):map(prettify):totable()
+    vim.schedule(function()
+      vim.fn.setqflist(
+        {}, "a", {
+          id=id, title=title,
+          lines=lines
+        }
+      )
+      if (not in_qf()) or (is_at_last_line() and in_qf()) then
+        vim.cmd ":cbottom"
+      end
+    end)
+  end
+end
+
+local last_job_state = nil
+local last_job_thunk = nil
+function qfjob(cmd, stdin)
+  local title = table.concat(cmd, " ")
+  vim.fn.setqflist({}, " ", {title=title})
+  local append_lines = qf(vim.fn.getqflist({id=0,title=1}))
+  last_job_state = vim.system(
+    cmd, {
+      stdin=stdin,
+      stdout=function(err,data)
+        if data then
+          append_lines(data:gmatch("[^\n]+"))
+        end
+      end,
+      stderr=function(err,data)
+        if data then
+          append_lines(data:gmatch("[^\n]+"))
+        end
+      end,
+    },
+    function(job)
+      vim.schedule(function()
+        local winnr = vim.fn.winnr()
+        if not (job.code == 0) then
+          cope()
+          if not (winnr == vim.fn.winnr()) then
+            vim.notify([["]] .. title .. [[" failed!]])
+            vim.cmd "wincmd p | cbot"
+          end
+        else
+          vim.notify([["]] .. title .. [[" succeeded!]])
+        end
+      end)
+    end)
+end
+
+vim.api.nvim_create_user_command(
+  "Sh",
+  function(cmd)
+    local thunk = function() qfjob({ "zshcmd", cmd.args }, nil) end
+    last_job_thunk = thunk
+    thunk()
+  end,
+  {nargs="*", bang=true, complete="shellcmd"})
+
+vim.api.nvim_create_user_command(
+  "Rerun",
+  function(cmd)
+    if not last_job_state then
+      vim.notify "nothing to rerun"
+    else
+      if not last_job_state:is_closing() then
+        vim.notify "Last job not finished"
+      else
+        last_job_thunk()
+      end
+    end
+  end, {bang=true})
+
+vim.api.nvim_create_user_command(
+  "Stop",
+  function()
+    if last_job_state then
+      last_job_state:kill()
+      vim.notify "killed job"
+    else
+        vim.notify "nothing to do"
+    end
+  end, {bang=true})
+
 -- (fn browse_git_remote
 --   [data]
 --   (P data)
