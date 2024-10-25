@@ -18,6 +18,11 @@
   in
     prev.vimPlugins
     // {
+      avante-nvim = getVimPlugin {
+        name = "avante-nvim";
+        git = "yetone/avante.nvim";
+        rev = "a8e2b9a00c73b11d28857f0f5de79a9022281182";
+      };
       nvim-cinnamon = getVimPlugin {
         name = "vim-easygrep";
         git = "declancm/cinnamon.nvim";

@@ -19,8 +19,13 @@ function has_words_before()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   local word = unpack(vim.api.nvim_buf_get_lines(0, line-1, line, true))
   local before = word:sub(col, col)
-  local is_string = before:match("%s")
-  return (not (col == 0)) and is_string
+  local is_whitespace = before:match("%s")
+
+  local is_not_first_col = (not (col == 0))
+  local is_not_whitespace = (is_whitespace == nil)
+  local result =  is_not_first_col and is_not_whitespace
+  P("has_words_before: " .. tostring(result) .. ", because is_not_first_col and is_not_whitespace: " .. tostring(is_not_first_col) .. " and " .. tostring(is_not_whitespace) .. ", is_whitespace: '" .. tostring(is_whitespace) .. "'")
+  return result
 end
 
 function in_edit_mode(line)

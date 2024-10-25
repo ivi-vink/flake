@@ -45,6 +45,7 @@
       plugins = with pkgs.vimPlugins; [
         # highlighting
         nvim-treesitter.withAllGrammars
+        avante-nvim
         playground
         gruvbox-material
         kanagawa-nvim

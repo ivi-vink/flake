@@ -27,7 +27,7 @@ local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
 
 vim.keymap.set( { "i", }, "<C-K>", ls.expand, {silent= true})
-vim.keymap.set( { "i", "s" }, "<C-L>", function() ls.expand_or_jump(1) end, {silent= true})
+vim.keymap.set( { "i", "s" }, "<C-L>", function() if ls.expand_or_jumpable() then ls.expand_or_jump(1) end end, {silent=true})
 vim.keymap.set( { "i", "s" }, "<C-J>", function() ls.jump(-1) end, {silent=true})
 vim.keymap.set( { "i", "s" }, "<C-E>", function()
   if ls.choice_active() then
@@ -37,5 +37,5 @@ end, {silent=true})
 
 ls.add_snippets(
   "go", {
-   s("echo", { t("fmt.Printf("), i(1), t(")"), i(2) })
+   s("echo", { t("fmt.Println("), i(1), t(")"), i(2) })
  })

@@ -1,13 +1,11 @@
+require("my.settings")
 _G.P = function(...)
   vim.iter({...}):map(vim.inspect):each(print)
 end
 _G.ternary = function ( cond , T , F )
     if cond then return T else return F end
 end
-
-vim.schedule(function()
-  vim.cmd "colorscheme kanagawa-wave"
-end)
+vim.cmd "colorscheme kanagawa-wave"
 
 vim.cmd("filetype plugin on")
 vim.cmd("filetype indent on")
@@ -19,70 +17,7 @@ vim.api.nvim_set_hl(0, "VirtualTextError", {link= "DiffDelete"})
 vim.api.nvim_set_hl(0, "VirtualTextInfo", {link= "DiffChange"})
 vim.api.nvim_set_hl(0, "VirtualTextHint", {link= "DiffAdd"})
 
-vim.opt.clipboard:append({"unnamedplus"})
-
-local osc52 = require("vim.ui.clipboard.osc52")
-
-function paste()
-  return {
-    vim.fn.split(vim.fn.getreg(""), "\n"),
-    vim.fn.getregtype("")
-  }
-end
-function xclip(lines)
-   vim.system({"xclip"}, {text= true, stdin=lines}, function(exit) end)
-   vim.system({"xclip", "-selection", "clipboard"}, {text= true, stdin=lines}, function(exit) end)
-end
-vim.g.clipboard = {
-  name = "OSC 52",
-  copy =  {
-    ["+"] = xclip, ["*"] = xclip
-  },
-  paste = {
-    ["+"] = paste, ["*"] = paste
-  }
-}
-
-local oil = require("oil.actions")
-local fzf = require("fzf-lua")
-local action = (require "fzf-lua.actions")
-fzf.setup {"max-perf"}
-fzf.register_ui_select()
-require("lsp_signature").setup()
-require("nvim-treesitter.configs").setup({highlight =  {enable = true}})
-require("gitsigns").setup({
-  current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-  current_line_blame_opts = {
-    virt_text = true,
-    virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
-    delay = 1000,
-    ignore_whitespace = false,
-    virt_text_priority = 100,
-    use_focus = true,
-  },
-})
-require("nvim_comment").setup()
-
--- (local
---  draw
---  (fn [toggle]
---    (if
---      toggle
---      (do
---        (vim.cmd "set virtualedit=all")
---        (vim.keymap.set :v "<leader>;" "<esc>:VBox<CR>")
---        (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
---        (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
---        (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
---        (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
---      (do
---        (vim.cmd "set virtualedit=")
---        (vim.keymap.del :v "<leader>;")
---        (vim.keymap.del "n" "J")
---        (vim.keymap.del "n" "K")
---        (vim.keymap.del "n" "L")
---        (vim.keymap.del "n" "H")))))
-
+local map = vim.keymap.set
 function i_grep(word, file)
   vim.api.nvim_feedkeys(
     vim.api.nvim_replace_termcodes(
@@ -100,14 +35,11 @@ function cope()
   vim.cmd(":botright copen " .. math.floor(vim.o.lines / 2.1))
 end
 
-local map = vim.keymap.set
 map("n", "gb", ":GBrowse<CR>")
 map("n", "g<cr>", ":G<cr>")
 map("n", "ge", function() vim.diagnostic.open_float() end)
 -- (vim.diagnostic.config {:virtual_text false})
 map("n", "-", ":Oil<cr>")
-map("n", "_", oil.open_cwd.callback)
-
 map("n", "<leader>qf", cope)
 map("n", "<leader>q<BS>", ":cclose<cr>")
 map("n", "<leader>ll", ":lopen<cr>")
@@ -151,12 +83,23 @@ map("n", "]x",":lnext<cr>")
 map("n", "[g",":GV<cr>")
 map("n", "]g",":GV?<cr>")
 map("n", "]G",":GV!<cr>")
-map("n", "<leader>xp", fzf.files)
 map("n", "<leader>:", function() i_grep("<c-r><c-w>", vim.fn.bufname("%")) end)
 map("v", "<leader>:", ":Vgrep!<cr>")
 map("n", "<leader>;", function() i_grep("", vim.fn.fnamemodify(vim.fn.bufname("%"), ":h")) end)
 map("v", "<leader>;",  ":Vgrep<cr>")
 map("n", "<leader>'", ":silent args `fd `<left>")
+map("n", "<leader>x<cr>", function() vim.cmd "b #" end)
+
+require("nvim_comment").setup()
+
+local oil_actions = require("oil.actions")
+map("n", "_", oil_actions.open_cwd.callback)
+
+local fzf = require("fzf-lua")
+local action = (require "fzf-lua.actions")
+fzf.setup {"max-perf"}
+fzf.register_ui_select()
+map("n", "<leader>xp", fzf.files)
 map("n", "<leader>xa", fzf.args)
 map("n", "<leader>x;", fzf.quickfix)
 map("n", "<leader>xb", function()
@@ -164,7 +107,6 @@ map("n", "<leader>xb", function()
     actions={default={fn=action.buf_edit_or_qf}}
   })
 end)
-map("n", "<leader>x<cr>", function() vim.cmd "b #" end)
 
 local obsidian = require("obsidian")
 obsidian.setup { workspaces = {
@@ -390,7 +332,62 @@ vim.api.nvim_create_user_command(
 -- (set vim.g.fugitive_browse_handlers
 --      [browse_git_remote])
 
-require("my.settings")
+-- require("lsp_signature").setup()
+require("nvim-treesitter.configs").setup({highlight =  {enable = true}})
+require("gitsigns").setup({
+  current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
+    delay = 1000,
+    ignore_whitespace = false,
+    virt_text_priority = 100,
+    use_focus = true,
+  },
+})
+
+vim.opt.clipboard:append({"unnamedplus"})
+
+local osc52 = require("vim.ui.clipboard.osc52")
+
+function paste()
+  return {
+    vim.fn.split(vim.fn.getreg(""), "\n"),
+    vim.fn.getregtype("")
+  }
+end
+function xclip(lines)
+   vim.system({"xclip"}, {text= true, stdin=lines}, function(exit) end)
+   vim.system({"xclip", "-selection", "clipboard"}, {text= true, stdin=lines}, function(exit) end)
+end
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy =  {
+    ["+"] = xclip, ["*"] = xclip
+  },
+  paste = {
+    ["+"] = paste, ["*"] = paste
+  }
+}
 require("my.events")
 require("my.packages")
 
+-- (local
+--  draw
+--  (fn [toggle]
+--    (if
+--      toggle
+--      (do
+--        (vim.cmd "set virtualedit=all")
+--        (vim.keymap.set :v "<leader>;" "<esc>:VBox<CR>")
+--        (vim.keymap.set "n" "J" "<C-v>j:VBox<CR>")
+--        (vim.keymap.set "n" "K" "<C-v>k:VBox<CR>")
+--        (vim.keymap.set "n" "L" "<C-v>l:VBox<CR>")
+--        (vim.keymap.set "n" "H" "<C-v>h:VBox<CR>"))
+--      (do
+--        (vim.cmd "set virtualedit=")
+--        (vim.keymap.del :v "<leader>;")
+--        (vim.keymap.del "n" "J")
+--        (vim.keymap.del "n" "K")
+--        (vim.keymap.del "n" "L")
+--        (vim.keymap.del "n" "H")))))
