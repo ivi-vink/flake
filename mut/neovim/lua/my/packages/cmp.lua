@@ -24,7 +24,6 @@ function has_words_before()
   local is_not_first_col = (not (col == 0))
   local is_not_whitespace = (is_whitespace == nil)
   local result =  is_not_first_col and is_not_whitespace
-  P("has_words_before: " .. tostring(result) .. ", because is_not_first_col and is_not_whitespace: " .. tostring(is_not_first_col) .. " and " .. tostring(is_not_whitespace) .. ", is_whitespace: '" .. tostring(is_whitespace) .. "'")
   return result
 end
 
