@@ -262,13 +262,6 @@ local browse_git_remote = function(fugitive_data)
   end
   assert((home and org and project and repo) or (home and repo))
 
---         (.. "https://" home "/" repo "/src/" commit "/" (or oilpath path ""))
---         [path "blob"]
---         (.. "https://" home "/" repo "/src/" commit "/" path)
---         [path "commit"]
---         (.. "https://" home "/" repo "/commits/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/commits/" commit)))
   local urls = {
     ["bitbucket.org"] = {
       ["tree"] = function(home, org, project, repo)
@@ -284,13 +277,6 @@ local browse_git_remote = function(fugitive_data)
         return "https://" .. home .. "/" .. repo .. "/commits/" .. fugitive_data.commit
       end,
     },
---         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" (or oilpath path ""))
---         [path "blob"]
---         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" path)
---         [path "commit"]
---         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)))
     ["dev.azure.com"] = {
       ["tree"] = function(home, org, project, repo)
         return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
@@ -305,17 +291,6 @@ local browse_git_remote = function(fugitive_data)
         return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
       end,
     },
---     (where ["gitlab.com" repo])
---     (do
---       (case [path type]
---         ["" "tree"]
---         (.. "https://" home "/" repo "/-/tree/" commit "/" (or oilpath ""))
---         [path "commit"]
---         (.. "https://" home "/" repo "/-/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/-/commit/" commit)
---         [path "blob"]
---         (.. "https://" home "/" repo "/-/blob/" commit "/" path)))
     ["gitlab.com"] = {
       ["tree"] = function(home, org, project, repo)
         return "https://" .. home .. "/" .. repo .. "/-/tree/" .. fugitive_data.commit .. "/" .. path
@@ -330,14 +305,6 @@ local browse_git_remote = function(fugitive_data)
         return "https://" .. home .. "/" .. repo .. "/-/commit/" .. fugitive_data.commit
       end,
     },
---         ["" "tree"]
---         (.. "https://" home "/" repo "/tree/" commit "/" (or oilpath ""))
---         [path "blob"]
---         (.. "https://" home "/" repo "/blob/" commit "/" path)))))
---         [path "commit"]
---         (.. "https://" home "/" repo "/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/commit/" commit)
     ["github.com"] = {
       ["tree"] = function(home, org, project, repo)
         return "https://" .. home .. "/" .. repo .. "/tree/" .. fugitive_data.commit .. "/" .. path
@@ -356,98 +323,7 @@ local browse_git_remote = function(fugitive_data)
 
   return urls[home][fugitive_data.type](home, org, project, repo)
 end
-
--- (fn browse_git_remote
---   [data]
---   (P data)
---   (local
---     {: commit
---      : git_dir
---      : line1
---      : line2
---      : path
---      : remote
---      : remote_name
---      : repo
---      : type } data)
---
---   (local
---     oilpath
---     (case (vim.fn.bufname "%")
---       (where oilbuf (vim.startswith oilbuf "oil://"))
---       (do
---         (local d (.. "oil://" (vim.fs.dirname git_dir) "/"))
---         (oilbuf:sub (+ 1 (d:len)) (oilbuf:len)))
---       _
---       ""))
---
---   (local [home repo]
---     (case remote
---       (where s (vim.startswith s "git@"))
---       (do
---         (or
---           (case [(s:match "(git@)([^:]+):(.*)(%.git)")]
---               ["git@" home repo ".git"]
---               [home repo])
---           (case [(s:match "(git@)([^:]+):.*/(.*)/(.*)/(.*)")]
---               ["git@" home org project repo]
---               [(home:gsub "ssh%." "") [(.. org "/" project) repo]])))))
---
---   (case [home repo]
---     (where ["bitbucket.org" repo])
---     (do
---       (case [path type]
---         ["" "tree"]
---         (.. "https://" home "/" repo "/src/" commit "/" (or oilpath path ""))
---         [path "blob"]
---         (.. "https://" home "/" repo "/src/" commit "/" path)
---         [path "commit"]
---         (.. "https://" home "/" repo "/commits/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/commits/" commit)))
---     (where ["dev.azure.com" [org repo]])
---     (do
---       (case [path type]
---         ["" "tree"]
---         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" (or oilpath path ""))
---         [path "blob"]
---         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" path)
---         [path "commit"]
---         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)))
---     (where ["gitlab.com" repo])
---     (do
---       (case [path type]
---         ["" "tree"]
---         (.. "https://" home "/" repo "/-/tree/" commit "/" (or oilpath ""))
---         [path "commit"]
---         (.. "https://" home "/" repo "/-/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/-/commit/" commit)
---         [path "blob"]
---         (.. "https://" home "/" repo "/-/blob/" commit "/" path)))
---     (where ["github.com" repo])
---     (do
---       (case [path type]
---         ["" "tree"]
---         (.. "https://" home "/" repo "/tree/" commit "/" (or oilpath ""))
---         [path "commit"]
---         (.. "https://" home "/" repo "/commit/" commit)
---         [path "ref"]
---         (.. "https://" home "/" repo "/commit/" commit)
---         [path "blob"]
---         (.. "https://" home "/" repo "/blob/" commit "/" path)))))
---
--- (vim.api.nvim_create_user_command
---   :Browse
---   (fn [{: args}] (vim.system ["xdg-open" args] {} (fn [])))
---   {:nargs 1})
---
 vim.g.fugitive_browse_handlers = { browse_git_remote }
-
--- (set vim.g.fugitive_browse_handlers
---      [browse_git_remote])
 
 -- require("lsp_signature").setup()
 require("nvim-treesitter.configs").setup({highlight =  {enable = true}})
