@@ -4,7 +4,8 @@
   config,
   pkgs,
   ...
-}: with lib; {
+}:
+with lib; {
   programs.tmux = {
     enable = true;
     extraConfig = ''
@@ -58,35 +59,68 @@
       mimeApps = optionalAttrs (!machine.isDarwin) {
         enable = true;
         defaultApplications = {
-          "text/x-shellscript"        =  ["text.desktop"];
-          "application/x-bittorrent"  =  ["torrent.desktop"];
-          "text/plain"                =  ["text.desktop"];
-          "application/postscript"    =  ["pdf.desktop"];
-          "application/pdf"           =  ["pdf.desktop"];
-          "image/png"                 =  ["img.desktop"];
-          "image/jpeg"                =  ["img.desktop"];
-          "image/gif"                 =  ["img.desktop"];
-          "application/rss+xml"       =  ["rss.desktop"];
-          "video/x-matroska"          =  ["video.desktop"];
-          "video/mp4"                 =  ["video.desktop"];
-          "x-scheme-handler/lbry"     =  ["lbry.desktop"];
-          "inode/directory"           =  ["file.desktop"];
-          "application/x-ica"         =  ["wfica.desktop"];
-          "x-scheme-handler/magnet"   =  ["torrent.desktop"];
-          "x-scheme-handler/mailto"   =  ["mail.desktop"];
-          "x-scheme-handler/msteams"  =  ["teams.desktop"];
+          "text/x-shellscript" = ["text.desktop"];
+          "application/x-bittorrent" = ["torrent.desktop"];
+          "text/plain" = ["text.desktop"];
+          "application/postscript" = ["pdf.desktop"];
+          "application/pdf" = ["pdf.desktop"];
+          "image/png" = ["img.desktop"];
+          "image/jpeg" = ["img.desktop"];
+          "image/gif" = ["img.desktop"];
+          "application/rss+xml" = ["rss.desktop"];
+          "video/x-matroska" = ["video.desktop"];
+          "video/mp4" = ["video.desktop"];
+          "x-scheme-handler/lbry" = ["lbry.desktop"];
+          "inode/directory" = ["file.desktop"];
+          "application/x-ica" = ["wfica.desktop"];
+          "x-scheme-handler/magnet" = ["torrent.desktop"];
+          "x-scheme-handler/mailto" = ["mail.desktop"];
+          "x-scheme-handler/msteams" = ["teams.desktop"];
         };
       };
-      desktopEntries = with pkgs; optionalAttrs (!machine.isDarwin) {
-        text = { type = "Application"; name = "Text editor"; exec = "${st}/bin/st -e nvim %u"; };
-        file = { type = "Application"; name = "File Manager"; exec = "${st}/bin/st -e lfub %u"; };
-        torrent = { type = "Application"; name = "Torrent"; exec = "${coreutils}/bin/env transadd %U"; };
-        img = { type = "Application"; name = "Image Viewer"; exec = "${sxiv}/bin/sxiv -a %u"; };
-        video = { type = "Application"; name = "Video Viewer"; exec = "${mpv}/bin/mpv -quiet %f"; };
-        mail = { type = "Application"; name = "Mail"; exec = "${st}/bin/st -e neomutt %u"; };
-        pdf = { type = "Application"; name = "PDF reader"; exec = "${zathura}/bin/zathura %u"; };
-        rss = { type = "Application"; name = "RSS feed addition"; exec = "${coreutils}/bin/env rssadd %u"; };
-      };
+      desktopEntries = with pkgs;
+        optionalAttrs (!machine.isDarwin) {
+          text = {
+            type = "Application";
+            name = "Text editor";
+            exec = "${st}/bin/st -e nvim %u";
+          };
+          file = {
+            type = "Application";
+            name = "File Manager";
+            exec = "${st}/bin/st -e lfub %u";
+          };
+          torrent = {
+            type = "Application";
+            name = "Torrent";
+            exec = "${coreutils}/bin/env transadd %U";
+          };
+          img = {
+            type = "Application";
+            name = "Image Viewer";
+            exec = "${sxiv}/bin/sxiv -a %u";
+          };
+          video = {
+            type = "Application";
+            name = "Video Viewer";
+            exec = "${mpv}/bin/mpv -quiet %f";
+          };
+          mail = {
+            type = "Application";
+            name = "Mail";
+            exec = "${st}/bin/st -e neomutt %u";
+          };
+          pdf = {
+            type = "Application";
+            name = "PDF reader";
+            exec = "${zathura}/bin/zathura %u";
+          };
+          rss = {
+            type = "Application";
+            name = "RSS feed addition";
+            exec = "${coreutils}/bin/env rssadd %u";
+          };
+        };
     };
 
     # programs.ssh = {
@@ -111,17 +145,17 @@
     programs.readline = {
       enable = true;
       extraConfig = ''
-      $if mode=vi
+        $if mode=vi
 
-      set keymap vi-command
-      # these are for vi-command mode
-      Control-l: clear-screen
+        set keymap vi-command
+        # these are for vi-command mode
+        Control-l: clear-screen
 
-      set keymap vi-insert
-      # these are for vi-insert mode
-      Control-l: clear-screen
-      $endif
-    '';
+        set keymap vi-insert
+        # these are for vi-insert mode
+        Control-l: clear-screen
+        $endif
+      '';
     };
 
     programs = {
@@ -161,6 +195,12 @@
               echo "Pnsh exited badly :("
             }
           fi
+          export MANPAGER='nvim +Man!'
+          export EDITOR="nvim"
+          export TERMINAL="st"
+          export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
+
           export GNUPGHOME="''${HOME}/.gnupg"
           export LOCALE_ARCHIVE_2_27="/nix/store/l8hm9q8ndlg2rvav47y7549llh6npznf-glibc-locales-2.39-52/lib/locale/locale-archive"
           export PASSWORD_STORE_DIR="''${HOME}/sync/password-store"
@@ -168,6 +208,9 @@
           export XDG_CONFIG_HOME="''${HOME}/.config"
           export XDG_DATA_HOME="''${HOME}/.local/share"
           export XDG_STATE_HOME="''${HOME}/.local/state"
+          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
+          export STARSHIP_CONFIG="''${HOME}/.config/starship.toml"
+          command -v nu >/dev/null 2>&1 && exec nu --login
 
           # Use vim keys in tab complete menu:
           export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
@@ -177,7 +220,6 @@
           bindkey -M menuselect 'l' vi-forward-char
           bindkey -M menuselect 'j' vi-down-line-or-history
           set -o emacs
-
 
           # Use lf to switch directories and bind it to ctrl-o
           lfcd () {
@@ -316,11 +358,6 @@
           }
 
           export ZLE_REMOVE_SUFFIX_CHARS=$' ,=\t\n;&|/@'
-          export MANPAGER='nvim +Man!'
-          export EDITOR="nvim"
-          export TERMINAL="st"
-          export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-          export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
 
           # Workarounds for completion here...
           command -v zoxide  >/dev/null 2>&1 && eval "$(zoxide init zsh)"
@@ -339,8 +376,6 @@
           [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
           unset LD_PRELOAD
 
-          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
-
           alias g="git "
           alias t="terraform "
           alias c="xclip -f | xclip -sel c -f "
@@ -348,7 +383,11 @@
           alias k="kubectl "
           alias d="docker "
           alias l="ls --color=auto"
-          alias s="${if machine.isDarwin then "sudo darwin-rebuild switch --flake ~/nix-config" else "sudo nixos-rebuild switch --flake /nix-config"}"
+          alias s="${
+            if machine.isDarwin
+            then "sudo darwin-rebuild switch --flake ~/nix-config"
+            else "sudo nixos-rebuild switch --flake /nix-config"
+          }"
           alias b="/run/current-system/bin/switch-to-configuration boot"
           alias v="vi "
           alias e="vi "
@@ -365,45 +404,49 @@
       bash = {
         enable = false;
         bashrcExtra = ''
-        export EDITOR="nvim"
-        export TERMINAL="st"
-        ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
-        ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
-        ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
-        ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
-        export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
-        [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
-        unset LD_PRELOAD
-        # include nix.sh if it exists
+          export EDITOR="nvim"
+          export TERMINAL="st"
+          ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
+          ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
+          ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
+          ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
+          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
+          [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
+          unset LD_PRELOAD
+          # include nix.sh if it exists
 
-        export COLORTERM=truecolor
-        export GPG_TTY="$(tty)"
-        gpgconf --launch gpg-agent
+          export COLORTERM=truecolor
+          export GPG_TTY="$(tty)"
+          gpgconf --launch gpg-agent
 
-        if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-          eval `ssh-agent`
-          ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-        fi
-        export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-        ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
-      '';
+          if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+            eval `ssh-agent`
+            ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+          fi
+          export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+          ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+        '';
         shellAliases = {
-          k9s           = "k9s ";
-          k             = "kubectl ";
-          d             = "docker ";
-          ls            = "ls --color=auto";
-          s             = "${if machine.isDarwin then "darwin-rebuild" else "sudo nixos-rebuild"} switch --flake ${config.my.home}/flake#${config.networking.hostName}";
-          b             = "/run/current-system/bin/switch-to-configuration boot";
-          v             = "nvim";
-          M             = "xrandr --output HDMI1 --auto --output eDP1 --off";
-          m             = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          mM            = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          newflake      = "nix flake new -t ~/flake ";
+          k9s = "k9s ";
+          k = "kubectl ";
+          d = "docker ";
+          ls = "ls --color=auto";
+          s = "${
+            if machine.isDarwin
+            then "darwin-rebuild"
+            else "sudo nixos-rebuild"
+          } switch --flake ${config.my.home}/flake#${config.networking.hostName}";
+          b = "/run/current-system/bin/switch-to-configuration boot";
+          v = "nvim";
+          M = "xrandr --output HDMI1 --auto --output eDP1 --off";
+          m = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
+          newflake = "nix flake new -t ~/flake ";
           ansible-flake = "nix flake new -t ~/flake#ansible ";
-          go-flake      = "nix flake new -t ~/flake#go ";
-          lock-pass     = "gpgconf --kill gpg-agent";
-          use-gpg-ssh   = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
-          use-fido-ssh  = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
+          go-flake = "nix flake new -t ~/flake#go ";
+          lock-pass = "gpgconf --kill gpg-agent";
+          use-gpg-ssh = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
+          use-fido-ssh = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
         };
       };
     };

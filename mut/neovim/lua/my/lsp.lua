@@ -34,43 +34,6 @@ local capability_map = {
 
 local M = {}
 
--- (fn map-to-capabilities [{: client : buf}]
---   (fn use [cpb]
---     (match cpb
---
---  (each [cpb enabled? (pairs client.server_capabilities)]
---    (if enabled?
---        (use cpb)))
---  {: client : buf})
-
--- (fn register-handlers [{: client : buf}]
---   (tset (. client :handlers) :textDocument/publishDiagnostics
---         (vim.lsp.with
---           (fn [_ result ctx config]
---             (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
---                                                        config)
---             (vim.diagnostic.setloclist {:open false}))
---           {:virtual_text false
---            :underline true
---            :update_in_insert false
---            :severity_sort true}))
---   {: client : buf})
-
--- (var format-on-save true)
--- (fn toggle-format-on-save []
---   (set format-on-save (not format-on-save)))
--- (vim.api.nvim_create_user_command :LspToggleOnSave toggle-format-on-save {:nargs 1 :complete (fn [] [:format])})
-
--- (fn events [{: client : buf}]
---   (match client.server_capabilities
---     {:documentFormattingProvider true}
---     (vim.api.nvim_create_autocmd
---      :BufWritePre
---      {:group
---       (vim.api.nvim_create_augroup :format-events {:clear true})
---       :buffer buf
---       :callback #(if format-on-save (vim.lsp.buf.format))})))
-
 M.attach = function (ev)
   vim.iter(ev.client.server_capabilities)
     :each(function(c)
@@ -79,14 +42,4 @@ M.attach = function (ev)
     end)
 end
 
--- (fn attach [cb]
---   (-> cb
---       (register-handlers)
---       (map-to-capabilities)
---       (events)))
--- (fn lsp-attach-event [ev]
---   (local client (vim.lsp.get_client_by_id ev.data.client_id))
---   (local buf ev.buf)
---   (attach {: client : buf}))
- -- {: attach : lsp-attach-event}
 return M

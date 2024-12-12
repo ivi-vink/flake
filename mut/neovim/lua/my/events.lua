@@ -67,6 +67,8 @@ event(
      })
    end})
 
+-- filetypes
+
 event(
   "FileType", {
     group="conf#events",
@@ -76,6 +78,43 @@ event(
         name="gopls",
         cmd={ "gopls" },
         root_dir=vim.fs.root(ev.buf, {"go.work", "go.mod", ".git"})
+      })
+    end,
+  })
+
+event(
+  "FileType", {
+    group="conf#events",
+    pattern={ "python" },
+    callback=function(ev)
+      vim.lsp.start({
+        name="basedpyright",
+        cmd={ "basedpyright-langserver", "--stdio" },
+        settings={
+          basedpyright = {
+            analysis = {
+              autoSearchPaths = true,
+              diagnosticMode = "openFilesOnly",
+              useLibraryCodeForTypes = true,
+              autoImportCompletions = true,
+              inlayHints = {
+                variableTypes = true,
+                callArgumentNames = true,
+                functionReturnTypes = true,
+                genericTypes = true,
+              },
+            },
+          },
+        },
+        root_dir=vim.fs.root(ev.buf, {
+          'pyproject.toml',
+          'setup.py',
+          'setup.cfg',
+          'requirements.txt',
+          'Pipfile',
+          'pyrightconfig.json',
+          '.git',
+        })
       })
     end,
   })

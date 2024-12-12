@@ -37,5 +37,8 @@ end, {silent=true})
 
 ls.add_snippets(
   "go", {
-   s("echo", { t("fmt.Println("), i(1), t(")"), i(2) })
+   s("echo", { t("fmt.Println("), i(1), t(")"), i(2) }),
+   s("echof", { t("fmt.Printf(\"%v\\n\", "), i(1), t(")"), i(2) }),
+   s("log", { t("fmt.Println("), i(1), t(")"), i(2) }),
+   s("logf", { t("fmt.Printf(\"%v\\n\", "), i(1), t(")"), i(2) }),
  })

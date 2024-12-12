@@ -45,7 +45,6 @@
       plugins = with pkgs.vimPlugins; [
         # highlighting
         nvim-treesitter.withAllGrammars
-        avante-nvim
         playground
         gruvbox-material
         kanagawa-nvim
@@ -94,6 +93,11 @@
         conjure
         vim-racket
         nvim-parinfer
+
+        # ai :(
+        render-markdown
+        avante-nvim
+        nui-nvim
       ];
     };
   };

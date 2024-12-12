@@ -211,7 +211,7 @@ end
 vim.api.nvim_create_user_command(
   "Sh",
   function(cmd)
-    local thunk = function() qfjob({ "zshcmd", cmd.args }, nil) end
+    local thunk = function() qfjob({ "nu", "--commands", cmd.args }, nil) end
     last_job_thunk = thunk
     thunk()
   end,
@@ -241,6 +241,121 @@ vim.api.nvim_create_user_command(
         vim.notify "nothing to do"
     end
   end, {bang=true})
+
+local browse_git_remote = function(fugitive_data)
+  local path = fugitive_data.path
+  if not path then
+    local bufname = vim.fn.bufname("%")
+    if vim.startswith(bufname,"oil://")  then
+      local d = "oil://" .. vim.fs.dirname(fugitive_data.git_dir) .. "/"
+      path = bufname:sub(d:len()+1, bufname:len())
+    end
+  end
+  assert(path)
+
+  local home, org, project, repo = "", ""
+  if vim.startswith(fugitive_data.remote, "git@") then
+    home, repo = fugitive_data.remote:match("git@([^:]+):(.*)%.git")
+    if not (home and repo) then
+      home, org, project, repo = fugitive_data.remote:match("git@([^:]+):.*/(.*)/(.*)/(.*)")
+    end
+  end
+  assert((home and org and project and repo) or (home and repo))
+
+--         (.. "https://" home "/" repo "/src/" commit "/" (or oilpath path ""))
+--         [path "blob"]
+--         (.. "https://" home "/" repo "/src/" commit "/" path)
+--         [path "commit"]
+--         (.. "https://" home "/" repo "/commits/" commit)
+--         [path "ref"]
+--         (.. "https://" home "/" repo "/commits/" commit)))
+  local urls = {
+    ["bitbucket.org"] = {
+      ["tree"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/src/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["blob"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/src/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["commit"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/commits/" .. fugitive_data.commit
+      end,
+      ["ref"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/commits/" .. fugitive_data.commit
+      end,
+    },
+--         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" (or oilpath path ""))
+--         [path "blob"]
+--         (.. "https://" home "/" org "/_git/" repo "?version=GB" commit "&path=/" path)
+--         [path "commit"]
+--         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)
+--         [path "ref"]
+--         (.. "https://" home "/" org "/_git/" repo "/commit/" commit)))
+    ["dev.azure.com"] = {
+      ["tree"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
+      end,
+      ["blob"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
+      end,
+      ["commit"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
+      end,
+      ["ref"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
+      end,
+    },
+--     (where ["gitlab.com" repo])
+--     (do
+--       (case [path type]
+--         ["" "tree"]
+--         (.. "https://" home "/" repo "/-/tree/" commit "/" (or oilpath ""))
+--         [path "commit"]
+--         (.. "https://" home "/" repo "/-/commit/" commit)
+--         [path "ref"]
+--         (.. "https://" home "/" repo "/-/commit/" commit)
+--         [path "blob"]
+--         (.. "https://" home "/" repo "/-/blob/" commit "/" path)))
+    ["gitlab.com"] = {
+      ["tree"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/-/tree/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["blob"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/-/blob/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["commit"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/-/commit/" .. fugitive_data.commit
+      end,
+      ["ref"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/-/commit/" .. fugitive_data.commit
+      end,
+    },
+--         ["" "tree"]
+--         (.. "https://" home "/" repo "/tree/" commit "/" (or oilpath ""))
+--         [path "blob"]
+--         (.. "https://" home "/" repo "/blob/" commit "/" path)))))
+--         [path "commit"]
+--         (.. "https://" home "/" repo "/commit/" commit)
+--         [path "ref"]
+--         (.. "https://" home "/" repo "/commit/" commit)
+    ["github.com"] = {
+      ["tree"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/tree/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["blob"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/blob/" .. fugitive_data.commit .. "/" .. path
+      end,
+      ["commit"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/commit/" .. fugitive_data.commit
+      end,
+      ["ref"] = function(home, org, project, repo)
+        return "https://" .. home .. "/" .. repo .. "/commit/" .. fugitive_data.commit
+      end,
+    },
+  }
+
+  return urls[home][fugitive_data.type](home, org, project, repo)
+end
 
 -- (fn browse_git_remote
 --   [data]
@@ -329,6 +444,8 @@ vim.api.nvim_create_user_command(
 --   (fn [{: args}] (vim.system ["xdg-open" args] {} (fn [])))
 --   {:nargs 1})
 --
+vim.g.fugitive_browse_handlers = { browse_git_remote }
+
 -- (set vim.g.fugitive_browse_handlers
 --      [browse_git_remote])
 
@@ -357,8 +474,7 @@ function paste()
   }
 end
 function xclip(lines)
-   vim.system({"xclip"}, {text= true, stdin=lines}, function(exit) end)
-   vim.system({"xclip", "-selection", "clipboard"}, {text= true, stdin=lines}, function(exit) end)
+  vim.system({ "nu", "--commands", "xclip -f -sel c | xclip"}, {stdin=lines, text=true}, nil)
 end
 vim.g.clipboard = {
   name = "OSC 52",
@@ -371,6 +487,60 @@ vim.g.clipboard = {
 }
 require("my.events")
 require("my.packages")
+
+-- require('render-markdown').setup ({
+--       opts = {
+--         file_types = { "markdown", "Avante" },
+--       },
+--       ft = { "markdown", "Avante" },})
+require('avante_lib').load()
+-- require('copilot').setup {}
+require('avante').setup ({
+  provider = "openai",
+  openai = {
+    model = "gpt-4o",
+  },
+  behaviour = {
+    auto_suggestions = false,
+    auto_set_highlight_group = true,
+    auto_set_keymaps = true,
+    auto_apply_diff_after_generation = false,
+    support_paste_from_clipboard = false,
+  },
+  mappings = {
+    --- @class AvanteConflictMappings
+    diff = {
+      ours = "co",
+      theirs = "ct",
+      all_theirs = "ca",
+      both = "cb",
+      cursor = "cc",
+      next = "]x",
+      prev = "[x",
+    },
+    suggestion = {
+      accept = "<M-l>",
+      next = "<M-]>",
+      prev = "<M-[>",
+      dismiss = "<C-]>",
+    },
+    jump = {
+      next = "]]",
+      prev = "[[",
+    },
+    submit = {
+      normal = "<CR>",
+      insert = "<C-s>",
+    },
+    sidebar = {
+      apply_all = "A",
+      apply_cursor = "a",
+      switch_windows = "<Tab>",
+      reverse_switch_windows = "<S-Tab>",
+    },
+  },
+})
+
 
 -- (local
 --  draw
