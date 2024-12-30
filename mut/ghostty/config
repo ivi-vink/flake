@@ -1,0 +1,12 @@
+keybind = alt+k=scroll_page_fractional:-0.4
+keybind = alt+j=scroll_page_fractional:+0.4
+keybind = alt+b=scroll_page_up
+keybind = alt+f=scroll_page_down
+keybind = alt+c=copy_to_clipboard
+keybind = alt+v=paste_from_clipboard
+keybind = alt+shift+k=increase_font_size:1
+keybind = alt+shift+j=decrease_font_size:1
+
+keybind = ctrl+zero=unbind
+theme=GruvboxLuke
+window-decoration=false

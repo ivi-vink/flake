@@ -1,5 +1,10 @@
+local M = {}
 local go = require("go")
+local gotest = require("go.gotest")
 go.setup {
+  test_efm             = false, -- errorfomat for quickfix, default mix mode, set to true will be efm only
+  luasnip              = true,
+
   goimports            = false,
   fillstruct           = false,
   gofmt                = false,
@@ -29,6 +34,42 @@ go.setup {
   build_tags           = "",
   test_runner          = "go",
   run_in_floaterm      = false,
-  luasnip              = true,
   iferr_vertical_shift = 4,
 }
+
+local efm = function()
+  local indent = [[%\\%(    %\\)]]
+  local efm = [[%-G=== RUN   %.%#]]
+  efm = efm .. [[,%-G]] .. indent .. [[%#--- PASS: %.%#]]
+  efm = efm .. [[,%G--- FAIL: %\\%(Example%\\)%\\@= (%.%#)]]
+  efm = efm .. [[,%G]] .. indent .. [[%#--- FAIL: (%.%#)]]
+  efm = efm .. [[,%A]] .. indent .. [[%\\+%[%^:]%\\+: %f:%l: %m]]
+  efm = efm .. [[,%+Gpanic: test timed out after %.%\\+]]
+  efm = efm .. ',%+Afatal error: %.%# [recovered]'
+  efm = efm .. [[,%+Afatal error: %.%#]]
+  efm = efm .. [[,%+Apanic: %.%#]]
+  --
+  -- -- exit
+  efm = efm .. ',%-Cexit status %[0-9]%\\+'
+  efm = efm .. ',exit status %[0-9]%\\+'
+  -- -- failed lines
+  efm = efm .. ',%-CFAIL%\\t%.%#'
+  efm = efm .. ',FAIL%\\t%.%#'
+  -- compiling error
+
+  efm = efm .. ',%A%f:%l:%c: %m'
+  efm = efm .. ',%A%f:%l: %m'
+  efm = efm .. ',%f:%l +0x%[0-9A-Fa-f]%\\+' -- pannic with adress
+  efm = efm .. ',%-G%\\t%\\f%\\+:%\\d%\\+ +0x%[0-9A-Fa-f]%\\+' -- test failure, address invalid inside
+  -- multi-line
+  efm = efm .. ',%+G%\\t%m'
+  -- efm = efm .. ',%-C%.%#' -- ignore rest of unmatched lines
+  -- efm = efm .. ',%-G%.%#'
+
+  efm = string.gsub(efm, ' ', [[\ ]])
+  -- log(efm)
+  return efm
+end
+gotest.efm = efm
+M.efm = efm
+return M

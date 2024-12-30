@@ -40,6 +40,7 @@ M.attach = function (ev)
       local fn = capability_map[c]
       if fn then fn() end
     end)
+  ev.client.capabilities = require('blink.cmp').get_lsp_capabilities(ev.client.capabilities)
 end
 
 return M

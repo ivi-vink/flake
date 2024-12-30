@@ -7,10 +7,10 @@ _G.ternary = function ( cond , T , F )
 end
 vim.cmd "colorscheme kanagawa-wave"
 
-vim.cmd("filetype plugin on")
-vim.cmd("filetype indent on")
-vim.cmd("highlight WinSeparator guibg=None")
-vim.cmd("packadd cfilter")
+vim.cmd "filetype plugin on"
+vim.cmd "filetype indent on"
+vim.cmd "highlight WinSeparator guibg=None"
+vim.cmd "packadd cfilter"
 
 vim.api.nvim_set_hl(0, "VirtualTextWarning", {link= "Grey"})
 vim.api.nvim_set_hl(0, "VirtualTextError", {link= "DiffDelete"})
@@ -18,6 +18,7 @@ vim.api.nvim_set_hl(0, "VirtualTextInfo", {link= "DiffChange"})
 vim.api.nvim_set_hl(0, "VirtualTextHint", {link= "DiffAdd"})
 
 local map = vim.keymap.set
+local unmap = vim.keymap.del
 function i_grep(word, file)
   vim.api.nvim_feedkeys(
     vim.api.nvim_replace_termcodes(
@@ -32,6 +33,7 @@ function i_grep(word, file)
 end
 
 function cope()
+  require("quicker").refresh()
   vim.cmd(":botright copen " .. math.floor(vim.o.lines / 2.1))
 end
 
@@ -87,7 +89,7 @@ map("n", "<leader>:", function() i_grep("<c-r><c-w>", vim.fn.bufname("%")) end)
 map("v", "<leader>:", ":Vgrep!<cr>")
 map("n", "<leader>;", function() i_grep("", vim.fn.fnamemodify(vim.fn.bufname("%"), ":h")) end)
 map("v", "<leader>;",  ":Vgrep<cr>")
-map("n", "<leader>'", ":silent args `fd `<left>")
+map("n", "<leader>'", ":Find ")
 map("n", "<leader>x<cr>", function() vim.cmd "b #" end)
 
 require("nvim_comment").setup()
@@ -142,7 +144,10 @@ end,
 )
 
 
-function qf(inputs)
+local last_job_state = nil
+local last_job_thunk = nil
+local last_job_lines = ""
+function qf(inputs, opts)
   local id, title = inputs.id, inputs.title
   local prettify = function(line)
     local l = line:gsub("%c+%[[0-9:;<=>?]*[!\"#$%%&'()*+,-./]*[@A-Z%[%]^_`a-z{|}~]*;?[A-Z]?", "")
@@ -159,11 +164,14 @@ function qf(inputs)
   return function(lines)
     lines = vim.iter(lines):map(prettify):totable()
     vim.schedule(function()
+      local what = {
+        id=id,
+        title=title,
+        lines=lines,
+        efm=opts.efm,
+      }
       vim.fn.setqflist(
-        {}, "a", {
-          id=id, title=title,
-          lines=lines
-        }
+        {}, "a", what
       )
       if (not in_qf()) or (is_at_last_line() and in_qf()) then
         vim.cmd ":cbottom"
@@ -172,28 +180,44 @@ function qf(inputs)
   end
 end
 
-local last_job_state = nil
-local last_job_thunk = nil
-function qfjob(cmd, stdin)
+function qfjob(cmd, stdin, opts)
+  last_job_lines = ""
+  local opts = opts or {}
+  opts.filter = opts.filter or (function(line)
+    return line
+  end)
+
   local title = table.concat(cmd, " ")
   vim.fn.setqflist({}, " ", {title=title})
-  local append_lines = qf(vim.fn.getqflist({id=0,title=1}))
+  local append_lines = qf(vim.fn.getqflist({id=0,title=1}), opts)
   last_job_state = vim.system(
     cmd, {
       stdin=stdin,
       stdout=function(err,data)
         if data then
-          append_lines(data:gmatch("[^\n]+"))
+          if not opts.buffer then
+            append_lines(vim.iter(data:gmatch("[^\n]+")):map(opts.filter))
+          else
+            last_job_lines = last_job_lines .. data
+          end
         end
       end,
       stderr=function(err,data)
         if data then
-          append_lines(data:gmatch("[^\n]+"))
+          if not opts.buffer then
+            append_lines(vim.iter(data:gmatch("[^\n]+")):map(opts.filter))
+          else
+            last_job_lines = last_job_lines .. data
+          end
         end
       end,
     },
     function(job)
       vim.schedule(function()
+        if opts.buffer then
+            append_lines(vim.iter(last_job_lines:gmatch("[^\n]+")):map(opts.filter))
+        end
+
         local winnr = vim.fn.winnr()
         if not (job.code == 0) then
           cope()
@@ -202,6 +226,9 @@ function qfjob(cmd, stdin)
             vim.cmd "wincmd p | cbot"
           end
         else
+          if opts.open then
+            cope()
+          end
           vim.notify([["]] .. title .. [[" succeeded!]])
         end
       end)
@@ -209,9 +236,47 @@ function qfjob(cmd, stdin)
 end
 
 vim.api.nvim_create_user_command(
+  "Find",
+  function(cmd)
+    local bufs = vim.iter(vim.api.nvim_list_bufs())
+      :fold({}, function(acc, b)
+        acc[vim.api.nvim_buf_get_name(b)] = vim.api.nvim_buf_get_mark(b, [["]])
+        return acc
+      end)
+    qfjob({ "fdfind", "--absolute-path", "--type", "f", "-E", vim.fn.expand("%:."), cmd.args }, nil, {efm = "%f:%l:%c:%m", open = true, filter = function(line)
+      local pos = bufs[line] or {}
+      local lnum, col = (pos[1] or "1"), (pos[2] or "0")
+      return line .. ":" .. lnum .. ":" .. col .. ":" .. "hello"
+    end})
+  end,
+  {nargs="*", bang=true, complete="file"})
+
+function opts_for_args(args)
+  local opts = {
+    go = {
+      test = function(cmd)
+        return {buffer = true, efm=require('my.packages.go').efm()}
+      end
+    }
+  }
+  local arg_opts = vim.iter(args)
+    :fold(opts, function(acc, v)
+      if type(acc) == "table" and acc[v] then
+        return acc[v]
+      end
+      return acc
+    end)
+  if type(arg_opts) == "function" then
+    return arg_opts()
+  elseif type(arg_opts) == "table" then
+    return (arg_opts[1] or function() return {} end)()
+  end
+end
+
+vim.api.nvim_create_user_command(
   "Sh",
   function(cmd)
-    local thunk = function() qfjob({ "nu", "--commands", cmd.args }, nil) end
+    local thunk = function() qfjob({ "nu", "--commands", cmd.args }, nil, opts_for_args(cmd.fargs)) end
     last_job_thunk = thunk
     thunk()
   end,
@@ -417,7 +482,24 @@ require('avante').setup ({
   },
 })
 
-
+require("quicker").setup({
+  keys = {
+    {
+      ">",
+      function()
+        require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+      end,
+      desc = "Expand quickfix context",
+    },
+    {
+      "<",
+      function()
+        require("quicker").collapse()
+      end,
+      desc = "Collapse quickfix context",
+    },
+  },
+})
 -- (local
 --  draw
 --  (fn [toggle]

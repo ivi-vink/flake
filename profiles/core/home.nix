@@ -53,6 +53,7 @@ with lib; {
     # fonts.fontconfig.enable = true;
     # https://github.com/nix-community/home-manager/issues/4692
     # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
+    home.file.".config/ghostty".source = config.lib.meta.mkMutableSymlink /mut/ghostty;
     xdg = {
       enable = true;
       mime.enable = !machine.isDarwin;
@@ -185,7 +186,7 @@ with lib; {
               ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
             fi
             export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-            ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+            # ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
 
             if [[ $TERM != "dumb" ]]; then
               eval "$(/etc/profiles/per-user/ivi/bin/starship init zsh)"
@@ -197,7 +198,7 @@ with lib; {
           fi
           export MANPAGER='nvim +Man!'
           export EDITOR="nvim"
-          export TERMINAL="st"
+          # export TERMINAL="st"
           export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
 
@@ -405,7 +406,7 @@ with lib; {
         enable = false;
         bashrcExtra = ''
           export EDITOR="nvim"
-          export TERMINAL="st"
+          # export TERMINAL="st"
           ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
           ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
           ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
@@ -424,7 +425,7 @@ with lib; {
             ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
           fi
           export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-          ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
+          # ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
         '';
         shellAliases = {
           k9s = "k9s ";

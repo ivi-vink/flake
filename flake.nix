@@ -20,6 +20,9 @@
       url = "path:/home/ivi/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+    };
   };
 
   outputs = inputs @ {
@@ -28,6 +31,7 @@
     home-manager,
     sops-nix,
     deploy-rs,
+    ghostty,
     ...
   }: let
     withLibs =
@@ -127,6 +131,11 @@
         modules =
           [
             ./machines/vm-aarch64.nix
+            {
+              environment.systemPackages = [
+                ghostty.packages.aarch64-linux.default
+              ];
+            }
           ]
           ++ modulesIn ./profiles/core
           ++ modulesIn ./profiles/graphical;
@@ -155,6 +164,7 @@
         modules =
           [
             ./machines/work.nix
+            ghostty.packages.x86_64-linux.default
           ]
           ++ modulesIn ./profiles/core;
         opts = {

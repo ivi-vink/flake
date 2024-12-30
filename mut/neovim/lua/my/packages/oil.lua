@@ -1,5 +1,7 @@
 local oil=require("oil")
 local fzf=require("fzf-lua")
+local map = vim.keymap.set
+local unmap = vim.keymap.del
 
 oil.setup({
   default_file_explorer =  true,

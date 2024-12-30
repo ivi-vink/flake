@@ -1,5 +1,6 @@
 require("my.packages.oil")
-require("my.packages.cmp")
+-- require("my.packages.cmp")
+require("my.packages.blink")
 require("my.packages.lint")
 require("my.packages.luasnip")
 require("my.packages.dap")
