@@ -95,9 +95,9 @@
         nvim-parinfer
 
         # ai :(
-        render-markdown
-        avante-nvim
-        nui-nvim
+        # render-markdown-nvim
+        # avante-nvim
+        # nui-nvim
       ];
     };
   };

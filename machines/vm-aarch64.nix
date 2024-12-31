@@ -47,9 +47,9 @@
 
   services.pcscd.enable = true;
   sops.age.keyFile = "${config.hm.xdg.configHome}/sops/age/keys.txt";
-  my.shell = pkgs.zsh;
+  my.shell = pkgs.nushell;
 
-  environment.shells = [pkgs.bashInteractive pkgs.zsh];
+  environment.shells = [pkgs.bashInteractive pkgs.zsh pkgs.nushell];
   environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.enable = true;
 

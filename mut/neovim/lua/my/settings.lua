@@ -63,3 +63,5 @@ vim.opt.winbar = ""
 vim.opt.hlsearch = false
 vim.opt.showtabline = 1
 vim.opt.cmdheight = 1
+
+vim.opt.shellpipe = "out+err>"
