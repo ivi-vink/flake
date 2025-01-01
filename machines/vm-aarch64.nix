@@ -5,7 +5,7 @@
     ];
   system.stateVersion = "24.05";
   virtualisation.vmware.guest.enable = true;
-  virtualisation.docker.enable = true;
+  virtualisation.docker.enable = false;
   virtualisation.docker.rootless = {
     enable = true;
     setSocketVariable = true;

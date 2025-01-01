@@ -8,6 +8,7 @@ keybind = alt+shift+k=increase_font_size:1
 keybind = alt+shift+j=decrease_font_size:1
 
 keybind = ctrl+zero=unbind
+keybind = ctrl+enter=unbind
 theme=GruvboxLuke
 window-decoration=false
 confirm-close-surface=false

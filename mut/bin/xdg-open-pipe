@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-pipe="$HOME/.xdg-open-pipe"
-rm "$pipe"
-mkfifo "$pipe"
-while true; do
-  {
-  /nix/store/zcw13r2mmpzlnv2yvfl13mcpky3hivq1-system-path/bin/xdg-open "$(cat "$pipe")"
-} >/dev/null 2>&1
-done

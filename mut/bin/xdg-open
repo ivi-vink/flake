@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "$@" | tee "$HOME/.xdg-open-pipe"
+echo "$@" | tee "$HOME/.cache/desktop-open.pipe"

@@ -6,42 +6,6 @@
   ...
 }:
 with lib; {
-  programs.tmux = {
-    enable = true;
-    extraConfig = ''
-      set-option -g default-shell ${config.my.shell}/bin/zsh
-      set -g status off
-      set -s set-clipboard on
-      setw -g mouse on
-      set -g default-terminal "st-256color"
-      set -ga terminal-overrides ",xterm-256color:Tc"
-      set-option -g focus-events on
-      set-option -sg escape-time 10
-      unbind M-x
-      set -g prefix M-x
-      bind M-x send-prefix
-
-      bind -n M-w switch-client -T windows
-      bind -T windows c if 'n=`tmux list-panes | grep -c ^`; [ $n -gt 1 ]' {
-         kill-pane
-      }
-      bind -T windows n splitp
-      bind -T windows N splitp -h
-      bind -T windows h select-pane -L
-      bind -T windows j select-pane -D
-      bind -T windows k select-pane -U
-      bind -T windows l select-pane -R
-      bind -T windows _ resize-pane -Z
-      bind -T windows = selectl even-vertical
-
-      set-window-option -g mode-keys vi
-      bind-key -T copy-mode-vi v send -X begin-selection
-      bind-key -T copy-mode-vi V send -X select-line
-      bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
-      bind-key -T copy-mode-vi : command-prompt
-    '';
-  };
-
   hm = {
     programs.password-store = {
       enable = true;
@@ -49,10 +13,6 @@ with lib; {
         PASSWORD_STORE_DIR = config.synced.password-store.path;
       };
     };
-
-    # fonts.fontconfig.enable = true;
-    # https://github.com/nix-community/home-manager/issues/4692
-    # home.file.".local/bin".source = config.lib.meta.mkMutableSymlink /mut/bin;
     home.file.".config/ghostty".source = config.lib.meta.mkMutableSymlink /mut/ghostty;
     xdg = {
       enable = true;
@@ -123,15 +83,6 @@ with lib; {
           };
         };
     };
-
-    # programs.ssh = {
-    #   enable = true;
-    #   matchBlocks = {
-    #     "*" = {
-    #       identityFile = "${config.my.home}/.ssh/id_ed25519_sk";
-    #     };
-    #   };
-    # };
 
     programs.starship = {
       enable = true;
@@ -400,55 +351,6 @@ with lib; {
           alias use-gpg-ssh="export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)"
           alias use-fido-ssh="export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock"
         '';
-      };
-
-      bash = {
-        enable = false;
-        bashrcExtra = ''
-          export EDITOR="nvim"
-          # export TERMINAL="st"
-          ( command -v brew ) &>/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
-          ( command -v docker ) &>/dev/null && eval "$(docker completion bash)"
-          ( command -v kubectl ) &>/dev/null && eval "$(kubectl completion bash)"
-          ( command -v zoxide ) &>/dev/null && eval "$(zoxide init bash)"
-          export PATH="$PATH:$HOME/.local/bin:/opt/homebrew/bin:${config.my.home}/.krew/bin:${config.my.home}/.cargo/bin:${pkgs.ncurses}/bin"
-          [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
-          unset LD_PRELOAD
-          # include nix.sh if it exists
-
-          export COLORTERM=truecolor
-          export GPG_TTY="$(tty)"
-          gpgconf --launch gpg-agent
-
-          if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-            eval `ssh-agent`
-            ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-          fi
-          export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-          # ssh-add -l > /dev/null || ssh-add ~/.ssh/id_ed25519_sk
-        '';
-        shellAliases = {
-          k9s = "k9s ";
-          k = "kubectl ";
-          d = "docker ";
-          ls = "ls --color=auto";
-          s = "${
-            if machine.isDarwin
-            then "darwin-rebuild"
-            else "sudo nixos-rebuild"
-          } switch --flake ${config.my.home}/flake#${config.networking.hostName}";
-          b = "/run/current-system/bin/switch-to-configuration boot";
-          v = "nvim";
-          M = "xrandr --output HDMI1 --auto --output eDP1 --off";
-          m = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          mM = "xrandr --output eDP1 --auto --output HDMI1 --off";
-          newflake = "nix flake new -t ~/flake ";
-          ansible-flake = "nix flake new -t ~/flake#ansible ";
-          go-flake = "nix flake new -t ~/flake#go ";
-          lock-pass = "gpgconf --kill gpg-agent";
-          use-gpg-ssh = "export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)";
-          use-fido-ssh = "export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock";
-        };
       };
     };
 
