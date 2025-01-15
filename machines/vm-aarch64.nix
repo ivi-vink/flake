@@ -27,6 +27,7 @@
     wal -R
     dwm
   '';
+  hm.services.ssh-agent.enable = true;
   environment.systemPackages = with pkgs; [
     kubernetes-helm
     (azure-cli.withExtensions [azure-cli.extensions.aks-preview azure-cli.extensions.account])
