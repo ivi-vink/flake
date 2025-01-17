@@ -115,3 +115,11 @@ if not ("/var/run/docker.sock" | path exists) {
 
 $env.XDG_CACHE_HOME = $"($env.HOME)/.cache"
 $env.XDG_DATA_HOME = $"($env.HOME)/.local/share"
+
+^ssh-agent -c
+    | lines
+    | first 2
+    | parse "setenv {name} {value};"
+    | transpose -r
+    | into record
+    | load-env
