@@ -8,10 +8,6 @@
     hardware = mkSinkUndeclaredOptions {};
     services = {
       resolved = mkSinkUndeclaredOptions {};
-      openssh.enable = mkOption {
-        type = types.bool;
-        default = false;
-      };
     };
     security = {
       sudo.wheelNeedsPassword = mkSinkUndeclaredOptions {};
@@ -30,6 +26,13 @@
     };
   };
   config = {
+    fonts = {
+      packages = with pkgs; [
+        nerd-fonts.fira-code
+        nerd-fonts.jetbrains-mono
+      ];
+    };
+    users.users.root.home = mkForce "/var/root";
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
     environment.systemPackages =
@@ -80,6 +83,7 @@
         slack = 803453959;
       };
     };
+    services.openssh.enable = false;
     services.syncthing = {
       cert = builtins.toFile "syncthing-cert" ''
         -----BEGIN CERTIFICATE-----
@@ -105,108 +109,9 @@
 #         cmd - 5 : osascript -e 'tell application "calendar" to activate'
 #         cmd - 6 : osascript -e 'tell application "mail" to activate'
     services.skhd = {
-      enable = false;
+      enable = true;
       skhdConfig = ''
-        cmd - 1 : yabai -m space --focus 1
-        cmd - 2 : yabai -m space --focus 2
-        cmd - 3 : yabai -m space --focus 3
-        cmd - 4 : yabai -m space --focus 4
-        cmd - 5 : yabai -m space --focus 5
-        cmd - 6 : yabai -m space --focus 6
-        cmd - 7 : yabai -m space --focus 7
-        cmd - 0x2F : yabai -m display --focus next || yabai -m display --focus first
-
-        cmd - h : yabai -m window --resize right:-40:0 2> /dev/null || yabai -m window --resize left:-40:0 2> /dev/null
-        cmd - l : yabai -m window --resize right:40:0 2> /dev/null || yabai -m window --resize left:40:0 2> /dev/null
-        cmd - k : ${pkgs.writers.writeBash "cycle_cclockwise" ''
-          if ! yabai -m window --focus prev &>/dev/null; then
-            yabai -m window --focus last
-          fi
-        ''}
-        cmd - j : ${pkgs.writers.writeBash "cycle_clockwise" ''
-          if ! yabai -m window --focus next &>/dev/null; then
-            yabai -m window --focus first
-          fi
-        ''}
-        cmd + shift - k : ${pkgs.writers.writeBash "swap_cclockwise" ''
-          win=$(yabai -m query --windows --window first | jq '.id')
-
-          while : ; do
-              yabai -m window $win --swap next &> /dev/null
-              if [[ $? -eq 1 ]]; then
-                  break
-              fi
-          done
-        ''}
-        cmd + shift - j : ${pkgs.writers.writeBash "swap_clockwise" ''
-          win=$(yabai -m query --windows --window last | jq '.id')
-
-          while : ; do
-              yabai -m window $win --swap prev &> /dev/null
-              if [[ $? -eq 1 ]]; then
-                  break
-              fi
-          done
-        ''}
-        cmd - w [
-          "Google Chrome" ~
-          * : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
-        ]
-        cmd - e : osascript -e 'tell application "mail" to activate'
-        cmd - m : osascript -e 'tell application "Slack" to activate'
-        cmd + shift - m : osascript -e 'tell application "Microsoft Teams (work or school)" to activate'
-        cmd - q : yabai -m window --close
-        cmd + shift - r : /Applications/Alacritty.app/Contents/MacOS/alacritty -e htop
-        cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
-        cmd - space : ${pkgs.writers.writeBash "swap_first_or_recent" ''
-          yabai -m window --swap first || yabai -m window --swap recent
-        ''}
-        cmd + shift - space : yabai -m window --toggle float
-        cmd + shift - p : ${pkgs.writers.writeBash "passautotype" ''
-          shopt -s nullglob globstar
-
-          dmenu="/opt/homebrew/bin/dmenu-mac"
-
-          (
-              export PASSWORD_STORE_DIR="$HOME/sync/password-store"
-              prefix="$PASSWORD_STORE_DIR"
-              echo "prefix: $prefix"
-              password_files=( "$prefix"/**/*.gpg )
-              password_files=( "''${password_files[@]#"$prefix"/}" )
-              password_files=( "''${password_files[@]%.gpg}" )
-              echo "password_files: ''${password_files[*]}"
-
-              password="$(printf '%s\n' "''${password_files[@]}" | "$dmenu" "$@")"
-              echo "password: $password"
-
-              [[ -n $password ]] || exit
-
-              /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.loadSpoon([[PassAutotype]]):autotype([[$password]])"
-          ) >/tmp/debug 2>&1
-        ''}
-        cmd - d : /opt/homebrew/bin/dmenu-mac
-        cmd + shift - d : ${pkgs.writers.writeBash "passmenu" ''
-          shopt -s nullglob globstar
-
-          dmenu="/opt/homebrew/bin/dmenu-mac"
-
-          (
-              export PASSWORD_STORE_DIR="$HOME/sync/password-store"
-              prefix="$PASSWORD_STORE_DIR"
-              echo "prefix: $prefix"
-              password_files=( "$prefix"/**/*.gpg )
-              password_files=( "''${password_files[@]#"$prefix"/}" )
-              password_files=( "''${password_files[@]%.gpg}" )
-              echo "password_files: ''${password_files[*]}"
-
-              password="$(printf '%s\n' "''${password_files[@]}" | "$dmenu" "$@")"
-              echo "password: $password"
-
-              [[ -n $password ]] || exit
-
-              ${pkgs.pass}/bin/pass show -c "$password"
-          ) >/tmp/debug 2>&1
-        ''}
+        cmd - d : /opt/X11/bin/xrandr -s 2560x1664
       '';
     };
     services.sketchybar.enable = false;

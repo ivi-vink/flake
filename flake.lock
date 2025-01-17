@@ -406,13 +406,13 @@
         ]
       },
       "locked": {
-        "lastModified": 1728844240,
-        "narHash": "sha256-lDK39oLsP3HqqovbTAUoryEUA2IRxFNbi8egwCLmLTE=",
-        "path": "/home/ivi/nix-darwin",
+        "lastModified": 1737063096,
+        "narHash": "sha256-Qv40syutOYQZOBjS76Swk4VeUz08KDrsc9IDSdXmyqs=",
+        "path": "/Users/ivi/nix-darwin",
         "type": "path"
       },
       "original": {
-        "path": "/home/ivi/nix-darwin",
+        "path": "/Users/ivi/nix-darwin",
         "type": "path"
       }
     },

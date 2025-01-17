@@ -17,7 +17,7 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     drduh-yubikey-guide.url = "github:drduh/YubiKey-Guide";
     nix-darwin = {
-      url = "path:/home/ivi/nix-darwin";
+      url = "path:/Users/ivi/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ghostty = {
@@ -165,7 +165,6 @@
         modules =
           [
             ./machines/work.nix
-            ghostty.packages.x86_64-linux.default
           ]
           ++ modulesIn ./profiles/core;
         opts = {
