@@ -36,7 +36,9 @@
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
     environment.systemPackages =
-      [ # pkgs.qemu
+      [
+        pkgs.pywal
+        # pkgs.qemu
         # pkgs.kitty
         pkgs.openssh
         # pkgs.python311
@@ -182,8 +184,9 @@
 
     # The platform the configuration will be used on.
     nixpkgs.hostPlatform = "aarch64-darwin";
-    my.shell = pkgs.zsh;
-    environment.shells = [pkgs.bashInteractive pkgs.zsh];
+    my.shell = pkgs.nushell;
+
+    environment.shells = [pkgs.bashInteractive pkgs.zsh pkgs.nushell];
     environment.pathsToLink = [ "/share/zsh" ];
     environment.variables = {
       SLACK_NO_AUTO_UPDATES = "1";

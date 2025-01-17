@@ -1,5 +1,5 @@
 if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
-    pnsh-nvim
+    try {pnsh-nvim}
 }
 # Nushell Config File
 #

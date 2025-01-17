@@ -38,6 +38,7 @@ with lib;
     openpomodoro-cli
     coreutils
     killall
+    carapace
   ] ++ (optionals (!machine.isDarwin) [
     man-pages
     man-pages-posix
