@@ -1856,7 +1856,7 @@ zoom(Client *c, const Arg *a)
 static void
 msgext(Client *c, char type, const Arg *a)
 {
-	static char msg[MSGBUFSZ];
+	static signed char msg[MSGBUFSZ];
 	int ret;
 
 	if (spair[0] < 0)

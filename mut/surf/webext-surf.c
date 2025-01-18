@@ -38,7 +38,8 @@ msgsurf(guint64 pageid, const char *s)
 static gboolean
 readsock(GIOChannel *s, GIOCondition c, gpointer unused)
 {
-	static char js[48], msg[MSGBUFSZ];
+	static char js[48];
+	static signed char msg[MSGBUFSZ];
 	WebKitWebPage *page;
 	JSCContext *jsc;
 	GError *gerr = NULL;
