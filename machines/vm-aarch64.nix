@@ -1,8 +1,15 @@
 # https://github.com/mitchellh/nixos-config/blob/main/machines/vm-aarch64-prl.nix
-{ self, config, pkgs, lib, ... }: with lib; {
-  imports =
-    [ (self + "/profiles/vmware-guest.nix")
-    ];
+{
+  self,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; {
+  imports = [
+    (self + "/profiles/vmware-guest.nix")
+  ];
   system.stateVersion = "24.05";
   virtualisation.vmware.guest.enable = true;
   virtualisation.docker.enable = false;
@@ -13,10 +20,10 @@
       hosts = ["unix:///run/user/${toString config.my.uid}/docker.sock" "tcp://127.0.0.1:2376"];
     };
   };
-  systemd.user.services.docker.serviceConfig.Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS=\"-p 0.0.0.0:2376:2376/tcp\"";
+  systemd.user.services.docker.serviceConfig.Environment = "DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS=\"-p 0.0.0.0:2376:2376/tcp\"";
   systemd.user.services.docker.serviceConfig.ExecStart = let
-      cfg = config.virtualisation.docker.rootless;
-    in
+    cfg = config.virtualisation.docker.rootless;
+  in
     mkForce "${cfg.package}/bin/dockerd-rootless --config-file=${(pkgs.formats.json {}).generate "daemon.json" cfg.daemon.settings}";
   networking.hostName = "vm-aarch64";
   programs.nix-ld.enable = true;
@@ -28,6 +35,9 @@
     dwm
   '';
   hm.services.ssh-agent.enable = true;
+  environment.variables = {
+    WEBKIT_DISABLE_COMPOSITING_MODE = 1;
+  };
   environment.systemPackages = with pkgs; [
     kubernetes-helm
     (azure-cli.withExtensions [azure-cli.extensions.aks-preview azure-cli.extensions.account])
@@ -41,8 +51,9 @@
     kubelogin
     just
     (ffmpeg.override {
-     withXcb = true;
-   })
+      withXcb = true;
+    })
+    surf
     mpv
   ];
 
@@ -51,7 +62,7 @@
   my.shell = pkgs.nushell;
 
   environment.shells = [pkgs.bashInteractive pkgs.zsh pkgs.nushell];
-  environment.pathsToLink = [ "/share/zsh" ];
+  environment.pathsToLink = ["/share/zsh"];
   programs.zsh.enable = true;
 
   services.openssh.enable = true;
@@ -63,7 +74,7 @@
 
   # Disable the default module and import our override. We have
   # customizations to make this work on aarch64.
-  disabledModules = [ "virtualisation/vmware-guest.nix" ];
+  disabledModules = ["virtualisation/vmware-guest.nix"];
 
   # Interface is this on M1
   networking.interfaces.ens160.useDHCP = true;
@@ -98,23 +109,23 @@
   boot.loader.systemd-boot.consoleMode = "0";
 
   # Hardware
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "sr_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
+  boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "sr_mod"];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = [];
+  boot.extraModulePackages = [];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-label/nixos";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-label/boot";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-label/boot";
+    fsType = "vfat";
+    options = ["fmask=0022" "dmask=0022"];
+  };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -124,5 +135,5 @@
   # networking.interfaces.ens160.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
-  nix.settings.trusted-users = [ my.username ];
+  nix.settings.trusted-users = [my.username];
 }

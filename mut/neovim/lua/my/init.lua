@@ -326,6 +326,14 @@ local browse_git_remote = function(fugitive_data)
     end
   end
   assert((home and org and project and repo) or (home and repo))
+  P(home, org, project, repo)
+
+  local homes = {
+    ["ssh.dev.azure.com"] = "dev.azure.com",
+  }
+  if homes[home] then
+    home = homes[home]
+  end
 
   local urls = {
     ["bitbucket.org"] = {
@@ -344,16 +352,16 @@ local browse_git_remote = function(fugitive_data)
     },
     ["dev.azure.com"] = {
       ["tree"] = function(home, org, project, repo)
-        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
+        return "https://" .. home .. "/" .. org .. "/" .. project .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
       end,
       ["blob"] = function(home, org, project, repo)
-        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
+        return "https://" .. home .. "/" .. org .. "/" .. project.. "/_git/" .. repo .. "?version=GB" .. fugitive_data.commit .. "&path=/" .. path
       end,
       ["commit"] = function(home, org, project, repo)
-        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
+        return "https://" .. home .. "/" .. org .. "/" .. project.. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
       end,
       ["ref"] = function(home, org, project, repo)
-        return "https://" .. home .. "/" .. org .. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
+        return "https://" .. home .. "/" .. org .. "/" .. project.. "/_git/" .. repo .. "/commit/" .. fugitive_data.commit
       end,
     },
     ["gitlab.com"] = {

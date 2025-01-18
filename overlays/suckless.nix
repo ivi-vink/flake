@@ -17,4 +17,8 @@
         install -m755 -D dwmblocks $out/bin/dwmblocks
       '';
     });
+    surf = (prev.surf.overrideAttrs (oldAttrs: {
+      src = home + "/mut/surf";
+      version = "2.1";
+    }));
 })
