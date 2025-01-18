@@ -37,10 +37,17 @@ with lib; {
           "x-scheme-handler/magnet" = ["torrent.desktop"];
           "x-scheme-handler/mailto" = ["mail.desktop"];
           "x-scheme-handler/msteams" = ["teams.desktop"];
+          "x-scheme-handler/http" = ["surf.desktop"];
+          "x-scheme-handler/https" = ["surf.desktop"];
         };
       };
       desktopEntries = with pkgs;
         optionalAttrs (!machine.isDarwin) {
+          surf = {
+            type = "Application";
+            name = "Browser";
+            exec = "${surf}/bin/surf %u";
+          };
           text = {
             type = "Application";
             name = "Text editor";
