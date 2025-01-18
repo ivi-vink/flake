@@ -1,7 +1,6 @@
 {
   description = "Nixos, home-manager, and deploy-rs configuration";
 
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -25,6 +24,7 @@
       url = "github:ghostty-org/ghostty";
     };
   };
+
 
   outputs = inputs @ {
     self,
