@@ -47,6 +47,7 @@ static Parameter defconfig[ParameterLast] = {
 	[Style]               =       { { .i = 1 },     },
 	[WebGL]               =       { { .i = 0 },     },
 	[ZoomLevel]           =       { { .f = 1.0 },   },
+	[ClipboardNotPrimary] =				{ { .i = 1 },			},
 };
 
 static UriParameters uriparams[] = {
@@ -100,6 +101,14 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
         } \
 }
 
+#define SR_SEARCH {\
+        .v = (char *[]){\
+            "/bin/sh", "-c", "xprop -id $0 -f _SURF_GO 8s -set _SURF_GO $(sr -p $(sr -elvi | tail -n +2 | cut -s -f1 | dmenu))", \
+            winid, \
+            NULL \
+          } \
+}
+
 /* styles */
 /*
  * The iteration will stop at the first match, beginning at the beginning of
@@ -132,8 +141,10 @@ static Key keys[] = {
 	{ MODKEY,                GDK_KEY_f,      spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
 	{ MODKEY,                GDK_KEY_slash,  spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
 
+  { MODKEY,                GDK_KEY_s,      spawn,      SR_SEARCH },
+
 	{ 0,                     GDK_KEY_Escape, stop,       { 0 } },
-	{ MODKEY,                GDK_KEY_c,      stop,       { 0 } },
+	/* { MODKEY,                GDK_KEY_c,      stop,       { 0 } }, */
 
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_r,      reload,     { .i = 1 } },
 	{ MODKEY,                GDK_KEY_r,      reload,     { .i = 0 } },

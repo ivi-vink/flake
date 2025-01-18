@@ -84,6 +84,7 @@
       asciinema
       asciinema-agg
       fontconfig
+      surfraw
     ];
   };
   fonts = {
