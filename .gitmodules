@@ -7,3 +7,6 @@
 [submodule "mut/dwmblocks"]
 	path = mut/dwmblocks
 	url = git@github.com:ivi-vink/dwmblocks.git
+[submodule "mut/surf"]
+	path = mut/surf
+	url = git@github.com:ivi-vink/surf.git

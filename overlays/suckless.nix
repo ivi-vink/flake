@@ -19,6 +19,6 @@
     });
     surf = (prev.surf.overrideAttrs (oldAttrs: {
       src = home + "/mut/surf";
-      version = "2.1";
+      version = "my-2.1";
     }));
 })
