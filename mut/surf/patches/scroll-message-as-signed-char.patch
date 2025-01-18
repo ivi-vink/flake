@@ -1,0 +1,27 @@
+diff --git a/mut/surf/surf.c b/mut/surf/surf.c
+index af0fa74..bcd8d6a 100644
+--- a/mut/surf/surf.c
++++ b/mut/surf/surf.c
+@@ -1856,7 +1856,7 @@ zoom(Client *c, const Arg *a)
+ static void
+ msgext(Client *c, char type, const Arg *a)
+ {
+-	static char msg[MSGBUFSZ];
++	static signed char msg[MSGBUFSZ];
+ 	int ret;
+ 
+ 	if (spair[0] < 0)
+diff --git a/mut/surf/webext-surf.c b/mut/surf/webext-surf.c
+index d087219..7eeb55f 100644
+--- a/mut/surf/webext-surf.c
++++ b/mut/surf/webext-surf.c
+@@ -38,7 +38,8 @@ msgsurf(guint64 pageid, const char *s)
+ static gboolean
+ readsock(GIOChannel *s, GIOCondition c, gpointer unused)
+ {
+-	static char js[48], msg[MSGBUFSZ];
++	static char js[48];
++	static signed char msg[MSGBUFSZ];
+ 	WebKitWebPage *page;
+ 	JSCContext *jsc;
+ 	GError *gerr = NULL;
