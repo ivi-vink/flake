@@ -80,13 +80,7 @@
         vim-easy-align
         nvim-comment
 
-        # cmp
-        nvim-cmp
-        cmp-cmdline
-        cmp-nvim-lsp
-        cmp-buffer
-        cmp-path
-        cmp_luasnip
+        blink-cmp
 
         # trying out lisp
         conjure

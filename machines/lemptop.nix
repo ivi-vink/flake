@@ -36,8 +36,8 @@ with lib;
       -----END CERTIFICATE-----
     '';
   };
-  my.shell = pkgs.zsh;
-  environment.shells = [pkgs.bashInteractive pkgs.zsh];
+  my.shell = pkgs.nushell;
+  environment.shells = [pkgs.bashInteractive pkgs.zsh pkgs.nushell];
   environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.enable = true;
 
@@ -66,7 +66,6 @@ with lib;
   virtualisation.docker.enable = true;
   programs.nix-ld.enable = true;
 
-  sound.enable = false;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -84,7 +83,7 @@ with lib;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "sdhci_pci" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];

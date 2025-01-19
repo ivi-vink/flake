@@ -7,6 +7,8 @@
 }: with lib; {
   imports = [ (mkAliasOptionModule [ "my" ] [ "users" "users" my.username ]) ];
 
+  nixpkgs.config.allowUnfree = true;
+
   services = {
     resolved.fallbackDns = [
       "1.1.1.1#one.one.one.one"

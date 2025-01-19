@@ -31,7 +31,6 @@
       raylib
       maim
       profanity
-      mypaint
       lynx
       sent
       initool
