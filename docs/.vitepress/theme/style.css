@@ -1,0 +1,14 @@
+/* Wrap text in code blocks */
+code {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.content-container {
+  max-width: 800px !important;
+}
+
+.VPBadge > a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
