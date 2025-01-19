@@ -21,4 +21,7 @@
       src = home + "/mut/surf";
       version = "2.1-ivi-vink.1";
     }));
+    tabbed = prev.tabbed.overrideAttrs (oldAttrs: {
+      src = home + "/mut/tabbed";
+    });
 })

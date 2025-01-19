@@ -1,4 +1,5 @@
 {
+  inputs,
   machine,
   lib,
   config,
@@ -20,25 +21,25 @@ with lib; {
       mimeApps = optionalAttrs (!machine.isDarwin) {
         enable = true;
         defaultApplications = {
-          "text/x-shellscript" = ["text.desktop"];
+          "text/x-shellscript"       = ["text.desktop"];
           "application/x-bittorrent" = ["torrent.desktop"];
-          "text/plain" = ["text.desktop"];
-          "application/postscript" = ["pdf.desktop"];
-          "application/pdf" = ["pdf.desktop"];
-          "image/png" = ["img.desktop"];
-          "image/jpeg" = ["img.desktop"];
-          "image/gif" = ["img.desktop"];
-          "application/rss+xml" = ["rss.desktop"];
-          "video/x-matroska" = ["video.desktop"];
-          "video/mp4" = ["video.desktop"];
-          "x-scheme-handler/lbry" = ["lbry.desktop"];
-          "inode/directory" = ["file.desktop"];
-          "application/x-ica" = ["wfica.desktop"];
-          "x-scheme-handler/magnet" = ["torrent.desktop"];
-          "x-scheme-handler/mailto" = ["mail.desktop"];
+          "text/plain"               = ["text.desktop"];
+          "application/postscript"   = ["pdf.desktop"];
+          "application/pdf"          = ["pdf.desktop"];
+          "image/png"                = ["img.desktop"];
+          "image/jpeg"               = ["img.desktop"];
+          "image/gif"                = ["img.desktop"];
+          "application/rss+xml"      = ["rss.desktop"];
+          "video/x-matroska"         = ["video.desktop"];
+          "video/mp4"                = ["video.desktop"];
+          "x-scheme-handler/lbry"    = ["lbry.desktop"];
+          "inode/directory"          = ["file.desktop"];
+          "application/x-ica"        = ["wfica.desktop"];
+          "x-scheme-handler/magnet"  = ["torrent.desktop"];
+          "x-scheme-handler/mailto"  = ["mail.desktop"];
           "x-scheme-handler/msteams" = ["teams.desktop"];
-          "x-scheme-handler/http" = ["surf.desktop"];
-          "x-scheme-handler/https" = ["surf.desktop"];
+          "x-scheme-handler/http"    = ["surf.desktop"];
+          "x-scheme-handler/https"   = ["surf.desktop"];
         };
       };
       desktopEntries = with pkgs;
@@ -46,7 +47,7 @@ with lib; {
           surf = {
             type = "Application";
             name = "Browser";
-            exec = "${surf}/bin/surf %u";
+            exec = "${inputs.self}/mut/surf/surf-open.sh %u";
           };
           text = {
             type = "Application";

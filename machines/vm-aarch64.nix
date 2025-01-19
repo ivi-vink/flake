@@ -53,7 +53,6 @@ with lib; {
     (ffmpeg.override {
       withXcb = true;
     })
-    surf
     mpv
   ];
 
