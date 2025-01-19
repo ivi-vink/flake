@@ -109,7 +109,7 @@ mkdir ~/.cache/zoxide
 zoxide init nushell --cmd=cd | save --force ~/.cache/zoxide.nu
 starship init nu | save --force ~/.cache/starship.nu
 
-if not ("/var/run/docker.sock" | path exists) {
+if (not ("/var/run/docker.sock" | path exists)) and (not ((uname | get operating-system) == "Darwin")) {
     $env.DOCKER_HOST = $"unix://($env | default $"/run/($env.USER)" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock"
 }
 

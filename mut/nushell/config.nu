@@ -1,3 +1,4 @@
+try {xset r rate 230 30}
 if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
     try {pnsh-nvim}
 }
@@ -912,3 +913,9 @@ let pistarchio_dir = $"($env.HOME)/Programming/Pionative/pistarchio"
 $env.PISTARCHIO_STACKS_DIR = $pistarchio_dir + "/stacks"
 $env.PISTARCHIO_LIBRARY_DIR = $pistarchio_dir + "/library"
 $env.PISTARCHIO_VENDOR_DESTINATION_DIR = $pistarchio_dir + "/../clients"
+
+try {
+  if (uname | get "operating-system") == "Darwin" {
+    $env.PATH = ["/opt/homebrew/bin" "/opt/X11/bin" "/opt/local/bin" "/opt/local/sbin"] ++ $env.PATH
+  }
+}
