@@ -1288,7 +1288,7 @@ xinit(int cols, int rows)
 
 	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0)))) {
 		parent = XRootWindow(xw.dpy, xw.scr);
-		xw.depth = 24;
+		xw.depth = 32;
 	} else {
 		XGetWindowAttributes(xw.dpy, parent, &attr);
 		xw.depth = attr.depth;
