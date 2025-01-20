@@ -3,7 +3,7 @@
 /* Constants */
 #define TERMINAL "ghostty"
 #define TERMCLASS "Ghostty"
-#define BROWSER "surf"
+#define BROWSER "surf-open.sh"
 
 /* appearance */
 static unsigned int borderpx  = 3;        /* border pixel of windows */

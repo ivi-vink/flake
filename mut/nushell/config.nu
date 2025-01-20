@@ -1,4 +1,3 @@
-try {xset r rate 230 30}
 if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
     try {pnsh-nvim}
 }

@@ -90,6 +90,7 @@ with lib;
         # librewolf
         ungoogled-chromium
         xclip
+        xorg.xwininfo
         xdotool
         maim
         asciinema

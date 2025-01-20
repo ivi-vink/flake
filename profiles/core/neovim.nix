@@ -4,12 +4,7 @@
   ...
 }: {
   hm = {
-    xdg = {
-      configFile = with config.lib.meta; {
-        "nvim".source = mkMutableSymlink /mut/neovim;
-      };
-    };
-
+    xdg.configFile."nvim".source = config.lib.meta.mkMutableSymlink /mut/neovim;
     editorconfig = {
       enable = true;
       settings = {
@@ -45,52 +40,37 @@
       plugins = with pkgs.vimPlugins; [
         # highlighting
         nvim-treesitter.withAllGrammars
-        playground
         gruvbox-material
         kanagawa-nvim
         lsp_lines-nvim
         gitsigns-nvim
         vim-helm
-        lualine-nvim
 
         # external
         oil-nvim
         vim-fugitive
-        venn-nvim
         gv-vim
         zoxide-vim
         obsidian-nvim
         go-nvim
 
-        # Coding
-        fzf-lua
-        nvim-lspconfig
-        null-ls-nvim
-        lsp_signature-nvim
+        # Debug adapter
         nvim-dap
         nvim-dap-ui
         nvim-nio
         nvim-dap-python
+
+        # editing
+        fzf-lua
+        nvim-lspconfig
+        lsp_signature-nvim
         luasnip
-        vim-test
         nvim-lint
         vim-surround
         conform-nvim
         trouble-nvim
         vim-easy-align
         nvim-comment
-
-        blink-cmp
-
-        # trying out lisp
-        conjure
-        vim-racket
-        nvim-parinfer
-
-        # ai :(
-        # render-markdown-nvim
-        # avante-nvim
-        # nui-nvim
       ];
     };
   };

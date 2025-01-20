@@ -15,6 +15,7 @@ with lib; {
       };
     };
     home.file.".config/ghostty".source = config.lib.meta.mkMutableSymlink /mut/ghostty;
+    home.file.".config/nushell".source = config.lib.meta.mkMutableSymlink /mut/nushell;
     xdg = {
       enable = true;
       mime.enable = !machine.isDarwin;
