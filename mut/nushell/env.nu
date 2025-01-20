@@ -128,7 +128,7 @@ do --env {
 
     if ($ssh_agent_file | path exists) {
         let ssh_agent_env = open ($ssh_agent_file)
-        if (ps | where pid == ($ssh_agent_env.SSH_AGENT_PID) | is-not-empty) {
+        if (ps | where pid == ($ssh_agent_env.SSH_AGENT_PID | into int) | is-not-empty) {
             load-env $ssh_agent_env
             return
         } else {
