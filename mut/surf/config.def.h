@@ -153,16 +153,16 @@ static Key keys[] = {
 	{ MODKEY,                GDK_KEY_h,      navigate,   { .i = -1 } },
 
 	/* vertical and horizontal scrolling, in viewport percentage */
-	{ MODKEY,                GDK_KEY_j,      scrollv,    { .i = +10 } },
-	{ MODKEY,                GDK_KEY_k,      scrollv,    { .i = -10 } },
+	{ MODKEY,                GDK_KEY_d,      scrollv,    { .i = +10 } },
+	{ MODKEY,                GDK_KEY_u,      scrollv,    { .i = -10 } },
 	{ MODKEY,                GDK_KEY_space,  scrollv,    { .i = +50 } },
 	{ MODKEY,                GDK_KEY_b,      scrollv,    { .i = -50 } },
-	{ MODKEY,                GDK_KEY_i,      scrollh,    { .i = +10 } },
-	{ MODKEY,                GDK_KEY_u,      scrollh,    { .i = -10 } },
+	/* { MODKEY,                GDK_KEY_i,      scrollh,    { .i = +10 } }, */
+	/* { MODKEY,                GDK_KEY_u,      scrollh,    { .i = -10 } }, */
 
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,      zoom,       { .i = -1 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,      zoom,       { .i = +1 } },
+	/* { MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,      zoom,       { .i = -1 } }, */
+	/* { MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,      zoom,       { .i = +1 } }, */
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_q,      zoom,       { .i = 0  } },
 	{ MODKEY,                GDK_KEY_minus,  zoom,       { .i = -1 } },
 	{ MODKEY,                GDK_KEY_plus,   zoom,       { .i = +1 } },

@@ -59,8 +59,9 @@ static const Key keys[] = {
 
 	{ MODKEY,               XK_q,      killclient,  { 0 } },
 
-	{ MODKEY,               XK_u,      focusurgent, { 0 } },
-	{ MODKEY|ShiftMask,     XK_u,      toggle,      { .v = (void*) &urgentswitch } },
+  /* TODO: Does this even work? */
+	/* { MODKEY,               XK_u,      focusurgent, { 0 } }, */
+	/* { MODKEY|ShiftMask,     XK_u,      toggle,      { .v = (void*) &urgentswitch } }, */
 
 	{ 0,                    XK_F11,    fullscreen,  { 0 } },
 };
