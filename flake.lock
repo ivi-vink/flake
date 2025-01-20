@@ -399,6 +399,23 @@
         "type": "github"
       }
     },
+    "nix-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1737063096,
+        "narHash": "sha256-Qv40syutOYQZOBjS76Swk4VeUz08KDrsc9IDSdXmyqs=",
+        "path": "/Users/ivi/nix-darwin",
+        "type": "path"
+      },
+      "original": {
+        "path": "/Users/ivi/nix-darwin",
+        "type": "path"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1702272962,
@@ -549,6 +566,7 @@
         "ghostty": "ghostty",
         "home-manager": "home-manager",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
+        "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_4",
         "simple-nixos-mailserver": "simple-nixos-mailserver",
         "sops-nix": "sops-nix"
