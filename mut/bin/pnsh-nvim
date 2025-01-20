@@ -8,7 +8,6 @@ if not ($desktop_open_pipe | path exists) {
 let args = (
 "--init"  +
 " --entrypoint=/usr/bin/nu"  +
-" --network=host" +
 " --env=TERM=xterm-ghostty"  +
 $" --env=TERMINFO=($env.TERMINFO)"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
@@ -27,7 +26,7 @@ $" --workdir=($env | default $env.HOME PWD | get PWD)"  +
 " --volume=/nix/store:/nix/store"  +
 " --volume=/nix-config:/nix-config" +
 $" --volume=($env.HOME)/.ssh/config:/root/.ssh/config" +
-$" --volume=($env.XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock"
+$" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock"
 )
 
 (

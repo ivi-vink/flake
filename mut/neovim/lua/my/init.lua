@@ -425,15 +425,38 @@ end
 function xclip(lines)
   vim.system({ "nu", "--commands", "xclip -f -sel c | xclip"}, {stdin=lines, text=true}, nil)
 end
-vim.g.clipboard = {
-  name = "OSC 52",
-  copy =  {
-    ["+"] = xclip, ["*"] = xclip
-  },
-  paste = {
-    ["+"] = paste, ["*"] = paste
+function pbcopy(lines)
+  vim.system({ "nu", "--commands", "pbcopy"}, {stdin=lines, text=true}, nil)
+end
+
+-- Unix, Linux variants
+local fh, err = assert(io.popen("which xclip 2>/dev/null", "r"))
+if fh:read() then
+  vim.g.clipboard = {
+    name = "Xclip Clipboard",
+    copy =  {
+      ["+"] = xclip, ["*"] = xclip
+    },
+    paste = {
+      ["+"] = paste, ["*"] = paste
+    }
   }
-}
+else
+  local fh, err = assert(io.popen("which pbcopy 2>/dev/null", "r"))
+  if fh:read() then
+    vim.g.clipboard = {
+      name = 'pbcopy Clipboard',
+      copy = {
+        ['+'] = pbcopy,
+        ['*'] = pbcopy,
+      },
+      paste = {
+        ['+'] = paste,
+        ['*'] = paste,
+      },
+    }
+  end
+end
 require("my.events")
 require("my.packages")
 

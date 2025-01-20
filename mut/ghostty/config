@@ -12,3 +12,4 @@ keybind = ctrl+enter=unbind
 theme=GruvboxLuke
 window-decoration=false
 confirm-close-surface=false
+macos-option-as-alt=true
