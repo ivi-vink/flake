@@ -1,0 +1,2 @@
+#!/bin/sh
+/Applications/dmenu-mac.app/Contents/MacOS/dmenu-mac "$@"

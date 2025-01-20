@@ -37,21 +37,10 @@
     # $ nix-env -qaP | grep wget
     environment.systemPackages =
       [
-        pkgs.pywal
-        # pkgs.qemu
-        # pkgs.kitty
-        pkgs.openssh
-        # pkgs.python311
-        # pkgs.mpv
-        pkgs.kubelogin
+        pkgs.nushell
         pkgs.zsh
         pkgs.bashInteractive
-        # pkgs.awscli2
-        pkgs.skhd
-        # pkgs.act
-        pkgs.yubikey-manager
-        # pkgs.gomplate
-        # pkgs.just
+        pkgs.openssh
      ];
     hm = {
       home = {
@@ -59,6 +48,7 @@
           "/opt/homebrew/bin"
         ];
         file.".config/aerospace".source = config.lib.meta.mkMutableSymlink /mut/aerospace;
+        file."Library/KeyBindings/DefaultKeyBinding.dict".source = config.lib.meta.mkMutableSymlink /mut/DefaultKeyBinding.dict;
         file."gpg-agent.conf" = {
           text = ''
             pinentry-program /opt/homebrew/bin/pinentry-mac
@@ -129,12 +119,6 @@
     environment.pathsToLink = [ "/share/zsh" ];
     environment.variables = {
       SLACK_NO_AUTO_UPDATES = "1";
-    };
-    programs.zsh = {
-      enable = true;
-      shellInit = ''
-        export PATH="''${PATH}:${config.my.home}/.local/bin"
-      '';
     };
   };
 }

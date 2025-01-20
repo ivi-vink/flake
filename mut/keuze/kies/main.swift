@@ -11,7 +11,7 @@ import Cocoa
 import Darwin
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    
+
     var window: Window!
     var dataSource: DataSource!
     var promptText: PromptText!
@@ -19,15 +19,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var inputField: InputField!
     var tableView: TableView!
     var scrollView: NSScrollView!
-    
+
     func applicationDidBecomeActive(_ notification: Notification) {
-        
+
     }
-    
+
     func applicationDidResignActive(_ notification: Notification) {
         cancel();
     }
-    
+
     func receiveStdin() -> [String] {
         var lines: [String] = []
         while let line = readLine() {
@@ -35,7 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         return lines
     }
-    
+
     func applicationDidFinishLaunching(_ notification: Notification)
     {
         if (settings.promptText == nil) {
@@ -51,25 +51,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             fputs("No data was received on stdin\n", stderr)
             exit(1)
         }
-        
+
         window = Window()
         dataSource = DataSource()
         dataSource.updateItems(items)
-        
+
         setupPromptText()
         setupDivider()
         setupInputField()
         setupList()
-    
+
         window.showWindow()
         app.activate(ignoringOtherApps: true)
     }
-    
+
     func setupPromptText() {
         promptText = PromptText(text: settings.promptText!)
         window.contentView!.addSubview(promptText)
     }
-    
+
     func setupDivider() {
         divider = NSBox(frame: layouts.dividerRect)
         divider.boxType = .custom
@@ -77,32 +77,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         divider.borderWidth = 0
         window.contentView!.addSubview(divider)
     }
-    
+
     func setupInputField() {
         inputField = InputField(appDelegate: self);
         window.contentView!.addSubview(inputField)
         window.makeFirstResponder(inputField)
     }
-    
+
     func handleInputChange(input: String) {
         dataSource.updateSort(query: input)
         tableView.reloadData()
     }
-    
+
     func handleMoveUp() {
         tableView.selectRowAbove()
     }
-    
+
     func handleMoveDown() {
         tableView.selectRowBelow()
     }
-    
+
     func handleSelect() {
         let value = dataSource.sortedItems[tableView.selectedRow]
         fputs(value, stdout)
         cancel()
     }
-    
+
     func setupList() {
         scrollView = NSScrollView(frame: layouts.listRect)
         tableView = TableView(dataSource: dataSource)
@@ -117,7 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         scrollView.automaticallyAdjustsContentInsets = false
         window.contentView!.addSubview(scrollView)
     }
-    
+
     func cancel() {
         exit(0)
     }

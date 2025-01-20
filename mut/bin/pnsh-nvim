@@ -7,7 +7,6 @@ if not ($desktop_open_pipe | path exists) {
 
 let args = (
 "--init"  +
-" --entrypoint=/usr/bin/nu"  +
 " --env=TERM=xterm-ghostty"  +
 $" --env=TERMINFO=($env.TERMINFO)"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
@@ -34,4 +33,5 @@ $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/do
   --pnsh-host-bindfs-disabled
   --pnsh-docker-extra-args=$"($args)"
   --docker-image=pionativedev.azurecr.io/pionative/pnsh-nvim
+  --docker-tag=latest
 )

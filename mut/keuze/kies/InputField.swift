@@ -11,7 +11,7 @@ import Cocoa
 
 class InputField: NSTextField, NSTextFieldDelegate {
     var appDelegate: AppDelegate!
-    
+
     init(appDelegate: AppDelegate) {
         super.init(frame: layouts.inputRect)
         self.appDelegate = appDelegate
@@ -33,34 +33,32 @@ class InputField: NSTextField, NSTextFieldDelegate {
         cell?.isScrollable = true
         autoresizingMask = [NSView.AutoresizingMask.width]
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-        if (commandSelector == #selector(NSStandardKeyBindingResponding.cancelOperation(_:))){
-            appDelegate.cancel()
-            return true
+        switch (commandSelector) {
+        case #selector(NSStandardKeyBindingResponding.cancelOperation(_:)):
+          appDelegate.cancel()
+          return true
+        case #selector(NSStandardKeyBindingResponding.insertNewline(_:)):
+          appDelegate.handleSelect()
+          return true
+        case #selector(NSStandardKeyBindingResponding.moveUp(_:)):
+          appDelegate.handleMoveUp()
+          return true
+        case #selector(NSStandardKeyBindingResponding.moveDown(_:)):
+          appDelegate.handleMoveDown()
+          return true
+        case #selector(NSStandardKeyBindingResponding.insertTab(_:)):
+          return true
+        default:
+          return false
         }
-        if (commandSelector == #selector(NSStandardKeyBindingResponding.insertNewline(_:))){
-            appDelegate.handleSelect()
-            return true
-        }
-        if (commandSelector == #selector(NSStandardKeyBindingResponding.moveUp(_:))){
-            appDelegate.handleMoveUp()
-            return true
-        }
-        if (commandSelector == #selector(NSStandardKeyBindingResponding.moveDown(_:))){
-            appDelegate.handleMoveDown()
-            return true
-        }
-        if (commandSelector == #selector(NSStandardKeyBindingResponding.insertTab(_:))){
-            return true
-        }
-        return false
     }
-    
+
     func controlTextDidChange(_ obj: Notification) {
         appDelegate.handleInputChange(input: stringValue)
     }

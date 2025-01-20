@@ -10,15 +10,17 @@ import Foundation
 import Cocoa
 
 class Settings {
-    
+
     var promptText: String? {
         var prompt = UserDefaults.standard.string(forKey: "p")
         if (prompt != nil) {
             prompt = prompt! + ":"
+        } else {
+            prompt = "|"
         }
         return prompt
     }
-    
+
     var font: NSFont? {
         let fn = UserDefaults.standard.string(forKey: "fn")
         let fs = UserDefaults.standard.integer(forKey: "fs")
@@ -28,17 +30,17 @@ class Settings {
         }
         return NSFont(name: fn!, size: fontSize)
     }
-    
+
     var windowPadding: CGFloat {
         let val = UserDefaults.standard.integer(forKey: "pd")
         return val == 0 ? 12 : CGFloat(val)
     }
-    
+
     var windowHeight: CGFloat {
         let val = UserDefaults.standard.integer(forKey: "h")
         return val == 0 ? 310 : CGFloat(val)
     }
-    
+
     var windowWidth: CGFloat {
         let val = UserDefaults.standard.integer(forKey: "w")
         return val == 0 ? 500 : CGFloat(val)

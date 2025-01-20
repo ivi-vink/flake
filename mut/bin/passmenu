@@ -2,8 +2,13 @@
 shopt -s nullglob globstar
 
 dmenu=dmenu
+copy() {
+  xclip -f | xclip -f -sel c
+}
 if [ "$(uname)" = "Darwin" ]; then
-    dmenu="/opt/homebrew/bin/dmenu-mac"
+    copy() {
+      pbcopy
+    }
 fi
 
 (
@@ -20,6 +25,6 @@ fi
 
     [[ -n $password ]] || exit
 
-    pass show "$password" | head -n1 | xclip -f | xclip -f -sel c
+    pass show "$password" | head -n1 | copy
 ) >/tmp/debug 2>&1
 
