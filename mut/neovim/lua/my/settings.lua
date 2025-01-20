@@ -65,3 +65,4 @@ vim.opt.showtabline = 1
 vim.opt.cmdheight = 1
 
 vim.opt.shellpipe = "out+err>"
+vim.opt.shell = "sh"
