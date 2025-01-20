@@ -1,0 +1,38 @@
+#!/usr/bin/env nu
+let desktop_open_pipe = $"($env.HOME)/.cache/desktop-open.pipe"
+if not ($desktop_open_pipe | path exists) {
+  mkfifo $desktop_open_pipe
+  bash -c 'nohup desktop-open-pipe &'
+}
+
+let args = (
+"--init"  +
+" --entrypoint=/usr/bin/nu"  +
+" --network=host" +
+" --env=TERM=xterm-ghostty"  +
+$" --env=TERMINFO=($env.TERMINFO)"  +
+" --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
+" --volume=/etc/profiles/per-user/ivi/etc/profile.d:/etc/profiles/per-user/ivi/etc/profile.d"  +
+" --env=SHELL=/usr/bin/nu" +
+" --env=DISPLAY"  +
+" --env=XDG_RUNTIME_DIR"  +
+" --volume=/tmp/.X11-unix:/tmp/.X11-unix"  +
+$" --volume=($env.HOME)/.ssh/known_hosts:($env.HOME)/.ssh/known_hosts"  +
+" --volume=/run/pcscd/pcscd.comm:/run/pcscd/pcscd.comm"  +
+$" --hostname=(hostname)"  +
+" --env=STARSHIP_CONFIG=/hostfs/.config/starship.toml"  +
+" --env=HOME"  +
+$" --volume=($env.HOME):($env.HOME)"  +
+$" --workdir=($env | default $env.HOME PWD | get PWD)"  +
+" --volume=/nix/store:/nix/store"  +
+" --volume=/nix-config:/nix-config" +
+$" --volume=($env.HOME)/.ssh/config:/root/.ssh/config" +
+$" --volume=($env.XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock"
+)
+
+(
+^pnsh
+  --pnsh-host-bindfs-disabled
+  --pnsh-docker-extra-args=$"($args)"
+  --docker-image=pionativedev.azurecr.io/pionative/pnsh-nvim
+)
