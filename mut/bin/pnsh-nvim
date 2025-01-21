@@ -37,5 +37,5 @@ $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/do
   --pnsh-docker-extra-args=$"($args)"
   --with-docker
   --docker-image=pionativedev.azurecr.io/pionative/pnsh-nvim
-  --docker-tag=latest
+  --docker-tag=darwin
 )

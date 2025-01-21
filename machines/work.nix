@@ -109,6 +109,9 @@
 
     nix.extraOptions = ''extra-platforms = x86_64-darwin aarch64-darwin '';
 
+    nix.linux-builder.enable = true;
+    nix.settings.trusted-users = [ "@admin" "@ivi" ];
+
     # Set Git commit hash for darwin-version.
     system.configurationRevision = self.rev or self.dirtyRev or null;
 

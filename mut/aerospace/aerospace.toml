@@ -102,9 +102,16 @@ automatically-unhide-macos-hidden-apps = false
         end if
     end tell'
     '''
+
     cmd-w = '''exec-and-forget osascript -e '
-    tell application "Chrome"
-        activate
+    tell application "System Events"
+        if exists application process "Google Chrome" then
+            tell application process "Google Chrome"
+                click menu item "New Window" of menu "File" of menu bar 1
+            end tell
+        else
+            tell application "Google Chrome" to activate
+        end if
     end tell'
     '''
 
