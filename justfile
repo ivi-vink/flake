@@ -63,3 +63,10 @@ NIXNAME := "vm-aarch64"
     ssh {{SSH_OPTIONS}} -p22 root@{{ip}} " \
         sudo reboot; \
     "
+
+@symlinks:
+   ln -sf /nix-config/mut/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
+   ln -sf /nix-config/mut/aerospace ~/.config/aerospace
+   ln -sf /nix-config/mut/ghostty ~/.config/ghostty
+   ln -sf /nix-config/mut/nushell ~/.config/nushell
+   ln -sf /nix-config/mut/neovim ~/.config/nvim

@@ -4,7 +4,6 @@
   ...
 }: {
   hm = {
-    xdg.configFile."nvim".source = config.lib.meta.mkMutableSymlink /mut/neovim;
     editorconfig = {
       enable = true;
       settings = {

@@ -14,8 +14,9 @@ with lib; {
         PASSWORD_STORE_DIR = config.synced.password-store.path;
       };
     };
-    home.file.".config/ghostty".source = config.lib.meta.mkMutableSymlink /mut/ghostty;
-    home.file.".config/nushell".source = config.lib.meta.mkMutableSymlink /mut/nushell;
+    # home.file.".config/ghostty".source = config.lib.meta.mkMutableSymlink /mut/ghostty;
+    # home.file.".config/nushell".source = config.lib.meta.mkMutableSymlink /mut/nushell;
+    # xdg.configFile."nvim".source = config.lib.meta.mkMutableSymlink /mut/neovim;
     xdg = {
       enable = true;
       mime.enable = !machine.isDarwin;

@@ -40,15 +40,16 @@
         pkgs.nushell
         pkgs.zsh
         pkgs.bashInteractive
-        pkgs.openssh
+        pkgs.just
      ];
     hm = {
+      # services.ssh-agent.enable = true;
       home = {
         sessionPath = [
           "/opt/homebrew/bin"
         ];
-        file.".config/aerospace".source = config.lib.meta.mkMutableSymlink /mut/aerospace;
-        file."Library/KeyBindings/DefaultKeyBinding.dict".source = config.lib.meta.mkMutableSymlink /mut/DefaultKeyBinding.dict;
+        # file.".config/aerospace".source = config.lib.meta.mkMutableSymlink /mut/aerospace;
+        # file."Library/KeyBindings/DefaultKeyBinding.dict".source = config.lib.meta.mkMutableSymlink /mut/DefaultKeyBinding.dict;
         file."gpg-agent.conf" = {
           text = ''
             pinentry-program /opt/homebrew/bin/pinentry-mac

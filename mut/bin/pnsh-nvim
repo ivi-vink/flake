@@ -7,8 +7,10 @@ if not ($desktop_open_pipe | path exists) {
 
 let args = (
 "--init"  +
-" --env=TERM=xterm-ghostty"  +
-$" --env=TERMINFO=($env.TERMINFO)"  +
+" --entrypoint=/usr/bin/nu"  +
+" --env=TERM=xterm"  +
+$" --env=TERMINFO"  +
+$" --volume=($env.TERMINFO):($env.TERMINFO)"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
 " --volume=/etc/profiles/per-user/ivi/etc/profile.d:/etc/profiles/per-user/ivi/etc/profile.d"  +
 " --env=SHELL=/usr/bin/nu" +
@@ -22,9 +24,9 @@ $" --hostname=(hostname)"  +
 " --env=HOME"  +
 $" --volume=($env.HOME):($env.HOME)"  +
 $" --workdir=($env | default $env.HOME PWD | get PWD)"  +
-" --volume=/nix/store:/nix/store"  +
-" --volume=/nix-config:/nix-config" +
-$" --volume=($env.HOME)/.ssh/config:/root/.ssh/config" +
+# " --volume=/nix/store:/nix/store"  +
+$" --volume=/nix-config:/nix-config" +
+$" --volume=($env.HOME)/.ssh:/root/.ssh" +
 $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock"
 )
 
@@ -32,6 +34,7 @@ $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/do
 ^pnsh
   --pnsh-host-bindfs-disabled
   --pnsh-docker-extra-args=$"($args)"
+  --with-docker
   --docker-image=pionativedev.azurecr.io/pionative/pnsh-nvim
   --docker-tag=latest
 )
