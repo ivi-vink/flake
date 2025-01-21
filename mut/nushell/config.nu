@@ -1,5 +1,8 @@
 if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
-    try {pnsh-nvim}
+  if ("~/.gnupg/S.gpg-agent.ssh" | path exists) {
+    ln -sf ("~/.gnupg/S.gpg-agent.ssh" | path expand) $env.SSH_AUTH_SOCK
+  }
+  try {pnsh-nvim}
 } else {
   use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu
 }

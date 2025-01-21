@@ -53,6 +53,10 @@
         file."gpg-agent.conf" = {
           text = ''
             pinentry-program /opt/homebrew/bin/pinentry-mac
+            enable-ssh-support
+            ttyname $GPG_TTY
+            default-cache-ttl 60
+            max-cache-ttl 120
           '';
           target = ".gnupg/gpg-agent.conf";
         };
