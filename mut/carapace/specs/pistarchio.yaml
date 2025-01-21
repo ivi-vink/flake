@@ -1,0 +1,5 @@
+name: pistarchio
+description: pistarchio
+parsing: disabled
+completion:
+  positionalany: ["$carapace.bridge.Carapace([pistarchio])"]
