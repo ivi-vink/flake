@@ -13,3 +13,6 @@ theme=GruvboxLuke
 window-decoration=false
 confirm-close-surface=false
 macos-option-as-alt=true
+
+clipboard-read = allow
+clipboard-write = allow

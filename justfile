@@ -70,3 +70,4 @@ NIXNAME := "vm-aarch64"
    ln -sf /nix-config/mut/ghostty ~/.config/ghostty
    ln -sf /nix-config/mut/nushell ~/.config/nushell
    ln -sf /nix-config/mut/neovim ~/.config/nvim
+   ln -sf /nix-config/mut/k9s ~/.config/k9s

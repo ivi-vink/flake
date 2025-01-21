@@ -27,7 +27,8 @@ $" --workdir=($env | default $env.HOME PWD | get PWD)"  +
 # " --volume=/nix/store:/nix/store"  +
 $" --volume=/nix-config:/nix-config" +
 $" --volume=($env.HOME)/.ssh:/root/.ssh" +
-$" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock"
+$" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock:/var/run/docker.sock" +
+" --net=host"
 )
 
 (

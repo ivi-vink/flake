@@ -92,8 +92,14 @@ automatically-unhide-macos-hidden-apps = false
     cmd-shift-d = 'exec-and-forget source /etc/profile; PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH" passmenu'
     cmd-d = 'exec-and-forget source /etc/profile; PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH" dmenu'
     cmd-enter = '''exec-and-forget osascript -e '
-    tell application "Ghostty"
-        activate
+    tell application "System Events"
+        if exists application process "Ghostty" then
+            tell application process "Ghostty"
+                click menu item "New Window" of menu "File" of menu bar 1
+            end tell
+        else
+            tell application "Ghostty" to activate
+        end if
     end tell'
     '''
     cmd-w = '''exec-and-forget osascript -e '

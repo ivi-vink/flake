@@ -422,40 +422,39 @@ function paste()
     vim.fn.getregtype("")
   }
 end
-function xclip(lines)
-  vim.system({ "nu", "--commands", "xclip -f -sel c | xclip"}, {stdin=lines, text=true}, nil)
-end
+-- function xclip(lines)
+--   vim.system({ "nu", "--commands", "xclip -f -sel c | xclip"}, {stdin=lines, text=true}, nil)
+-- end
 function pbcopy(lines)
   vim.system({ "nu", "--commands", "pbcopy"}, {stdin=lines, text=true}, nil)
 end
 
 -- Unix, Linux variants
-local fh, err = assert(io.popen("which xclip 2>/dev/null", "r"))
+local fh, err = assert(io.popen("which pbcopy 2>/dev/null", "r"))
 if fh:read() then
   vim.g.clipboard = {
-    name = "Xclip Clipboard",
-    copy =  {
-      ["+"] = xclip, ["*"] = xclip
+    name = 'pbcopy Clipboard',
+    copy = {
+      ['+'] = pbcopy,
+      ['*'] = pbcopy,
     },
     paste = {
-      ["+"] = paste, ["*"] = paste
-    }
+      ['+'] = paste,
+      ['*'] = paste,
+    },
   }
 else
-  local fh, err = assert(io.popen("which pbcopy 2>/dev/null", "r"))
-  if fh:read() then
-    vim.g.clipboard = {
-      name = 'pbcopy Clipboard',
-      copy = {
-        ['+'] = pbcopy,
-        ['*'] = pbcopy,
-      },
-      paste = {
-        ['+'] = paste,
-        ['*'] = paste,
-      },
-    }
-  end
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
 end
 require("my.events")
 require("my.packages")

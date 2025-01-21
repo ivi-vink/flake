@@ -1,6 +1,8 @@
-# if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
-#     try {pnsh-nvim}
-# }
+if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
+    try {pnsh-nvim}
+} else {
+  use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu
+}
 # Nushell Config File
 #
 # version = "0.99.1"
