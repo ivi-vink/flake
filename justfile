@@ -65,9 +65,13 @@ NIXNAME := "vm-aarch64"
     "
 
 @symlinks:
-   ln -sf /nix-config/mut/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
-   ln -sf /nix-config/mut/aerospace ~/.config/aerospace
-   ln -sf /nix-config/mut/ghostty ~/.config/ghostty
-   ln -sf /nix-config/mut/nushell ~/.config/nushell
-   ln -sf /nix-config/mut/neovim ~/.config/nvim
-   ln -sf /nix-config/mut/k9s ~/.config/k9s
+  #!/usr/bin/env bash
+  set -x
+  ln -sf /nix-config/mut/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
+  ! [ -d ~/.config/aerospace ] && ln -sf /nix-config/mut/aerospace ~/.config/aerospace
+  ! [ -d ~/.config/ghostty ] && ln -sf /nix-config/mut/ghostty ~/.config/ghostty
+  ! [ -d ~/.config/nushell ] && ln -sf /nix-config/mut/nushell ~/.config/nushell
+  ! [ -d ~/.config/nvim ] && ln -sf /nix-config/mut/neovim ~/.config/nvim
+  ! [ -d ~/.config/k9s ] && ln -sf /nix-config/mut/k9s ~/.config/k9s
+  ! [ -d ~/.config/carapace ] && ln -sf /nix-config/mut/carapace ~/.config/carapace
+  true
