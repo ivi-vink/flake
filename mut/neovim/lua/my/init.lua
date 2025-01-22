@@ -326,7 +326,6 @@ local browse_git_remote = function(fugitive_data)
     end
   end
   assert((home and org and project and repo) or (home and repo))
-  P(home, org, project, repo)
 
   local homes = {
     ["ssh.dev.azure.com"] = "dev.azure.com",
