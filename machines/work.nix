@@ -41,9 +41,11 @@
         pkgs.zsh
         pkgs.bashInteractive
         pkgs.just
+        pkgs.git
      ];
     hm = {
       # services.ssh-agent.enable = true;
+      programs.git.enable = mkForce false;
       home = {
         sessionPath = [
           "/opt/homebrew/bin"

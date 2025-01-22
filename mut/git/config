@@ -1,0 +1,25 @@
+[commit]
+	gpgsign = false
+
+[gpg]
+	format = "ssh"
+
+[merge]
+	tool = "fugitive"
+
+[mergetool "fugitive"]
+	cmd = "vim -f -c \"Gdiff\" \"$MERGED\""
+
+[user]
+	email = "ivi@vinkies.net"
+	name = "Mike Vink"
+	signingKey = "/Users/ivi/.ssh/id_ed25519_sk.pub"
+
+[worktree]
+	guessRemote = true
+
+[includeIf "hasconfig:remote.*.url:git@github.com:**/**"]
+	path = "/nix-config/mut/git/github"
+
+[includeIf "hasconfig:remote.*.url:https://github.com/**/**"]
+	path = "/nix-config/mut/git/github"

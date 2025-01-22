@@ -70,8 +70,11 @@ NIXNAME := "vm-aarch64"
   ln -sf /nix-config/mut/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
   ! [ -d ~/.config/aerospace ] && ln -sf /nix-config/mut/aerospace ~/.config/aerospace
   ! [ -d ~/.config/ghostty ] && ln -sf /nix-config/mut/ghostty ~/.config/ghostty
-  ! [ -d ~/.config/nushell ] && ln -sf /nix-config/mut/nushell ~/.config/nushell
   ! [ -d ~/.config/nvim ] && ln -sf /nix-config/mut/neovim ~/.config/nvim
   ! [ -d ~/.config/k9s ] && ln -sf /nix-config/mut/k9s ~/.config/k9s
   ! [ -d ~/.config/carapace ] && ln -sf /nix-config/mut/carapace ~/.config/carapace
+  ! [ -d ~/.config/git ] && ln -sf /nix-config/mut/git ~/.config/git
+
+  ! [ -d ~/.config/nushell ] && ln -sf /nix-config/mut/nushell ~/.config/nushell
+  rm -rf "$HOME/Library/Application Support/nushell";  ln -sf /nix-config/mut/nushell  "$HOME/Library/Application Support/nushell"
   true

@@ -1,0 +1,6 @@
+/.direnv/
+/.envrc
+/.env
+.vimsession.vim
+tfplan
+plan

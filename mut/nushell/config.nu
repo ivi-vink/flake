@@ -900,10 +900,10 @@ $env.config = {
     ]
 }
 
-if ($"($env.HOME)/.cache/wal/sequences" | path exists)    { ^cat ~/.cache/wal/sequences       }
+if ("~/.cache/wal/sequences" | path exists)    { ^cat ~/.cache/wal/sequences       }
 source ~/.cache/zoxide.nu
-if ($"($env.HOME)/.cache/starship.nu" | path exists) { source ~/.cache/starship.nu  }
-if ($"($env.HOME)/.cache/carapace.nu" | path exists) { source ~/.cache/carapace.nu  }
+if ("~/.cache/starship.nu" | path exists) { source ~/.cache/starship.nu  }
+if ("~/.cache/carapace.nu" | path exists) { source ~/.cache/carapace.nu  }
 
 $env.K9S_DEFAULT_PF_ADDRESS = "0.0.0.0"
 $env.config.show_banner = false
@@ -913,7 +913,7 @@ alias k = kubectl
 alias d = docker
 alias t = terraform
 
-let pistarchio_dir = $"($env.HOME)/Programming/Pionative/pistarchio"
+let pistarchio_dir = "~/Programming/Pionative/pistarchio" | path expand
 $env.PISTARCHIO_STACKS_DIR = $pistarchio_dir + "/stacks"
 $env.PISTARCHIO_LIBRARY_DIR = $pistarchio_dir + "/library"
-$env.PISTARCHIO_VENDOR_DESTINATION_DIR = $pistarchio_dir + "/../clients"
+$env.PISTARCHIO_VENDOR_DESTINATION_DIR = ($pistarchio_dir + "/../clients") | path expand

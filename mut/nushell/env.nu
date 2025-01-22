@@ -86,6 +86,70 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins') # add <nushell-config-dir>/plugins
 ]
 
+# To load from a custom file you can use:
+# source ($nu.default-config-dir | path join 'custom.nu')
+
+let darwin: bool = (uname | get operating-system) == "Darwin"
+let nix: bool = "/nix" | path exists
+
+if $darwin and $nix {
+  $env.__NIX_DARWIN_SET_ENVIRONMENT_DONE = 1
+
+  $env.PATH = [
+      $"($env.HOME)/.nix-profile/bin"
+      $"/etc/profiles/per-user/($env.USER)/bin"
+      "/run/current-system/sw/bin"
+      "/nix/var/nix/profiles/default/bin"
+      "/usr/local/bin"
+      "/usr/bin"
+      "/usr/sbin"
+      "/bin"
+      "/sbin"
+  ]
+  $env.EDITOR = "VIM"
+  $env.NIX_PATH = [
+      $"darwin-config=($env.HOME)/.nixpkgs/darwin-configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+  ]
+  $env.NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt"
+  $env.PAGER = "less -R"
+  $env.TERMINFO_DIRS = [
+      $"($env.HOME)/.nix-profile/share/terminfo"
+      $"/etc/profiles/per-user/($env.USER)/share/terminfo"
+      "/run/current-system/sw/share/terminfo"
+      "/nix/var/nix/profiles/default/share/terminfo"
+      "/usr/share/terminfo"
+  ]
+  $env.XDG_CONFIG_DIRS = [
+      $"($env.HOME)/.nix-profile/etc/xdg"
+      $"/etc/profiles/per-user/($env.USER)/etc/xdg"
+      "/run/current-system/sw/etc/xdg"
+      "/nix/var/nix/profiles/default/etc/xdg"
+  ]
+  $env.XDG_DATA_DIRS = [
+      $"($env.HOME)/.nix-profile/share"
+      $"/etc/profiles/per-user/($env.USER)/share"
+      "/run/current-system/sw/share"
+      "/nix/var/nix/profiles/default/share"
+  ]
+  $env.TERM = $env.TERM
+  $env.NIX_USER_PROFILE_DIR = $"/nix/var/nix/profiles/per-user/($env.USER)"
+  $env.NIX_PROFILES = [
+      "/nix/var/nix/profiles/default"
+      "/run/current-system/sw"
+      $"/etc/profiles/per-user/($env.USER)"
+      $"($env.HOME)/.nix-profile"
+  ]
+
+  if ($"($env.HOME)/.nix-defexpr/channels" | path exists) {
+      $env.NIX_PATH = ($env.PATH | split row (char esep) | append $"($env.HOME)/.nix-defexpr/channels")
+  }
+
+  if (false in (ls -l `/nix/var/nix`| where type == dir | where name == "/nix/var/nix/db" | get mode | str contains "w")) {
+      $env.NIX_REMOTE = "daemon"
+  }
+}
+
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
 # An alternate way to add entries to $env.PATH is to use the custom command `path add`
@@ -95,32 +159,31 @@ use std "path add"
 # path add /some/path
 # path add ($env.CARGO_HOME | path join "bin")
 try {
-  if (uname | get "operating-system") == "Darwin" {
+  if $darwin {
     $env.PATH = ["/opt/homebrew/bin" "/opt/X11/bin" "/opt/local/bin" "/opt/local/sbin"] ++ $env.PATH
   }
 }
 path add ($env.HOME | path join ".local" "bin")
 $env.PATH = ($env.PATH | uniq)
 
-# To load from a custom file you can use:
-# source ($nu.default-config-dir | path join 'custom.nu')
+$env.XDG_CACHE_HOME  = "~/.cache" | path expand
+$env.XDG_DATA_HOME   = "~/.local/share" | path expand
+$env.XDG_CONFIG_HOME = "~/.config" | path expand
 
 if (which carapace | is-not-empty) {
-    $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
-    mkdir ~/.cache/carapace
-    carapace _carapace nushell | save --force ~/.cache/carapace.nu
+  $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+  carapace _carapace nushell | save --force ~/.cache/carapace.nu
 }
-mkdir ~/.cache/zoxide
-zoxide init nushell --cmd=cd | save --force ~/.cache/zoxide.nu
-starship init nu | save --force ~/.cache/starship.nu
+if (which zoxide | is-not-empty) {
+  zoxide init nushell --cmd=cd | save --force ~/.cache/zoxide.nu
+}
+if (which starship | is-not-empty) {
+  starship init nu | save --force ~/.cache/starship.nu
+}
 
-if (not ("/var/run/docker.sock" | path exists)) and (not ((uname | get operating-system) == "Darwin")) {
+if (not ("/var/run/docker.sock" | path exists)) and (not darwin) {
     $env.DOCKER_HOST = $"unix://($env | default $"/run/($env.USER)" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/docker.sock"
 }
-
-$env.XDG_CACHE_HOME = $"($env.HOME)/.cache"
-$env.XDG_DATA_HOME = $"($env.HOME)/.local/share"
-$env.XDG_CONFIG_HOME = $"($env.HOME)/.config"
 
 # if not ("/.dockerenv" | path exists) {
 # do --env {

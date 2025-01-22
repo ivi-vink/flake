@@ -1,13 +1,7 @@
-#!/usr/bin/env bash
-name="$HOME/.cache/desktop-open.pipe"
-while true; do
-  {
-  /nix/store/zcw13r2mmpzlnv2yvfl13mcpky3hivq1-system-path/bin/xdg-open "$(cat "$name")"
-} >/dev/null 2>&1
-done
-
-finish () {
-  rm -vf "$name"
+#!/usr/bin/env nu
+echo listening for open commands
+loop {
+  let line = nc -l 127.0.0.1 1994
+  echo $line | save --append /tmp/debuglogs
+  ^open $line
 }
-
-trap finish EXIT

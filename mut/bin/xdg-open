@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "$@" | tee "$HOME/.cache/desktop-open.pipe"
+nu --commands "^echo $1 | nc 127.0.0.1 1994 | echo"
