@@ -1,0 +1,20 @@
+#!/bin/sh
+
+git diff --no-prefix --no-ext-diff --relative -U0 |
+awk '
+/^\+\+\+ / {
+  file = $2
+  next
+}
+
+file && /^@@/ {
+  match($0, /\+[0-9]+/)
+  line = substr($0, RSTART + 1, RLENGTH - 1)
+  next
+}
+
+line && /^[+-]/ {
+  printf "%s:%d:%s\n", file, line, $0
+  line = 0
+}
+'
