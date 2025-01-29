@@ -1,2 +1,5 @@
 #!/bin/bash
-nu --commands "^echo $1 | nc 127.0.0.1 1994 | echo"
+case "$(file --mime-type $1 | awk '{print $2}')" in
+  text/*|application/json) exec "$EDITOR" $1 ;;
+  *) nu --commands "^echo $1 | nc 127.0.0.1 1994 | echo" ;;
+esac

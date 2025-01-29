@@ -16,6 +16,7 @@ vim.api.nvim_set_hl(0, "VirtualTextWarning", {link= "Grey"})
 vim.api.nvim_set_hl(0, "VirtualTextError", {link= "DiffDelete"})
 vim.api.nvim_set_hl(0, "VirtualTextInfo", {link= "DiffChange"})
 vim.api.nvim_set_hl(0, "VirtualTextHint", {link= "DiffAdd"})
+vim.diagnostic.config({virtual_text = false, virtual_lines = { highlight_whole_line = false, only_current_line = true } })
 
 local map = vim.keymap.set
 local unmap = vim.keymap.del
@@ -40,7 +41,6 @@ end
 map("n", "gb", ":GBrowse<CR>")
 map("n", "g<cr>", ":G<cr>")
 map("n", "ge", function() vim.diagnostic.open_float() end)
--- (vim.diagnostic.config {:virtual_text false})
 map("n", "-", ":Oil<cr>")
 map("n", "<leader>qf", cope)
 map("n", "<leader>q<BS>", ":cclose<cr>")

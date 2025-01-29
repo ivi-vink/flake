@@ -1,10 +1,9 @@
 if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
+  if (pidof gpg-agent | is-empty) { gpgconf --launch gpg-agent }
   if ("~/.gnupg/S.gpg-agent.ssh" | path exists) {
     ln -sf ("~/.gnupg/S.gpg-agent.ssh" | path expand) $env.SSH_AUTH_SOCK
   }
   try {pnsh-nvim}
-} else {
-  use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu
 }
 # Nushell Config File
 #
@@ -912,8 +911,11 @@ alias p = pnsh-nvim
 alias k = kubectl
 alias d = docker
 alias t = terraform
+alias g = git
+alias f = nvim +G +only
 
 let pistarchio_dir = "~/Programming/Pionative/pistarchio" | path expand
 $env.PISTARCHIO_STACKS_DIR = $pistarchio_dir + "/stacks"
 $env.PISTARCHIO_LIBRARY_DIR = $pistarchio_dir + "/library"
 $env.PISTARCHIO_VENDOR_DESTINATION_DIR = ($pistarchio_dir + "/../clients") | path expand
+overlay use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu

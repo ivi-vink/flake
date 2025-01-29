@@ -10,6 +10,7 @@ let args = (
 " --entrypoint=/usr/bin/nu"  +
 " --env=TERM=xterm"  +
 $" --env=TERMINFO"  +
+$" --env=EDITOR=vis"  +
 $" --volume=($env.TERMINFO):($env.TERMINFO)"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
 " --volume=/etc/profiles/per-user/ivi/etc/profile.d:/etc/profiles/per-user/ivi/etc/profile.d"  +
@@ -36,6 +37,6 @@ $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/do
   --pnsh-host-bindfs-disabled
   --pnsh-docker-extra-args=$"($args)"
   --with-docker
-  --docker-image=pionativedev.azurecr.io/pionative/pnsh-nvim
-  --docker-tag=darwin
+  --docker-image=pionativedev.azurecr.io/pionative/pnsh-vis
+  --docker-tag=latest
 )

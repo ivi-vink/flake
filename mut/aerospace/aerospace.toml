@@ -90,6 +90,7 @@ automatically-unhide-macos-hidden-apps = false
     # You can uncomment the following lines to open up terminal with alt + enter shortcut
     # (like in i3)
     cmd-shift-d = 'exec-and-forget source /etc/profile; PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH" passmenu'
+    cmd-f = 'fullscreen'
     cmd-d = 'exec-and-forget source /etc/profile; PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH" dmenu'
     cmd-enter = '''exec-and-forget osascript -e '
     tell application "System Events"

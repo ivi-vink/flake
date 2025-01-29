@@ -76,5 +76,6 @@ NIXNAME := "vm-aarch64"
   ! [ -d ~/.config/git ] && ln -sf /nix-config/mut/git ~/.config/git
 
   ! [ -d ~/.config/nushell ] && ln -sf /nix-config/mut/nushell ~/.config/nushell
+  ! [ -d ~/.config/vis ] && ln -sf /nix-config/mut/vis ~/.config/vis
   rm -rf "$HOME/Library/Application Support/nushell";  ln -sf /nix-config/mut/nushell  "$HOME/Library/Application Support/nushell"
   true

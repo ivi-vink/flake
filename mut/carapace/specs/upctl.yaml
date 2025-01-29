@@ -1,0 +1,5 @@
+name: upctl
+description: upctl
+parsing: disabled
+completion:
+  positionalany: ["$carapace.bridge.Cobra([upctl])"]
