@@ -326,7 +326,7 @@ local function store_from_string(str, fmt)
 	local i = 0
 	local dirstack = {}
 	local pwd = getcwd()
-	for ln in lines.buffer:gmatch("[^\n]*") do
+	for ln in lines.buffer:gmatch("[^\n]+") do
 		i = i + 1
 		for patt, push in pairs(fmt[0] or {}) do
 			local dir = ln:match(patt)

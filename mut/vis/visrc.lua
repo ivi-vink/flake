@@ -1,6 +1,7 @@
 -- load standard vis module, providing parts of the Lua API
 require('vis')
 require('vis-editorconfig')
+require('vis-quickfix')
 
 local format = require('vis-format')
 for k, _ in pairs(format.formatters) do
