@@ -74,6 +74,7 @@ NIXNAME := "vm-aarch64"
   ! [ -d ~/.config/k9s ] && ln -sf /nix-config/mut/k9s ~/.config/k9s
   ! [ -d ~/.config/carapace ] && ln -sf /nix-config/mut/carapace ~/.config/carapace
   ! [ -d ~/.config/git ] && ln -sf /nix-config/mut/git ~/.config/git
+  ! [ -d ~/.config/lf ] && ln -sf /nix-config/mut/lf ~/.config/lf
 
   ! [ -d ~/.config/nushell ] && ln -sf /nix-config/mut/nushell ~/.config/nushell
   ! [ -d ~/.config/vis ] && ln -sf /nix-config/mut/vis ~/.config/vis
