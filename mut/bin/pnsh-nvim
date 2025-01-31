@@ -8,10 +8,9 @@ if not ($desktop_open_pipe | path exists) {
 let args = (
 "--init"  +
 " --entrypoint=/usr/bin/nu"  +
-" --env=TERM=xterm"  +
-$" --env=TERMINFO"  +
+" --env=TERM=xterm-ghostty"  +
 $" --env=EDITOR=vis"  +
-$" --volume=($env.TERMINFO):($env.TERMINFO)"  +
+$" --volume=($env.TERMINFO)/78/xterm-ghostty:/usr/share/terminfo/x/xterm-ghostty"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
 " --volume=/etc/profiles/per-user/ivi/etc/profile.d:/etc/profiles/per-user/ivi/etc/profile.d"  +
 " --env=SHELL=/usr/bin/nu" +
