@@ -19,10 +19,6 @@
     ghostty = {
       url = "github:ghostty-org/ghostty";
     };
-    nix-darwin = {
-      url = "path:/Users/ivi/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
 
@@ -42,7 +38,6 @@
 
     lib =
       (withLibs [
-        inputs.nix-darwin.lib
         home-manager.lib
       ])
       .extend

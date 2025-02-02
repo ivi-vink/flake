@@ -58,6 +58,7 @@ in {
       "jellyfin.${my.domain}" = {locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
     };
   };
+  networking.firewall.allowedTCPPorts = [ 8989 7878 6767 8787 9696 9091 8096 ];
   # services = {
   #   jellyfin = { enable = true; group = "multimedia"; };
   #   sonarr = { enable = true; group = "multimedia"; };
@@ -79,7 +80,7 @@ in {
           PGID = "${toString config.users.groups.multimedia.gid}";
         };
         volumes = [
-          # "/data/config/prowlarr/data:/config"
+          "/data/config/prowlarr/data:/config"
           "/data:/data"
         ];
       };
@@ -92,7 +93,7 @@ in {
         };
         volumes = [
           # "/data/media:/data"
-          # "/data/config/bazarr/data:/config"
+          "/data/config/bazarr/data:/config"
           "/data:/data"
         ];
       };
@@ -104,7 +105,7 @@ in {
           PGID = "${toString config.users.groups.multimedia.gid}";
         };
         volumes = [
-          # "/data/config/radarr/data:/config"
+          "/data/config/radarr/data:/config"
           "/data:/data"
         ];
       };
@@ -116,7 +117,7 @@ in {
           PGID = "${toString config.users.groups.multimedia.gid}";
         };
         volumes = [
-          # "/data/config/sonarr/data:/config"
+          "/data/config/sonarr/data:/config"
           "/data:/data"
         ];
       };
@@ -125,21 +126,22 @@ in {
         extraOptions = ["--net=host"];
         user = "${toString config.users.users.jellyfin.uid}:${toString config.users.groups.multimedia.gid}";
         volumes = [
-          # "/data/media:/media"
-          # "/data/config/jellyfin/config:/config"
-          # "/data/config/jellyfin/cache:/cache"
+          "/data/config/jellyfin/config:/config"
+          "/data/config/jellyfin/cache:/cache"
           "/data:/data"
         ];
       };
       transmission = {
         image = "haugene/transmission-openvpn";
-        extraOptions = ["--cap-add=NET_ADMIN" "--group-add=${toString config.users.groups.multimedia.gid}"];
+        extraOptions = ["--cap-add=NET_ADMIN" "--group-add=${toString config.users.groups.multimedia.gid}" "--device=/dev/net/tun"];
         volumes = [
-          # "/data/config/ovpn:/etc/openvpn/custom"
-          # "/data/config/transmission:/config"
-          # "/data/torrents:/data/torrents"
+          "/data/config/ovpn:/etc/openvpn/custom"
+          "/data/config/transmission:/config"
           "/data:/data"
         ];
+	environment = {
+		CREATE_TUN_DEVICE="false";
+	};
         ports = [
           "9091:9091"
           "5299:5299"
