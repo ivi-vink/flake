@@ -39,6 +39,7 @@ with lib;
     coreutils
     killall
     carapace
+    vis
   ] ++ (optionals (!machine.isDarwin) [
     man-pages
     man-pages-posix

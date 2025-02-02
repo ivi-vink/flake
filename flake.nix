@@ -65,7 +65,7 @@
           ++ modulesIn ./profiles/station
           ++ modulesIn ./profiles/email
           ++ [
-            (import ./profiles/netboot/system.nix nixosConfigurations.pump)
+            (import ./profiles/netboot/system.nix self.nixosConfigurations.pump)
           ];
         opts = {
           isStation = true;

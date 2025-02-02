@@ -29,10 +29,11 @@
   networking.hostName = "pump";
   networking.domain = "vinkies.net";
 
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.forceImportRoot = false;
   networking.hostId = "7da046cb";
+  netboot.storeContents = [];
 
+  # boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
   boot.initrd.availableKernelModules = [ "e1000e" ];
   boot.initrd.network = {
     enable = true;
@@ -52,11 +53,10 @@
   fileSystems."/data" =
     { device = "zpool/data";
       fsType = "zfs";
-      neededForBoot = true;
     };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  system.stateVersion = "24.05";
+  system.stateVersion = config.system.nixos.release;
   nix.extraOptions = mkForce ''
     experimental-features = nix-command flakes
   '';
