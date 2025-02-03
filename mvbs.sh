@@ -8,7 +8,7 @@
 ### OPTIONS AND VARIABLES ###
 
 dotfilesrepo="https://github.com/ivi-vink/flake.git"
-progsfile="https://raw.githubusercontent.com/LukeSmithxyz/MVBS/master/static/progs.csv"
+progsfile="https://raw.githubusercontent.com/ivi-vink/flake/refs/heads/master/progs.csv"
 repobranch="master"
 export TERM=ansi
 
@@ -72,25 +72,6 @@ adduserandpass() {
 	unset pass1 pass2
 }
 
-refreshkeys() {
-	case "$(readlink -f /sbin/init)" in
-	*systemd*)
-		whiptail --infobox "Refreshing Arch Keyring..." 7 40
-		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
-		;;
-	*)
-		whiptail --infobox "Enabling Arch Repositories for more a more extensive software collection..." 7 40
-		pacman --noconfirm --needed -S \
-			artix-keyring artix-archlinux-support >/dev/null 2>&1
-		grep -q "^\[extra\]" /etc/pacman.conf ||
-			echo "[extra]
-Include = /etc/pacman.d/mirrorlist-arch" >>/etc/pacman.conf
-		pacman -Sy --noconfirm >/dev/null 2>&1
-		pacman-key --populate archlinux >/dev/null 2>&1
-		;;
-	esac
-}
-
 maininstall() {
 	# Installs all needed programs from main repo.
 	whiptail --title "MVBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
@@ -110,6 +91,7 @@ gitmakeinstall() {
 			sudo -u "$name" git pull --force origin master
 		}
 	cd "$dir" || exit 1
+	[ -f configure ] && ./configure >/dev/null 2>&1
 	make >/dev/null 2>&1
 	make install >/dev/null 2>&1
 	cd /tmp || return 1
@@ -130,22 +112,20 @@ pipinstall() {
 }
 
 installationloop() {
-	flavor="$(whiptail --menu 'Package list flavor:' 10 60 2 cli 'installs unix ide cli tools only.' desktop 'installs a desktop with managed windows.'  3>&1 1>&2 2>&3 3>&1)"
+	chosen_flavor="$(whiptail --menu 'Package list flavor:' 10 60 2 cli 'installs unix ide cli tools only.' desktop 'installs a desktop with managed windows.'  3>&1 1>&2 2>&3 3>&1)"
 	([ -f "$progsfile" ] && cp "$progsfile" /tmp/progs.csv) ||
 		curl -Ls "$progsfile" | sed '/^#/d' >/tmp/progs.csv
-	case "$flavor" in
-		cli) total=$(grep -e "^cli" /tmp/progs.csv | wc -l);  grep -e "^cli" /tmp/progs.csv ;;
-		desktop) total=$(grep -e "^desktop" -e "^cli" /tmp/progs.csv | wc -l);  grep -e "^desktop" -e "^cli" /tmp/progs.csv ;;
-		*) total=$(wc -l </tmp/progs.csv);  cat /tmp/progs.csv ;;
-	esac | while IFS=, read -r flavor tag program comment; do
+	total=$(grep -e "^," -e "^$chosen_flavor" /tmp/progs.csv | wc -l)
+	grep -e "^," -e "^$chosen_flavor" /tmp/progs.csv | while IFS=, read -r flavor tag program comment; do
 		n=$((n + 1))
 		echo "$comment" | grep -q "^\".*\"$" &&
 			comment="$(echo "$comment" | sed -E "s/(^\"|\"$)//g")"
 		case "$tag" in
 		"G") gitmakeinstall "$program" "$comment" ;;
+		"L") luarocksinstall "$program" "$comment" ;;
 		*) maininstall "$program" "$comment" ;;
 		esac
-	done </tmp/progs.csv
+	 done
 }
 
 putgitrepo() {
@@ -235,7 +215,7 @@ finalize() {
 
 # Check if user is root on Arch distro. Install whiptail.
 xbps-install --yes newt ||
-	error "Are you sure you're running this as the root user, are on Void Linux and have an internet connection?"
+ error "Are you sure you're running this as the root user, are on Void Linux and have an internet connection?"
 
 # Welcome user and pick dotfiles.
 welcomemsg || error "User exited."
@@ -251,13 +231,13 @@ preinstallmsg || error "User exited."
 
 ### The rest of the script requires no user input.
 for x in curl ca-certificates base-devel git ntp oksh; do
-	whiptail --title "MVBS Installation" \
-		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
-	installpkg "$x"
+ whiptail --title "MVBS Installation" \
+	--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
+ installpkg "$x"
 done
 
 whiptail --title "MVBS Installation" \
-	--infobox "Synchronizing system time to ensure successful and secure installation of software..." 8 70
+ --infobox "Synchronizing system time to ensure successful and secure installation of software..." 8 70
 ntpd -q -g >/dev/null 2>&1
 
 adduserandpass || error "Error adding username and/or password."
