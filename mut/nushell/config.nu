@@ -3,7 +3,7 @@ if ($env | default "" DOCKER_NAME | get DOCKER_NAME | is-empty) {
   if ("~/.gnupg/S.gpg-agent.ssh" | path exists) {
     ln -sf ("~/.gnupg/S.gpg-agent.ssh" | path expand) $env.SSH_AUTH_SOCK
   }
-  try {pnsh-nvim}
+  # try {pnsh-nvim}
 }
 # Nushell Config File
 #
@@ -918,4 +918,4 @@ let pistarchio_dir = "~/Programming/Pionative/pistarchio" | path expand
 $env.PISTARCHIO_STACKS_DIR = $pistarchio_dir + "/stacks"
 $env.PISTARCHIO_LIBRARY_DIR = $pistarchio_dir + "/library"
 $env.PISTARCHIO_VENDOR_DESTINATION_DIR = ($pistarchio_dir + "/../clients") | path expand
-overlay use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu
+# overlay use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu

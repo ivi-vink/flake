@@ -1,10 +1,5 @@
 #!/bin/sh
 
-# Based on:
-#   Luke's Auto Rice Bootstrapping Script (MVBS)
-#   by Luke Smith <luke@lukesmith.xyz>
-#   License: GNU GPLv3
-
 ### OPTIONS AND VARIABLES ###
 
 dotfilesrepo="https://github.com/ivi-vink/flake.git"
@@ -95,13 +90,6 @@ gitmakeinstall() {
 	make >/dev/null 2>&1
 	make install >/dev/null 2>&1
 	cd /tmp || return 1
-}
-
-aurinstall() {
-	whiptail --title "MVBS Installation" \
-		--infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 9 70
-	echo "$aurinstalled" | grep -q "^$1$" && return 1
-	sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1
 }
 
 pipinstall() {
@@ -214,8 +202,8 @@ finalize() {
 ### This is how everything happens in an intuitive format and order.
 
 # Check if user is root on Arch distro. Install whiptail.
-xbps-install --yes newt ||
- error "Are you sure you're running this as the root user, are on Void Linux and have an internet connection?"
+installpkg newt ||
+ error "Are you sure you're running this as the root user, are on Void or Debianish Linux and have an internet connection?"
 
 # Welcome user and pick dotfiles.
 welcomemsg || error "User exited."
