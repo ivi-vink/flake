@@ -92,6 +92,12 @@ gitmakeinstall() {
 	cd /tmp || return 1
 }
 
+luarocksinstall() {
+	whiptail --title "MVBS Installation" \
+		--infobox "Installing the LuaRocks package \`$1\` ($n of $total). $1 $2" 9 70
+	luarocks install "$1"
+}
+
 pipinstall() {
 	whiptail --title "MVBS Installation" \
 		--infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 9 70
@@ -218,7 +224,7 @@ usercheck || error "User exited."
 preinstallmsg || error "User exited."
 
 ### The rest of the script requires no user input.
-for x in curl ca-certificates base-devel git ntp oksh; do
+for x in curl ca-certificates base-devel cmake git ntp oksh; do
  whiptail --title "MVBS Installation" \
 	--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
  installpkg "$x"
@@ -255,8 +261,8 @@ chsh -s /bin/oksh "$name" >/dev/null 2>&1
 # Make dash the default #!/bin/sh symlink.
 ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
  
-# # Enable tap to click
-[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
+# Enable tap to click
+[ -d /etc/X11/xorg.conf.d ] && [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
         Identifier "libinput touchpad catchall"
         MatchIsTouchpad "on"
         MatchDevicePath "/dev/input/event*"
@@ -264,8 +270,13 @@ ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
 	# Enable left mouse button by tapping
 	Option "Tapping" "on"
 EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
+
+# Xdg home
+[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share' >/etc/profile.d/xdg-home.sh
  
-# # All this below to get Librewolf installed with add-ons and non-bad settings.
+# All this below to get Librewolf installed with add-ons and non-bad settings.
 # 
 # whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
 # 
@@ -288,13 +299,10 @@ EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 # Allow wheel users to sudo with password and allow several system commands
 # (like `shutdown` to run without password).
 echo "%wheel ALL=(ALL:ALL) ALL" >/etc/sudoers.d/00-mvbs-wheel-can-sudo
-echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/xbps-install,/usr/local/bin/virt-manager" >/etc/sudoers.d/01-mvbs-cmds-without-password
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/poweroff,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/xbps-install,/usr/bin/sv" >/etc/sudoers.d/01-mvbs-cmds-without-password
 echo "Defaults editor=/usr/local/bin/vis" >/etc/sudoers.d/02-mvbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
  
-# Cleanup
-rm -f /etc/sudoers.d/larbs-temp
-
 # Last message! Install complete!
 finalize
