@@ -235,7 +235,7 @@ whiptail --title "MVBS Installation" \
 ntpd -q -g >/dev/null 2>&1
 
 adduserandpass || error "Error adding username and/or password."
- 
+
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has privileges to run sudo without a password
@@ -250,17 +250,17 @@ rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/
 # Write urls for newsboat if it doesn't already exist
 [ -s "/home/$name/.config/newsboat/urls" ] ||
 	sudo -u "$name" echo "$rssurls" > "/home/$name/.config/newsboat/urls"
- 
+
 # Most important command! Get rid of the beep!
 rmmod pcspkr
 echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
- 
+
 # Make oksh the default shell for the user.
 chsh -s /bin/oksh "$name" >/dev/null 2>&1
- 
+
 # Make dash the default #!/bin/sh symlink.
 ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
- 
+
 # Enable tap to click
 [ -d /etc/X11/xorg.conf.d ] && [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
         Identifier "libinput touchpad catchall"
@@ -277,24 +277,24 @@ export XINITRC=$HOME/.config/x11/xinitrc
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share' >/etc/profile.d/xdg-home.sh
- 
+
 # All this below to get Librewolf installed with add-ons and non-bad settings.
-# 
+#
 # whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
-# 
+#
 # browserdir="/home/$name/.librewolf"
 # profilesini="$browserdir/profiles.ini"
-# 
+#
 # # Start librewolf headless so it generates a profile. Then get that profile in a variable.
 # sudo -u "$name" librewolf --headless >/dev/null 2>&1 &
 # sleep 1
 # profile="$(sed -n "/Default=.*.default-default/ s/.*=//p" "$profilesini")"
 # pdir="$browserdir/$profile"
-# 
+#
 # [ -d "$pdir" ] && makeuserjs
-# 
+#
 # [ -d "$pdir" ] && installffaddons
-# 
+#
 # # Kill the now unnecessary librewolf instance.
 # pkill -u "$name" librewolf
 
@@ -306,8 +306,12 @@ echo "Defaults editor=/usr/local/bin/vis" >/etc/sudoers.d/02-mvbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
 
+# Allow smart cards to be used.
+cp /usr/lib/udev/rules.d/70-u2f.rules /etc/udev/rules.d/70-u2f.rules
+sed -i -E 's/^KERNEL=="hidraw\*", SUBSYSTEM=="hidraw", (.*)/\1/' /etc/udev/rules.d/70-u2f.rules
+
 # Make sure /usr/local/lib is used.
 ldconfig
- 
+
 # Last message! Install complete!
 finalize

@@ -27,6 +27,8 @@
 ,G,https://github.com/ivi-vink/vis.git,"is a minimal text editor based on vi and Plan9's structural regular expressions."
 # desktop,,mutt-wizard-git,"is a light-weight terminal-based email system."
 # desktop,,slock,"allows you to lock your computer, and quickly unlock with your password."
+desktop,,gnupg2-scdaemon,"is a daemon necessary for gpg smart cards."
+desktop,,libu2f-host,"contains a udev rule to enable yubikey for non root."
 desktop,,ffmpeg,"can record and splice video and audio on the command line."
 desktop,,dbus,"needed to manage your login session (e.g. XDG_RUNTIME_DIR) without soystem-D."
 desktop,,xorg-server,"is the graphical server. This first one may take a while as it pulls many other dependencies first on clean installs."
