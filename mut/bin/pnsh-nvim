@@ -7,13 +7,13 @@ if not ($desktop_open_pipe | path exists) {
 
 let args = (
 "--init"  +
-" --entrypoint=/usr/bin/nu"  +
+" --entrypoint=/usr/local/bin/oksh"  +
 " --env=TERM=xterm-ghostty"  +
 $" --env=EDITOR=vis"  +
 $" --volume=($env.TERMINFO)/78/xterm-ghostty:/usr/share/terminfo/x/xterm-ghostty"  +
 " --env=_ZO_DATA_DIR=/hostfs/.local/share/zoxide"  +
 " --volume=/etc/profiles/per-user/ivi/etc/profile.d:/etc/profiles/per-user/ivi/etc/profile.d"  +
-" --env=SHELL=/usr/bin/nu" +
+" --env=SHELL=/usr/local/bin/oksh" +
 " --env=DISPLAY"  +
 " --env=XDG_RUNTIME_DIR"  +
 " --volume=/tmp/.X11-unix:/tmp/.X11-unix"  +
@@ -33,9 +33,8 @@ $" --volume=($env | default "/var/run" XDG_RUNTIME_DIR | get XDG_RUNTIME_DIR)/do
 
 (
 ^pnsh
-  --pnsh-host-bindfs-disabled
   --pnsh-docker-extra-args=$"($args)"
   --with-docker
-  --docker-image=pionativedev.azurecr.io/pionative/pnsh-vis
+  --docker-image=oksh
   --docker-tag=latest
 )

@@ -6,6 +6,7 @@ keybind = alt+c=copy_to_clipboard
 keybind = alt+v=paste_from_clipboard
 keybind = alt+shift+k=increase_font_size:1
 keybind = alt+shift+j=decrease_font_size:1
+keybind = super+q=unbind
 
 keybind = ctrl+zero=unbind
 keybind = ctrl+enter=unbind
