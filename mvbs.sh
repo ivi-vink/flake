@@ -2,7 +2,7 @@
 
 ### OPTIONS AND VARIABLES ###
 
-dotfilesrepo="https://github.com/ivi-vink/flake.git"
+dotfilesrepo="https://github.com/ivi-vink/dotfiles.git"
 progsfile="https://raw.githubusercontent.com/ivi-vink/flake/refs/heads/master/progs.csv"
 repobranch="master"
 export TERM=ansi
@@ -230,56 +230,41 @@ ntpd -q -g >/dev/null 2>&1
 
 adduserandpass || error "Error adding username and/or password."
  
-echo "%wheel ALL=(ALL) NOPASSWD: ALL
-Defaults:%wheel,root runcwd=*" >/etc/sudoers.d/mvbs
- 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has privileges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
 
-# # Install the dotfiles in the user's home directory, but remove .git dir and
-# # other unnecessary files.
-# putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
-# rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
-# 
-# # Write urls for newsboat if it doesn't already exist
-# [ -s "/home/$name/.config/newsboat/urls" ] ||
-	# sudo -u "$name" echo "$rssurls" > "/home/$name/.config/newsboat/urls"
-# 
-# # Install vim plugins if not alread present.
-# [ ! -f "/home/$name/.config/nvim/autoload/plug.vim" ] && vimplugininstall
-# 
-# # Most important command! Get rid of the beep!
-# rmmod pcspkr
-# echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
-# 
-# # Make zsh the default shell for the user.
-# chsh -s /bin/zsh "$name" >/dev/null 2>&1
-# sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
-# sudo -u "$name" mkdir -p "/home/$name/.config/abook/"
-# sudo -u "$name" mkdir -p "/home/$name/.config/mpd/playlists/"
-# 
-# # Make dash the default #!/bin/sh symlink.
-# ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
-# 
-# # dbus UUID must be generated for Artix runit.
-# dbus-uuidgen >/var/lib/dbus/machine-id
-# 
-# # Use system notifications for Brave on Artix
-# echo "export \$(dbus-launch)" >/etc/profile.d/dbus.sh
-# 
+# Install the dotfiles in the user's home directory, but remove .git dir and
+# other unnecessary files.
+putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
+rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
+
+# Write urls for newsboat if it doesn't already exist
+[ -s "/home/$name/.config/newsboat/urls" ] ||
+	sudo -u "$name" echo "$rssurls" > "/home/$name/.config/newsboat/urls"
+ 
+# Most important command! Get rid of the beep!
+rmmod pcspkr
+echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
+ 
+# Make oksh the default shell for the user.
+chsh -s /bin/oksh "$name" >/dev/null 2>&1
+ 
+# Make dash the default #!/bin/sh symlink.
+ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
+ 
 # # Enable tap to click
-# [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
-        # Identifier "libinput touchpad catchall"
-        # MatchIsTouchpad "on"
-        # MatchDevicePath "/dev/input/event*"
-        # Driver "libinput"
-	# # Enable left mouse button by tapping
-	# Option "Tapping" "on"
-# EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
-# 
+[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+	# Enable left mouse button by tapping
+	Option "Tapping" "on"
+EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
+ 
 # # All this below to get Librewolf installed with add-ons and non-bad settings.
 # 
 # whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
@@ -299,17 +284,17 @@ installationloop
 # 
 # # Kill the now unnecessary librewolf instance.
 # pkill -u "$name" librewolf
-# 
-# # Allow wheel users to sudo with password and allow several system commands
-# # (like `shutdown` to run without password).
-# echo "%wheel ALL=(ALL:ALL) ALL" >/etc/sudoers.d/00-larbs-wheel-can-sudo
-# echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/pacman -Syyuw --noconfirm,/usr/bin/pacman -S -y --config /etc/pacman.conf --,/usr/bin/pacman -S -y -u --config /etc/pacman.conf --" >/etc/sudoers.d/01-larbs-cmds-without-password
-# echo "Defaults editor=/usr/bin/nvim" >/etc/sudoers.d/02-larbs-visudo-editor
-# mkdir -p /etc/sysctl.d
-# echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
-# 
-# # Cleanup
-# rm -f /etc/sudoers.d/larbs-temp
-# 
-# # Last message! Install complete!
-# finalize
+
+# Allow wheel users to sudo with password and allow several system commands
+# (like `shutdown` to run without password).
+echo "%wheel ALL=(ALL:ALL) ALL" >/etc/sudoers.d/00-mvbs-wheel-can-sudo
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/xbps-install,/usr/local/bin/virt-manager" >/etc/sudoers.d/01-mvbs-cmds-without-password
+echo "Defaults editor=/usr/local/bin/vis" >/etc/sudoers.d/02-mvbs-visudo-editor
+mkdir -p /etc/sysctl.d
+echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
+ 
+# Cleanup
+rm -f /etc/sudoers.d/larbs-temp
+
+# Last message! Install complete!
+finalize

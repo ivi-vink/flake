@@ -17,6 +17,7 @@
 # A,task-spooler,"queues commands or files for download."
 # A,simple-mtpfs,"enables the mounting of cell phones."
 ,,htop,"is a graphical and colorful system monitor."
+,,oksh,"because you deserve a good shell."
 ,,ncurses-devel,"is a tui library used by vis."
 ,,libtermkey-devel,"is a tui library used by vis."
 ,G,https://github.com/ivi-vink/lua.git,"is the tiny scripting language that everyone likes."
