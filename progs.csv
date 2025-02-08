@@ -23,6 +23,7 @@
 ,G,https://github.com/ivi-vink/lua.git,"is the tiny scripting language that everyone likes."
 ,G,https://github.com/ivi-vink/luarocks.git,"is the lua package manager."
 ,L,lpeg,"is a pattern matching library for lua."
+,,editorconfig-devel,"are the library files for editorconfig."
 ,L,editorconfig-core,"is the lua binding for editorconfig."
 ,G,https://github.com/ivi-vink/vis.git,"is a minimal text editor based on vi and Plan9's structural regular expressions."
 # desktop,,mutt-wizard-git,"is a light-weight terminal-based email system."

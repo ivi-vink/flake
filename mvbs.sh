@@ -95,7 +95,7 @@ gitmakeinstall() {
 luarocksinstall() {
 	whiptail --title "MVBS Installation" \
 		--infobox "Installing the LuaRocks package \`$1\` ($n of $total). $1 $2" 9 70
-	luarocks install "$1"
+	luarocks install "$1" >/dev/null 2>&1
 }
 
 pipinstall() {
@@ -272,7 +272,8 @@ ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
 EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # Xdg home
-[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'export XDG_CONFIG_HOME=$HOME/.config
+[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'export PATH="$HOME/.local/bin:$PATH"
+export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share' >/etc/profile.d/xdg-home.sh
  
@@ -303,6 +304,9 @@ echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/
 echo "Defaults editor=/usr/local/bin/vis" >/etc/sudoers.d/02-mvbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
+
+# Make sure /usr/local/lib is used.
+ldconfig
  
 # Last message! Install complete!
 finalize
