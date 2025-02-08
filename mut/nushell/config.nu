@@ -919,4 +919,4 @@ $env.PISTARCHIO_STACKS_DIR = $pistarchio_dir + "/stacks"
 $env.PISTARCHIO_LIBRARY_DIR = $pistarchio_dir + "/library"
 $env.PISTARCHIO_VENDOR_DESTINATION_DIR = ($pistarchio_dir + "/../clients") | path expand
 # overlay use ~/Programming/Pionative/quickstart/.venv/bin/activate.nu
-. ~/Programming/Pionative/quickstart/.venv/bin/activate
+# . ~/Programming/Pionative/quickstart/.venv/bin/activate

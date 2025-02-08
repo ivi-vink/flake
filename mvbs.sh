@@ -273,6 +273,7 @@ EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # Xdg home
 [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'export PATH="$HOME/.local/bin:$PATH"
+export XINITRC=$HOME/.config/x11/xinitrc
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share' >/etc/profile.d/xdg-home.sh
