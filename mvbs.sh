@@ -262,7 +262,8 @@ chsh -s /bin/oksh "$name" >/dev/null 2>&1
 ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
 
 # Enable tap to click
-[ -d /etc/X11/xorg.conf.d ] && [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
+mkdir -p /etc/X11/xorg.conf.d
+[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
         Identifier "libinput touchpad catchall"
         MatchIsTouchpad "on"
         MatchDevicePath "/dev/input/event*"
