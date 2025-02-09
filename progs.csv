@@ -18,6 +18,7 @@
 ,,moreutils,"is a collection of useful unix tools."
 ,,tig,"a terminal git client."
 ,,oksh,"because you deserve a good shell."
+,,zoxide,"because you deserve a good cd."
 ,,ncurses-devel,"is a tui library used by vis."
 ,,libtermkey-devel,"is a tui library used by vis."
 ,G,https://github.com/ivi-vink/lua.git,"is the tiny scripting language that everyone likes."
