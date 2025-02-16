@@ -314,5 +314,10 @@ sed -i -E 's/^KERNEL=="hidraw\*", SUBSYSTEM=="hidraw", (.*)/\1/' /etc/udev/rules
 # Make sure /usr/local/lib is used.
 ldconfig
 
+# TODO: update with virt-manager script
+# TODO: add syncthing user service
+# TODO: run mutt-wizard
+# TODO: fix sound and bluetooth
+
 # Last message! Install complete!
 finalize
