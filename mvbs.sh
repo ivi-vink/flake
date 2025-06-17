@@ -268,8 +268,9 @@ mkdir -p /etc/X11/xorg.conf.d
         MatchIsTouchpad "on"
         MatchDevicePath "/dev/input/event*"
         Driver "libinput"
-	# Enable left mouse button by tapping
-	Option "Tapping" "on"
+        # Enable left mouse button by tapping
+        Option "Tapping" "on"
+        Option "TappingButtonMap" "lrm"
 EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # Xdg home
@@ -302,7 +303,7 @@ export XDG_DATA_HOME=$HOME/.local/share' >/etc/profile.d/xdg-home.sh
 # Allow wheel users to sudo with password and allow several system commands
 # (like `shutdown` to run without password).
 echo "%wheel ALL=(ALL:ALL) ALL" >/etc/sudoers.d/00-mvbs-wheel-can-sudo
-echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/poweroff,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/xbps-install,/usr/bin/sv" >/etc/sudoers.d/01-mvbs-cmds-without-password
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/poweroff,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/xbps-remove,/usr/bin/xbps-install,/usr/bin/sv" >/etc/sudoers.d/01-mvbs-cmds-without-password
 echo "Defaults editor=/usr/local/bin/vis" >/etc/sudoers.d/02-mvbs-visudo-editor
 mkdir -p /etc/sysctl.d
 echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
